@@ -1,5 +1,5 @@
-import { Propulsion } from "./propulsion";
-import { SpacecraftSystem } from "./spacecraft";
+import { Propulsion } from "./propulsion.types";
+import { SpacecraftSystem } from "./spacecraft.types";
 
 export type OperationMachine = {
     operations: Operation[]
@@ -12,6 +12,7 @@ export type Operation = {
 }
 
 export type Mode = {
+    mode_name: string;
     pointing: Pointing;
     system_mode?: SpacecraftSystem[];
     override_geometry?: SphereGeometry;
@@ -19,8 +20,8 @@ export type Mode = {
 
 
 type OperationEvent = {
-    trigger: boolean,
-    effect: Effect,
+    trigger: string,
+    effect: string,
 }
 
 // CONSULTAR CON SAM

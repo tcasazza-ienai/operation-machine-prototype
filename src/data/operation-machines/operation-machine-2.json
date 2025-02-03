@@ -1,0 +1,60 @@
+{
+  "operations": [
+    {
+      "op_name": "NOM",
+      "mode": {
+        "mode_name": "Along Velocity",
+        "pointing": {
+          "pointer": "+x",
+          "target": "AlongVelocity"
+        },
+        "system_mode": [
+          {
+            "functional_id": "COMM",
+            "system": {
+              "name": "Power Device",
+              "power": 10.0,
+              "mass": 1.0,
+              "cost": 0
+            },
+            "state": "Off"
+          }
+        ]
+      },
+      "event": [
+        {
+          "trigger": "OnGroundStationVisibilityGain",
+          "effect": "ToOp('COMM')"
+        }
+      ]
+    },
+    {
+      "op_name": "COMM",
+      "mode": {
+        "mode_name": "Pointing Nadir",
+        "pointing": {
+          "pointer": "+y",
+          "target": "Nadir"
+        },
+        "system_mode": [
+          {
+            "functional_id": "COMM",
+            "system": {
+              "name": "Power Device",
+              "power": 10.0,
+              "mass": 1.0,
+              "cost": 0
+            },
+            "state": "On"
+          }
+        ]
+      },
+      "event": [
+        {
+          "trigger": "OnGroundStationVisibilityLoss",
+          "effect": "ToOp('NOM')"
+        }
+      ]
+    }
+  ]
+}

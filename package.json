@@ -9,6 +9,7 @@
     "@mui/material": "^6.4.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@xyflow/react": "^12.4.2",
     "cra-template-typescript": "1.2.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

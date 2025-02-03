@@ -1,5 +1,5 @@
-import { Propulsion, SimpleChemicalPropulsion, SimpleElectricPropulsion } from "./propulsion";
-import { System } from "./systems";
+import { Propulsion, SimpleChemicalPropulsion, SimpleElectricPropulsion } from "./propulsion.types";
+import { System } from "./systems.types";
 
 export type Spacecraft = {
     name: string;

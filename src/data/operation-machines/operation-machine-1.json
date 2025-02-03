@@ -1,0 +1,61 @@
+{
+  "operations": [
+    {
+      "op_name": "COAST",
+      "mode": {
+        "mode_name": "Counter Velocity",
+        "pointing": {
+          "pointer": "+x",
+          "target": "CounterVelocity"
+        },
+        "system_mode": [
+          {
+            "functional_id": "BATT",
+            "system": {
+              "name": "MyBattery",
+              "capacity": 72,
+              "mass": 2.5,
+              "cost": 1000
+            }
+          }
+        ]
+      },
+      "event": [
+        {
+          "trigger": "OnManeuveringEfficiency",
+          "effect": "ToOp(THRUST)"
+        }
+      ]
+    },
+    {
+      "op_name": "THRUST",
+      "mode": {
+        "mode_name": "QLaw",
+        "pointing": {
+          "pointer": "+z",
+          "target": "QLaw"
+        },
+        "system_mode": [
+          {
+            "functional_id": "PROP",
+            "system": {
+              "name": "MyProp",
+              "thrust": 0.2,
+              "specific_impulse": 600.0,
+              "efficiency": 1.0,
+              "propellant_mass": 2.5,
+              "dry_mass": 0.0
+            },
+            "functional_direction": "+z"
+          }
+        ]
+      },
+      "event": [
+        {
+          "trigger": "OnManeuveringEfficiency",
+          "effect": "ToOp(COAST)"
+        }
+      ]
+    }
+  ]
+}

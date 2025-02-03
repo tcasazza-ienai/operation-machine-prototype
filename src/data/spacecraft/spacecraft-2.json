@@ -1,0 +1,18 @@
+{
+  "name": "Low_drag",
+  "sc_systems": {
+    "functional_id": "PROP",
+    "system": {
+      "type": "SimpleElectricPropulsion",
+      "name": "EP_IEN_athena",
+      "power_consumption": 2.5,
+      "mass": 8.0,
+      "thrust": 0.05,
+      "cost": 0
+    },
+    "functional_direction": "+X"
+  },
+  "override_dry_mass": 10.0,
+  "area": 0.2,
+  "CD": 2.4
+}
