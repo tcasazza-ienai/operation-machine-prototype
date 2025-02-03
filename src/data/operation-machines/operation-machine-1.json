@@ -56,6 +56,66 @@
           "effect": "ToOp(COAST)"
         }
       ]
+    },
+    {
+      "op_name": "THRUST2",
+      "mode": {
+        "mode_name": "QLaw",
+        "pointing": {
+          "pointer": "+z",
+          "target": "QLaw"
+        },
+        "system_mode": [
+          {
+            "functional_id": "PROP",
+            "system": {
+              "name": "MyProp",
+              "thrust": 0.2,
+              "specific_impulse": 600.0,
+              "efficiency": 1.0,
+              "propellant_mass": 2.5,
+              "dry_mass": 0.0
+            },
+            "functional_direction": "+z"
+          }
+        ]
+      },
+      "event": [
+        {
+          "trigger": "OnManeuveringEfficiency",
+          "effect": "ToOp(COAST)"
+        }
+      ]
+    },
+    {
+      "op_name": "THRUST1",
+      "mode": {
+        "mode_name": "QLaw",
+        "pointing": {
+          "pointer": "+z",
+          "target": "QLaw"
+        },
+        "system_mode": [
+          {
+            "functional_id": "PROP",
+            "system": {
+              "name": "MyProp",
+              "thrust": 0.2,
+              "specific_impulse": 600.0,
+              "efficiency": 1.0,
+              "propellant_mass": 2.5,
+              "dry_mass": 0.0
+            },
+            "functional_direction": "+z"
+          }
+        ]
+      },
+      "event": [
+        {
+          "trigger": "OnManeuveringEfficiency",
+          "effect": "ToOp(COAST)"
+        }
+      ]
     }
   ]
 }
