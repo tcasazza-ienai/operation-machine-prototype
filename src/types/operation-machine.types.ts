@@ -8,7 +8,7 @@ export type OperationMachine = {
 export type Operation = {
     op_name: string;
     mode: Mode;
-    event: OperationEvent[];
+    events: OperationEvent[];
 }
 
 export type Mode = {

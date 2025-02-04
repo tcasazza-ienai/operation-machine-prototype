@@ -20,7 +20,7 @@
           }
         ]
       },
-      "event": [
+      "events": [
         {
           "trigger": "OnManeuveringEfficiency",
           "effect": "ToOp(THRUST)"
@@ -50,7 +50,7 @@
           }
         ]
       },
-      "event": [
+      "events": [
         {
           "trigger": "OnManeuveringEfficiency",
           "effect": "ToOp(COAST)"
@@ -80,7 +80,7 @@
           }
         ]
       },
-      "event": [
+      "events": [
         {
           "trigger": "OnManeuveringEfficiency",
           "effect": "ToOp(COAST)"
@@ -110,7 +110,7 @@
           }
         ]
       },
-      "event": [
+      "events": [
         {
           "trigger": "OnManeuveringEfficiency",
           "effect": "ToOp(COAST)"
