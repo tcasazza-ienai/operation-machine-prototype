@@ -6,6 +6,7 @@ import { MenuItem, Select, Box } from '@mui/material';
 
 import OperationMachineBoard from './components/operation-machine/operation-machine-board.tsx';
 import SpacecraftSelect from './components/select/spacecraft-select.tsx';
+import { ReactFlowProvider } from '@xyflow/react';
 
 
 
@@ -24,7 +25,9 @@ function App() {
       </header>
       <body className="App-body">
         <SpacecraftSelect />
-        <OperationMachineBoard />
+        <ReactFlowProvider>
+          <OperationMachineBoard />
+        </ReactFlowProvider>
       </body>
     </div>
   );

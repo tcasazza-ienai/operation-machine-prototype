@@ -38,7 +38,7 @@ const SpacecraftSelect: React.FC = () => {
                 },
             }}
         >
-            {spacecraftList.map((spacecraft) => (<MenuItem value={spacecraft.name} style={{ display: "flex", justifyContent: "start" }}>{spacecraft.name}</MenuItem>))}
+            {spacecraftList.map((spacecraft, index) => (<MenuItem key={spacecraft.name + index} value={spacecraft.name} style={{ display: "flex", justifyContent: "start" }}>{spacecraft.name}</MenuItem>))}
 
         </Select>
     );
