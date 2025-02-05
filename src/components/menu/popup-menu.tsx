@@ -2,8 +2,11 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import React from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
+interface PopupMenuProps {
+    items: { label: string, onClick: () => void }[]
+}
 
-const PopupMenu: React.FC = () => {
+const PopupMenu: React.FC<PopupMenuProps> = ({ items }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const open = Boolean(anchorEl);
@@ -39,9 +42,9 @@ const PopupMenu: React.FC = () => {
                     horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleClose}>Rename operation</MenuItem>
-                <MenuItem onClick={handleClose}>Duplicate</MenuItem>
-                <MenuItem onClick={handleClose}>Delete</MenuItem>
+                {items.map((item, index) => (
+                    <MenuItem key={item.label + index} onClick={item.onClick}>{item.label}</MenuItem>
+                ))}
             </Menu>
         </div>
     );

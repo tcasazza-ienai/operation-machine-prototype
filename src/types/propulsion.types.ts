@@ -1,4 +1,5 @@
 interface ISimplePropulsion {
+    id: string;
     name: string;
     thrust: number;
     specific_impulse: number;
@@ -7,6 +8,7 @@ interface ISimplePropulsion {
 }
 
 export type Propulsion = {
+    id: string;
     name: string;
     thruster_unit: ThrusterUnit;
     reservoir: Reservoir;

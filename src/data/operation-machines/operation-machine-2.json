@@ -1,6 +1,7 @@
 {
   "operations": [
     {
+      "id": "1",
       "op_name": "NOM",
       "mode": {
         "mode_name": "Along Velocity",
@@ -29,6 +30,7 @@
       ]
     },
     {
+      "id": "2",
       "op_name": "COMM",
       "mode": {
         "mode_name": "Pointing Nadir",

@@ -23,16 +23,19 @@ const OperationNodeAdded: React.FC<{ data }> = ({ data }) => {
                 position: "relative",
                 minWidth: "280px",
                 textAlign: "center",
+                cursor: "auto",
                 overflow: "visible",
             }}
         >
             <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                 <Typography sx={{ fontSize: "14px", fontWeight: "bold" }} variant="h6">{data.label as string} </Typography>
-                <PopupMenu />
+                <PopupMenu items={[]} />
             </Box>
             <Select
                 value={selected}
                 className='nodrag'
+                displayEmpty
+                renderValue={selected !== "" ? undefined : () => <Typography sx={{ color: "#49454F" }}>Select mode</Typography>}
                 onChange={(e) => setSelected(e.target.value)}
                 sx={{ position: "relative", width: "100%", color: "#49454F", textAlign: "justify" }}
             >

@@ -2,16 +2,19 @@ import { Propulsion } from "./propulsion.types";
 import { SpacecraftSystem } from "./spacecraft.types";
 
 export type OperationMachine = {
+    id: string;
     operations: Operation[]
 }
 
 export type Operation = {
+    id: string;
     op_name: string;
     mode: Mode;
     events: OperationEvent[];
 }
 
 export type Mode = {
+    id: string;
     mode_name: string;
     pointing: Pointing;
     system_mode?: SpacecraftSystem[];
@@ -20,6 +23,7 @@ export type Mode = {
 
 
 type OperationEvent = {
+    id: string;
     trigger: string,
     effect: string,
 }

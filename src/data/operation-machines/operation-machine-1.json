@@ -1,6 +1,7 @@
 {
   "operations": [
     {
+      "id": "1",
       "op_name": "COAST",
       "mode": {
         "mode_name": "Counter Velocity",
@@ -28,6 +29,7 @@
       ]
     },
     {
+      "id": "2",
       "op_name": "THRUST",
       "mode": {
         "mode_name": "QLaw",
@@ -58,6 +60,7 @@
       ]
     },
     {
+      "id": "3",
       "op_name": "THRUST2",
       "mode": {
         "mode_name": "QLaw",
@@ -88,6 +91,7 @@
       ]
     },
     {
+      "id": "4",
       "op_name": "THRUST1",
       "mode": {
         "mode_name": "QLaw",
