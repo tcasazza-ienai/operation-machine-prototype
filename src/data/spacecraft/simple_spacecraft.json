@@ -1,0 +1,6 @@
+{
+  "name": "High_drag",
+  "override_dry_mass": 10.0,
+  "area": 0.3,
+  "CD": 2.4
+}
