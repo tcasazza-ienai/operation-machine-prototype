@@ -39,11 +39,12 @@ const OperationMachineBoard: React.FC = () => {
     if (nodes.length > 0) {
       setEdges(mappingToEdgesOperations(opMachine.operations) as never[]);
     }
-
-    if (!hasFitViewRun.current) {
-      fitView();
-      hasFitViewRun.current = true;
-    }
+    setTimeout(() => {
+      if (!hasFitViewRun.current) {
+        fitView();
+        hasFitViewRun.current = true;
+      }
+    }, 200);
   }, [nodes]);
 
   useEffect(() => {
@@ -67,16 +68,7 @@ const OperationMachineBoard: React.FC = () => {
     custom: OperationNode,
   };
   return (
-    <Box
-      sx={{
-        border: "2px solid #ddd",
-        borderRadius: "8px",
-        height: "70vh",
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "20px",
-      }}
-    >
+    <Box sx={operationMachineContainerStyle}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -95,3 +87,12 @@ const OperationMachineBoard: React.FC = () => {
 };
 
 export default OperationMachineBoard;
+
+const operationMachineContainerStyle = {
+  border: "2px solid #ddd",
+  borderRadius: "8px",
+  height: "70vh",
+  display: "flex",
+  flexDirection: "column",
+  marginTop: "20px",
+};

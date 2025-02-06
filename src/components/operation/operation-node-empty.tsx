@@ -14,31 +14,9 @@ const OperationNodeEmpty: React.FC = () => {
   ]);
 
   return (
-    <Box
-      className="nodrag"
-      sx={{
-        padding: 2,
-        border: "2px dashed #79747E",
-        borderRadius: "12px",
-        opacity: 0.8,
-        background: "#FEF7FF",
-        position: "relative",
-        minWidth: "280px",
-        textAlign: "center",
-        overflow: "visible",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "8px",
-        }}
-      >
-        <Typography
-          sx={{ color: "#1D1B20", fontSize: "14px", fontWeight: "400" }}
-          variant="h6"
-        >
+    <Box className="nodrag" sx={nodeContainerStyle}>
+      <Box sx={titleContainterStyle}>
+        <Typography sx={titleStyle} variant="h6">
           Operation $n{" "}
         </Typography>
 
@@ -58,13 +36,7 @@ const OperationNodeEmpty: React.FC = () => {
         className="nodrag"
         onChange={(e) => setSelected(e.target.value)}
         IconComponent={() => null}
-        sx={{
-          position: "relative",
-          width: "100%",
-          color: "#49454F",
-          textAlign: "justify",
-          zIndex: -1,
-        }}
+        sx={selectStyle}
       />
       <Handle
         type="source"
@@ -76,25 +48,53 @@ const OperationNodeEmpty: React.FC = () => {
         position={Position.Right}
         style={{ visibility: "hidden" }}
       />
-      <Box
-        sx={{
-          position: "absolute",
-          right: "-13px",
-          top: "50%",
-          transform: "translateY(-50%)",
-        }}
-      >
-        <AddCircleOutlineIcon
-          sx={{
-            color: "#1D1B20",
-            cursor: "pointer",
-            zIndex: 1000,
-            opacity: 0.4,
-          }}
-        />
+      <Box sx={addTriggerContainerStyle}>
+        <AddCircleOutlineIcon sx={addTriggerButtonStyle} />
       </Box>
     </Box>
   );
 };
 
 export default OperationNodeEmpty;
+
+const nodeContainerStyle = {
+  padding: 2,
+  border: "2px dashed #79747E",
+  borderRadius: "12px",
+  opacity: 0.8,
+  background: "#FEF7FF",
+  position: "relative",
+  minWidth: "280px",
+  textAlign: "center",
+  overflow: "visible",
+};
+
+const titleContainterStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: "8px",
+};
+
+const titleStyle = { color: "#1D1B20", fontSize: "14px", fontWeight: "400" };
+
+const selectStyle = {
+  position: "relative",
+  width: "100%",
+  color: "#49454F",
+  textAlign: "justify",
+  zIndex: -1,
+};
+
+const addTriggerContainerStyle = {
+  position: "absolute",
+  right: "-13px",
+  top: "50%",
+  transform: "translateY(-50%)",
+};
+
+const addTriggerButtonStyle = {
+  color: "#1D1B20",
+  cursor: "pointer",
+  zIndex: 1000,
+  opacity: 0.4,
+};

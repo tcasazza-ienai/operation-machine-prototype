@@ -41,13 +41,7 @@ const SpacecraftSelect: React.FC = () => {
           ) || emptySpacecraft
         )
       }
-      sx={{
-        width: "30%",
-        minWidth: "200px",
-        "& .MuiOutlinedInput-input": {
-          display: "flex",
-        },
-      }}
+      sx={selectStyle}
     >
       {spacecraftList.map((spacecraft, index) => (
         <MenuItem
@@ -63,3 +57,11 @@ const SpacecraftSelect: React.FC = () => {
 };
 
 export default SpacecraftSelect;
+
+const selectStyle = {
+  width: "30%",
+  minWidth: "200px",
+  "& .MuiOutlinedInput-input": {
+    display: "flex",
+  },
+};

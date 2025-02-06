@@ -30,33 +30,15 @@ const OperationNodeEdit: React.FC<{
     }
   }, [selected]);
   return (
-    <Box
-      className="nodrag"
-      sx={{
-        padding: 2,
-        border: "1px solid #1D1B20",
-        borderRadius: "12px",
-        background: "#FEF7FF",
-        position: "relative",
-        minWidth: "280px",
-        textAlign: "center",
-        overflow: "visible",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "11px",
-        }}
-      >
+    <Box className="nodrag" sx={nodeContainerStyle}>
+      <Box sx={titleContainterStyle}>
         <TextField
           inputRef={textFieldRef}
           placeholder={defaultName}
           value={operationName}
           onChange={(e) => setOperationName(e.target.value)}
           variant="standard"
-          sx={{ fontSize: "14px", fontWeight: "bold" }}
+          sx={titleStyle}
         >
           {operationName}
         </TextField>
@@ -71,12 +53,7 @@ const OperationNodeEdit: React.FC<{
             : () => <Typography sx={{ color: "#49454F" }}>Mode</Typography>
         }
         value={selected}
-        sx={{
-          position: "relative",
-          width: "100%",
-          color: "#49454F",
-          textAlign: "justify",
-        }}
+        sx={selectStyle}
         IconComponent={() => null}
       >
         <MenuItem value={selected}>{selected}</MenuItem>
@@ -91,21 +68,47 @@ const OperationNodeEdit: React.FC<{
         position={Position.Right}
         style={{ visibility: "hidden" }}
       />
-      <Box
-        sx={{
-          position: "absolute",
-          right: "-13px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          cursor: "pointer",
-        }}
-      >
-        <AddCircleOutlineIcon
-          sx={{ color: "#1D1B20", zIndex: 1000, opacity: 0.4 }}
-        />
+      <Box sx={addTriggerContainerStyle}>
+        <AddCircleOutlineIcon sx={addTriggerButtonStyle} />
       </Box>
     </Box>
   );
 };
 
 export default OperationNodeEdit;
+
+const nodeContainerStyle = {
+  padding: 2,
+  border: "1px solid #1D1B20",
+  borderRadius: "12px",
+  background: "#FEF7FF",
+  position: "relative",
+  minWidth: "280px",
+  textAlign: "center",
+  overflow: "visible",
+};
+
+const titleContainterStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: "11px",
+};
+
+const titleStyle = { fontSize: "14px", fontWeight: "bold" };
+
+const selectStyle = {
+  position: "relative",
+  width: "100%",
+  color: "#49454F",
+  textAlign: "justify",
+};
+
+const addTriggerContainerStyle = {
+  position: "absolute",
+  right: "-13px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  cursor: "pointer",
+};
+
+const addTriggerButtonStyle = { color: "#1D1B20", zIndex: 1000, opacity: 0.4 };

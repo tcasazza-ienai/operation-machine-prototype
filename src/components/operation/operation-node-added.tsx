@@ -32,41 +32,16 @@ const OperationNodeAdded: React.FC<{
     selectOnChange(mode || data.mode);
   };
   return (
-    <Box
-      className="nodrag"
-      sx={{
-        padding: 2,
-        border: "1px solid #1D1B20",
-        borderRadius: "12px",
-        background: "#FEF7FF",
-        position: "relative",
-        minWidth: "280px",
-        textAlign: "center",
-        cursor: "auto",
-        overflow: "visible",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "8px",
-        }}
-      >
-        <Typography sx={{ fontSize: "14px", fontWeight: "bold" }} variant="h6">
+    <Box className="nodrag" sx={nodeContainerStyle}>
+      <Box sx={titleContainterStyle}>
+        <Typography sx={titleStyle} variant="h6">
           {data.op_name as string}{" "}
         </Typography>
         <PopupMenu items={menuOptions} />
       </Box>
       <Box sx={{ height: "57px" }}>
         {modesList.length < 1 ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-            }}
-          >
+          <Box sx={addButtonContainerStyle}>
             <IenaiButton
               onClick={function (): void {
                 throw new Error("Function not implemented.");
@@ -90,24 +65,9 @@ const OperationNodeAdded: React.FC<{
                   )
             }
             onChange={(e) => selectMode(e)}
-            sx={{
-              position: "relative",
-              width: "100%",
-              color: "#49454F",
-              textAlign: "justify",
-            }}
+            sx={selectStyle}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                height: "40px",
-                alignItems: "center",
-                padding: "8px 12px",
-                borderBottom: "1px solid #CAC4D0",
-                zIndex: "-1",
-              }}
-            >
+            <Box sx={addModeContainerStyle}>
               <>
                 <Typography
                   sx={{ fontSize: "14px", fontWeight: "bold" }}
@@ -115,19 +75,7 @@ const OperationNodeAdded: React.FC<{
                 >
                   Modes:
                 </Typography>
-                <Button
-                  disableRipple
-                  size="small"
-                  sx={{
-                    borderRadius: 50,
-                    color: "#49454F",
-                    padding: "16px",
-                    width: "24px",
-                    height: "24px",
-                    minWidth: "24px",
-                    minHeight: "24px",
-                  }}
-                >
+                <Button disableRipple size="small" sx={addModeButtonStyle}>
                   <AddCircleOutlineIcon fontSize="small" />
                 </Button>
               </>
@@ -151,21 +99,78 @@ const OperationNodeAdded: React.FC<{
         position={Position.Right}
         style={{ visibility: "hidden" }}
       />
-      <Box
-        sx={{
-          position: "absolute",
-          right: "-13px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          cursor: "pointer",
-        }}
-      >
-        <AddCircleOutlineIcon
-          sx={{ color: "#1D1B20", cursor: "pointer", zIndex: 1000 }}
-        />
+      <Box sx={addTriggerContainerStyle}>
+        <AddCircleOutlineIcon sx={addTriggerButtonStyle} />
       </Box>
     </Box>
   );
 };
 
 export default OperationNodeAdded;
+
+const nodeContainerStyle = {
+  padding: 2,
+  border: "1px solid #1D1B20",
+  borderRadius: "12px",
+  background: "#FEF7FF",
+  position: "relative",
+  minWidth: "280px",
+  textAlign: "center",
+  cursor: "auto",
+  overflow: "visible",
+};
+
+const titleContainterStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: "8px",
+};
+
+const titleStyle = { fontSize: "14px", fontWeight: "bold" };
+
+const addButtonContainerStyle = {
+  display: "flex",
+  justifyContent: "flex-start",
+  alignItems: "center",
+};
+
+const selectStyle = {
+  position: "relative",
+  width: "100%",
+  color: "#49454F",
+  textAlign: "justify",
+};
+
+const addModeContainerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  height: "40px",
+  alignItems: "center",
+  padding: "8px 12px",
+  borderBottom: "1px solid #CAC4D0",
+  zIndex: "-1",
+};
+
+const addModeButtonStyle = {
+  borderRadius: 50,
+  color: "#49454F",
+  padding: "16px",
+  width: "24px",
+  height: "24px",
+  minWidth: "24px",
+  minHeight: "24px",
+};
+
+const addTriggerContainerStyle = {
+  position: "absolute",
+  right: "-13px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  cursor: "pointer",
+};
+
+const addTriggerButtonStyle = {
+  color: "#1D1B20",
+  cursor: "pointer",
+  zIndex: 1000,
+};
