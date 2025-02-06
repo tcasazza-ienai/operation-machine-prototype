@@ -238,6 +238,10 @@ export class Event360 {
   public getEffect(): Effect360 {
     return this.effect;
   }
+
+  public getTrigger(): Trigger360 {
+    return this.trigger;
+  }
 }
 
 ///////// TRIGGERS ///////////////
@@ -298,6 +302,10 @@ function createCustomTrigger<T = void>(className: string) {
     // Optional getter that only returns attributes if they exist
     getAttributes(): T | undefined {
       return this.attrs;
+    }
+
+    public getTriggerName() {
+      return this.className;
     }
   };
 
@@ -368,12 +376,7 @@ export class ToOp_E implements Effect360 {
   }
 }
 
-export class TerminateSimulation_E implements Effect360 {
-  // private readonly id: string;
-  // constructor(id: string) {
-  //   this.id = id;
-  // }
-}
+export class TerminateSimulation_E implements Effect360 {}
 
 export class Impulse_E implements Effect360 {
   private readonly DV_r: number;

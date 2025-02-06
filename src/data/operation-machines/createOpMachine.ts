@@ -3,6 +3,7 @@ import {
   AtReservoirLevel_T,
   Event360,
   Mode360,
+  OnBatteryLevel_T,
   OnSemiMajorAxis_T,
   Operation360,
   OperationMachine,
@@ -110,7 +111,8 @@ export const createOpsMachine_Tutorial5 = () => {
   );
 
   const eventThr = new Event360(
-    new OnSemiMajorAxis_T({ direction: ">", sma: 6840 }),
+    //new OnSemiMajorAxis_T({ direction: ">", sma: 6840 }),
+    new OnBatteryLevel_T({ direction: ">", capacity: 4 }),
     new ToOp_E(nominalOp)
   );
 

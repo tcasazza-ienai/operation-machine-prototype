@@ -27,7 +27,7 @@ function App() {
       <body className="App-body">
         <SpacecraftSelect />
         <ReactFlowProvider>
-          <OperationMachineBoard />
+          <OperationMachineBoard operations={opsMachine2.getOperations()} />
         </ReactFlowProvider>
       </body>
     </div>
