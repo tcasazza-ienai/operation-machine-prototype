@@ -10,7 +10,7 @@ import {
   Operation,
   OperationEvent,
 } from "../../types/operation-machine.types.ts";
-import SimpleModal from "../modals/simple-modal.tsx";
+import BasicDialog from "../modals/basic-dialog.tsx";
 
 const OperationNode: React.FC<NodeProps> = ({ data }) => {
   const [operationOptions, setOperationOptions] = useState<
@@ -122,18 +122,18 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
           <OperationNodeEmpty />
         </Box>
       )}
-      <SimpleModal
+      <BasicDialog
         open={deleteModal}
-        confirmBottonLabel="DELETE"
+        confirmBottonLabel="Delete"
         onClose={() => setDeleteModal(false)}
         onConfirm={deleteOperation}
         confirmColor="error"
         title={`Delete Operation: ${dataLabel}`}
         description="Are you sure you want to delete this operation?"
       />
-      <SimpleModal
+      <BasicDialog
         open={duplicateModal}
-        confirmBottonLabel="DUPLICATE"
+        confirmBottonLabel="Duplicate"
         onClose={() => setDuplicateModal(false)}
         onConfirm={duplicateOperation}
         confirmColor="success"
