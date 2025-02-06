@@ -13,8 +13,12 @@ import {
 } from "../../entities/OpMachine.ts";
 import { SimpleElectricPropulsion360 } from "../../entities/Propulsion.ts";
 
+const getRandomId = () => {
+  return Math.floor(Math.random() * 10000000).toString(16);
+};
+
 export const createSimpleOpMachine = (): OperationMachine => {
-  const nominalMode = new Mode360();
+  const nominalMode = new Mode360("NominalMode");
 
   //Trigger
   const onSmaTrigger = new OnSemiMajorAxis_T({ direction: "<", sma: 6678.0 });
@@ -27,7 +31,9 @@ export const createSimpleOpMachine = (): OperationMachine => {
   const terminalEvent = new Event360(onSmaTrigger, terminateSimulationEffect);
 
   //Operation
-  const nominalOp = new Operation360("NOM", nominalMode, [terminalEvent]);
+  const nominalOp = new Operation360(getRandomId(), "NOM", nominalMode, [
+    terminalEvent,
+  ]);
 
   const opsMachine = new OperationMachine([nominalOp]);
 
@@ -49,7 +55,7 @@ export const createOpsMachine_Tutorial4 = (): OperationMachine => {
   const thrustMode = new PM_Thrust("Thrust");
 
   //Mode
-  const nominalMode = new Mode360(undefined, [thrustMode]);
+  const nominalMode = new Mode360("NominalMode", undefined, [thrustMode]);
 
   //Trigger
   const atResLevel = new AtReservoirLevel_T({ level: 0.05 });
@@ -62,7 +68,7 @@ export const createOpsMachine_Tutorial4 = (): OperationMachine => {
   const terminalEvent = new Event360(atResLevel, terminateSimulationEffect);
 
   //Op
-  const nominalOperation = new Operation360("NOM", nominalMode, [
+  const nominalOperation = new Operation360(getRandomId(), "NOM", nominalMode, [
     terminalEvent,
   ]);
 
@@ -82,22 +88,30 @@ export const createOpsMachine_Tutorial5 = () => {
   );
 
   //Mode
-  const nominalMode = new Mode360(undefined, [new PM_Off("Off")]);
-  const thrustingMode = new Mode360(undefined, [new PM_Thrust("Thrust")]);
+  const nominalMode = new Mode360("NominalMode", undefined, [
+    new PM_Off("Off"),
+  ]);
+  const thrustingMode = new Mode360("ThrustingMode", undefined, [
+    new PM_Thrust("Thrust"),
+  ]);
+
+  const nominalId = getRandomId();
+  const thrustId = getRandomId();
 
   //Op
-  const nominalOp = new Operation360("NOM", nominalMode);
-  const thrustingOp = new Operation360("THR", thrustingMode);
+  const nominalOp = new Operation360(nominalId, "NOM", nominalMode);
+  nominalOp.setIsInitial();
+  const thrustingOp = new Operation360(thrustId, "THR", thrustingMode);
 
   //Events
   const eventNom = new Event360(
     new OnSemiMajorAxis_T({ direction: "<", sma: 6780 }),
-    new ToOp_E("THR")
+    new ToOp_E(thrustingOp)
   );
 
   const eventThr = new Event360(
     new OnSemiMajorAxis_T({ direction: ">", sma: 6840 }),
-    new ToOp_E("NOM")
+    new ToOp_E(nominalOp)
   );
 
   const eventEpoch = new Event360(
