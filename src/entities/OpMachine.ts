@@ -232,7 +232,7 @@ export class OnAnyCondition_T extends BooleanTrigger implements Trigger360 {
 
 function createCustomTrigger<T = void>(className: string) {
   const CustomTriggerClass = class implements Trigger360 {
-    static readonly className = `${className}_T`;
+    private className = `${className}_T`;
     private attrs?: T;
 
     constructor(attrs?: T) {
@@ -252,60 +252,56 @@ function createCustomTrigger<T = void>(className: string) {
     getAttributes(): T | undefined {
       return this.attrs;
     }
-
-    getClassName(): string {
-      return (this.constructor as typeof CustomTriggerClass).className;
-    }
   };
 
   return CustomTriggerClass;
 }
 
-const AtOperationDuration_T = createCustomTrigger<{ duration: number }>(
+export const AtOperationDuration_T = createCustomTrigger<{ duration: number }>(
   "AtOperationDuration"
 );
-const AtEpoch_T = createCustomTrigger<{ epoch: string }>("AtEpoch");
-const OnSemiMajorAxis_T = createCustomTrigger<{
+export const AtEpoch_T = createCustomTrigger<{ epoch: string }>("AtEpoch");
+export const OnSemiMajorAxis_T = createCustomTrigger<{
   direction: string;
   sma: number;
 }>("OnSemiMajorAxis");
-const OnOrbitalElement_T = createCustomTrigger<{
+export const OnOrbitalElement_T = createCustomTrigger<{
   element: string;
   direction: string;
   value: number;
 }>("OnOrbitalElement");
-const OnManeuveringEfficiency_T = createCustomTrigger<{
+export const OnManeuveringEfficiency_T = createCustomTrigger<{
   direction: string;
   threshold: number;
   qlaw: number;
 }>("OnManeuveringEfficiency");
-const OnBatteryLevel_T = createCustomTrigger<{
+export const OnBatteryLevel_T = createCustomTrigger<{
   direction: string;
   capacity: number;
 }>("OnBatteryLevel");
-const OnBatterySOC_T = createCustomTrigger<{
+export const OnBatterySOC_T = createCustomTrigger<{
   direction: string;
   state_of_charge: number;
 }>("OnBatterySOC");
-const AtEclipseToSunlight_T = createCustomTrigger("AtEclipseToSunlight");
-const AtSunlightToEclipse_T = createCustomTrigger("AtSunlightToEclipse");
-const AtApoapsis_T = createCustomTrigger("AtApoapsis");
-const AtPeriapsis_T = createCustomTrigger("AtPeriapsis");
-const OnLatitude_T = createCustomTrigger<{
+export const AtEclipseToSunlight_T = createCustomTrigger("AtEclipseToSunlight");
+export const AtSunlightToEclipse_T = createCustomTrigger("AtSunlightToEclipse");
+export const AtApoapsis_T = createCustomTrigger("AtApoapsis");
+export const AtPeriapsis_T = createCustomTrigger("AtPeriapsis");
+export const OnLatitude_T = createCustomTrigger<{
   direction: string;
   latitude: number;
 }>("OnLatitude");
-const AtAscendingNode_T = createCustomTrigger("AtAscendingNode");
-const AtDescendingNode_T = createCustomTrigger("AtDescendingNod");
-const AtNorthernAntinode_T = createCustomTrigger("AtNorthernAntinode");
-const AtSouthernAntinode_T = createCustomTrigger("AtSouthernAntinode");
-const AtReservoirLevel_T = createCustomTrigger<{ level: number }>(
+export const AtAscendingNode_T = createCustomTrigger("AtAscendingNode");
+export const AtDescendingNode_T = createCustomTrigger("AtDescendingNod");
+export const AtNorthernAntinode_T = createCustomTrigger("AtNorthernAntinode");
+export const AtSouthernAntinode_T = createCustomTrigger("AtSouthernAntinode");
+export const AtReservoirLevel_T = createCustomTrigger<{ level: number }>(
   "AtReservoirLevel"
 );
-const OnGroundStationVisibilityGain_T = createCustomTrigger<{
+export const OnGroundStationVisibilityGain_T = createCustomTrigger<{
   groundstation: GroundStation;
 }>("OnGroundStationVisibilityGain");
-const OnGroundStationVisibilityLoss_T = createCustomTrigger<{
+export const OnGroundStationVisibilityLoss_T = createCustomTrigger<{
   groundstation: GroundStation;
 }>("OnGroundStationVisibilityLoss");
 ////////////////////////

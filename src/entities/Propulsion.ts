@@ -1,4 +1,4 @@
-import { System360 } from "./System";
+import { System360 } from "./System.ts";
 
 export abstract class Propulsion360 {
   protected readonly name: string;
@@ -36,8 +36,8 @@ export class SimpleElectricPropulsion360 extends SimplePropulsion360 {
     name: string,
     thrust: number,
     specific_impulse: number,
-    propellant_mass: number,
     efficiency: number,
+    propellant_mass: number,
     dry_mass: number = 0.0
   ) {
     super(name, thrust, specific_impulse, propellant_mass, dry_mass);
