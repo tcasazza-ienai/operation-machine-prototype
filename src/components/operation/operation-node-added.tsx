@@ -12,6 +12,8 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PopupMenu, { PopupMenuProp } from "../menu/popup-menu.tsx";
 import modes from "../../data/modes/modes1.json";
 import { Mode, Operation } from "../../types/operation-machine.types.ts";
+import IenaiButton from "../common/ienai-button.tsx";
+import AddIcon from "@mui/icons-material/Add";
 
 const OperationNodeAdded: React.FC<{
   data: Operation;
@@ -56,64 +58,89 @@ const OperationNodeAdded: React.FC<{
         </Typography>
         <PopupMenu items={menuOptions} />
       </Box>
-      <Select
-        value={selected.mode_name}
-        className="nodrag"
-        displayEmpty
-        renderValue={
-          selected.id !== ""
-            ? undefined
-            : () => (
-                <Typography sx={{ color: "#49454F" }}>Select mode</Typography>
-              )
-        }
-        onChange={(e) => selectMode(e)}
-        sx={{
-          position: "relative",
-          width: "100%",
-          color: "#49454F",
-          textAlign: "justify",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            height: "40px",
-            alignItems: "center",
-            padding: "8px 12px",
-            borderBottom: "1px solid #CAC4D0",
-            zIndex: "-1",
-          }}
-        >
-          <Typography
-            sx={{ fontSize: "14px", fontWeight: "bold" }}
-            variant="h6"
-          >
-            Modes:
-          </Typography>
-          <Button
-            disableRipple
-            size="small"
+      <Box sx={{ height: "57px" }}>
+        {modesList.length < 1 ? (
+          <Box
             sx={{
-              borderRadius: 50,
-              color: "#49454F",
-              padding: "16px",
-              width: "24px",
-              height: "24px",
-              minWidth: "24px",
-              minHeight: "24px",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
             }}
           >
-            <AddCircleOutlineIcon fontSize="small" />
-          </Button>
-        </Box>
-        {modesList.map((item, index) => (
-          <MenuItem value={item.mode_name} key={item.mode_name + index}>
-            {item.mode_name}
-          </MenuItem>
-        ))}
-      </Select>
+            <IenaiButton
+              onClick={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+              label={"Add Mode"}
+              icon={<AddIcon fontSize="medium" />}
+            />
+          </Box>
+        ) : (
+          <Select
+            value={selected.mode_name}
+            className="nodrag"
+            displayEmpty
+            renderValue={
+              selected.id !== ""
+                ? undefined
+                : () => (
+                    <Typography sx={{ color: "#49454F" }}>
+                      Select mode
+                    </Typography>
+                  )
+            }
+            onChange={(e) => selectMode(e)}
+            sx={{
+              position: "relative",
+              width: "100%",
+              color: "#49454F",
+              textAlign: "justify",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                height: "40px",
+                alignItems: "center",
+                padding: "8px 12px",
+                borderBottom: "1px solid #CAC4D0",
+                zIndex: "-1",
+              }}
+            >
+              <>
+                <Typography
+                  sx={{ fontSize: "14px", fontWeight: "bold" }}
+                  variant="h6"
+                >
+                  Modes:
+                </Typography>
+                <Button
+                  disableRipple
+                  size="small"
+                  sx={{
+                    borderRadius: 50,
+                    color: "#49454F",
+                    padding: "16px",
+                    width: "24px",
+                    height: "24px",
+                    minWidth: "24px",
+                    minHeight: "24px",
+                  }}
+                >
+                  <AddCircleOutlineIcon fontSize="small" />
+                </Button>
+              </>
+            </Box>
+            {modesList.map((item, index) => (
+              <MenuItem value={item.mode_name} key={item.mode_name + index}>
+                {item.mode_name}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      </Box>
+
       <Handle
         type="source"
         position={Position.Right}

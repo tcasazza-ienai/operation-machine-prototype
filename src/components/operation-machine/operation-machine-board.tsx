@@ -8,7 +8,7 @@ import {
   useNodesState,
   useReactFlow,
 } from "@xyflow/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Operation,
   OperationMachine,
@@ -25,6 +25,8 @@ const OperationMachineBoard: React.FC = () => {
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { fitView } = useReactFlow();
+  const hasFitViewRun = useRef(false);
 
   const refreshNodes = (operations: Operation[]) => {
     const newNodes = mappingToNodeOperations(operations);
@@ -36,6 +38,11 @@ const OperationMachineBoard: React.FC = () => {
   useEffect(() => {
     if (nodes.length > 0) {
       setEdges(mappingToEdgesOperations(opMachine.operations) as never[]);
+    }
+
+    if (!hasFitViewRun.current) {
+      fitView();
+      hasFitViewRun.current = true;
     }
   }, [nodes]);
 
@@ -64,7 +71,6 @@ const OperationMachineBoard: React.FC = () => {
       sx={{
         border: "2px solid #ddd",
         borderRadius: "8px",
-        padding: "16px",
         height: "70vh",
         display: "flex",
         flexDirection: "column",

@@ -49,7 +49,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         <Button onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => onClickConfirm} color={confirmColor}>
+        <Button onClick={() => onClickConfirm()} color={confirmColor}>
           {confirmBottonLabel}
         </Button>
       </DialogActions>
