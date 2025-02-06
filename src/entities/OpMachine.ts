@@ -14,14 +14,26 @@ export class OperationMachine {
     this.operations.push(operation);
     return this.operations;
   }
+
+  public getOperations(): Operation360[] {
+    return this.operations;
+  }
 }
 
 export class Operation360 {
+  private readonly id: string;
   private readonly op_name: string;
   private readonly mode: Mode360;
   private readonly events: Event360[] = [];
+  private isInitial: boolean = false;
 
-  constructor(op_name: string, mode: Mode360, events: Event360[] = []) {
+  constructor(
+    id: string,
+    op_name: string,
+    mode: Mode360,
+    events: Event360[] = []
+  ) {
+    this.id = id;
     this.op_name = op_name;
     this.mode = mode;
     this.events = events;
@@ -31,9 +43,34 @@ export class Operation360 {
     this.events?.push(event);
     return this.events;
   }
+
+  public getEvents(): Event360[] {
+    return this.events;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getOpName(): string {
+    return this.op_name;
+  }
+
+  public setIsInitial(): void {
+    this.isInitial = true;
+  }
+
+  public getIsInitial(): boolean {
+    return this.isInitial;
+  }
+
+  public getOpMode(): Mode360 {
+    return this.mode;
+  }
 }
 
 export class Mode360 {
+  private name: string;
   private readonly pointing: Pointing360 = new Pointing360(
     "+x",
     Target360.ALONG_VELOCITY
@@ -42,10 +79,12 @@ export class Mode360 {
   private readonly override_geometry?: OverrideGeometry;
 
   constructor(
+    name: string,
     pointing?: Pointing360,
     systems_modes?: SystemsMode[],
     override_geometry?: OverrideGeometry
   ) {
+    this.name = name;
     if (pointing) {
       this.pointing = pointing;
     }
@@ -63,9 +102,13 @@ export class Mode360 {
     this.systems_modes.push(systemsMode);
     return this.systems_modes;
   }
+
+  public getModeName(): string {
+    return this.name;
+  }
 }
 
-enum Target360 {
+export enum Target360 {
   ALONG_VELOCITY = "AlongVelocity",
   COUNTER_VELOCITY = "CounterVelocity",
   Q_LAW = "QLaw",
@@ -191,6 +234,10 @@ export class Event360 {
     this.trigger = trigger;
     this.effect = effect;
   }
+
+  public getEffect(): Effect360 {
+    return this.effect;
+  }
 }
 
 ///////// TRIGGERS ///////////////
@@ -310,14 +357,23 @@ export const OnGroundStationVisibilityLoss_T = createCustomTrigger<{
 interface Effect360 {}
 
 export class ToOp_E implements Effect360 {
-  private readonly target_op_name: string;
+  private readonly targetOperation: Operation360;
 
-  constructor(target_op_name) {
-    this.target_op_name = target_op_name;
+  constructor(targetOperation: Operation360) {
+    this.targetOperation = targetOperation;
+  }
+
+  public getTargetOperation(): Operation360 {
+    return this.targetOperation;
   }
 }
 
-export class TerminateSimulation_E implements Effect360 {}
+export class TerminateSimulation_E implements Effect360 {
+  // private readonly id: string;
+  // constructor(id: string) {
+  //   this.id = id;
+  // }
+}
 
 export class Impulse_E implements Effect360 {
   private readonly DV_r: number;
