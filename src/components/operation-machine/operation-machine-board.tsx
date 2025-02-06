@@ -14,7 +14,6 @@ const OperationMachineBoard: React.FC = () => {
     const { fitView } = useReactFlow();
 
     const refreshNodes = (operations: Operation[]) => {
-        console.log("operations: ", operations)
         const newNodes = mappingToNodeOperations(operations);
         setTimeout(() => {
             setNodes(newNodes as never[]);
@@ -39,7 +38,7 @@ const OperationMachineBoard: React.FC = () => {
             newOperationMachine.operations.push({ id: '', op_name: '', mode: { id: '', mode_name: '', pointing: { pointer: '', target: '' }, }, events: [] });
             setOpMachine(newOperationMachine)
         }
-    })
+    }, [])
 
     const nodeTypes = {
         custom: OperationNode,
