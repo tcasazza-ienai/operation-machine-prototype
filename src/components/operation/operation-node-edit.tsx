@@ -1,12 +1,13 @@
-import { Box, Button, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import React, { useEffect, useRef, useState } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { useOpMachineStore } from '../../store/opMachineStore.ts';
 import PopupMenu from '../menu/popup-menu.tsx';
+import { Mode } from '../../types/operation-machine.types.ts';
 
-const OperationNodeEdit: React.FC<{ defaultName: string, operationName: string, setOperationName: (newName) => void, selectedMode?: string }> = ({ defaultName, operationName, selectedMode, setOperationName }) => {
-    const [selected, setSelected] = useState<string>(selectedMode ? selectedMode : "");
+const OperationNodeEdit: React.FC<{ defaultName: string, operationName: string, setOperationName: (newName) => void, selectedMode?: Mode }> = ({ defaultName, operationName, selectedMode, setOperationName }) => {
+    const [selected, setSelected] = useState<string>(selectedMode?.mode_name ? selectedMode.mode_name : "");
     const textFieldRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -47,7 +48,9 @@ const OperationNodeEdit: React.FC<{ defaultName: string, operationName: string, 
                 sx={{ position: "relative", width: "100%", color: "#49454F", textAlign: "justify" }}
                 IconComponent={() => null}
             >
-
+                <MenuItem value={selected}>
+                    {selected}
+                </MenuItem>
             </Select>
             <Handle
                 type="source"

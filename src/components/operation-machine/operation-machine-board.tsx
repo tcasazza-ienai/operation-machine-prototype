@@ -7,37 +7,39 @@ import OperationNode from '../operation/operation-node.tsx';
 import '@xyflow/react/dist/style.css';
 import { useOpMachineStore } from '../../store/opMachineStore.ts';
 const OperationMachineBoard: React.FC = () => {
-    const operationMachine = useOpMachineStore((state) => state.opMachine);
-    const setOperationMachine = useOpMachineStore((state) => state.updateOpMachine);
+    const opMachine = useOpMachineStore((state) => state.opMachine);
+    const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const { fitView } = useReactFlow();
 
     const refreshNodes = (operations: Operation[]) => {
-        const initialNodes = mappingToNodeOperations(operations);
-        setNodes(initialNodes as never[]);
+        console.log("operations: ", operations)
+        const newNodes = mappingToNodeOperations(operations);
+        setTimeout(() => {
+            setNodes(newNodes as never[]);
+        }, 100)
     }
 
     useEffect(() => {
         if (nodes.length > 0) {
-            setEdges(mappingToEdgesOperations(operationMachine.operations) as never[]);
+            setEdges(mappingToEdgesOperations(opMachine.operations) as never[]);
         }
         fitView();
     }, [nodes])
 
 
     useEffect(() => {
-        fitView();
-    }, [edges,])
+        refreshNodes(opMachine.operations)
+    }, [opMachine])
 
     useEffect(() => {
-        if (!operationMachine.operations.find((op) => op.id == "")) {
-            const newOperationMachine = operationMachine;
+        if (!opMachine.operations.find((op) => op.id == "")) {
+            const newOperationMachine = opMachine;
             newOperationMachine.operations.push({ id: '', op_name: '', mode: { id: '', mode_name: '', pointing: { pointer: '', target: '' }, }, events: [] });
-            setOperationMachine(newOperationMachine)
+            setOpMachine(newOperationMachine)
         }
-        refreshNodes(operationMachine.operations)
-    }, [operationMachine])
+    })
 
     const nodeTypes = {
         custom: OperationNode,
@@ -47,6 +49,8 @@ const OperationMachineBoard: React.FC = () => {
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
                 nodeTypes={nodeTypes}
                 zoomOnPinch={false}
                 style={{ width: '100%' }}

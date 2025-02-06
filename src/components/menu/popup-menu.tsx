@@ -2,11 +2,11 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import React from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-interface PopupMenuProps {
-    items: { label: string, onClick: () => void }[]
+export interface PopupMenuProp {
+    label: string, action: () => void
 }
 
-const PopupMenu: React.FC<PopupMenuProps> = ({ items }) => {
+const PopupMenu: React.FC<{ items: PopupMenuProp[] }> = ({ items }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const open = Boolean(anchorEl);
@@ -16,6 +16,11 @@ const PopupMenu: React.FC<PopupMenuProps> = ({ items }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const clickItem = (item) => {
+
+        handleClose();
+    }
     return (
         <div>
             <Button disableRipple size="small" onClick={handleClick} sx={{
@@ -43,10 +48,10 @@ const PopupMenu: React.FC<PopupMenuProps> = ({ items }) => {
                 }}
             >
                 {items.map((item, index) => (
-                    <MenuItem key={item.label + index} onClick={item.onClick}>{item.label}</MenuItem>
+                    <MenuItem key={item.label + index} onClick={() => item.action()}>{item.label}</MenuItem>
                 ))}
             </Menu>
-        </div>
+        </div >
     );
 };
 

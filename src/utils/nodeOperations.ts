@@ -12,9 +12,9 @@ export const mappingToNodeOperations = (operations: Operation[]) => {
         const col = index % columns;
 
         return {
-            id: operation.id,
+            id: "node-" + operation.id,
             type: 'custom',
-            data: { label: operation.op_name, mode: operation.mode.mode_name },
+            data: operation,
             position: {
                 x: col * nodeSpacingX,
                 y: row * nodeSpacingY
@@ -31,8 +31,8 @@ export const mappingToEdgesOperations = (operations: Operation[]) => {
                 const target = operations.find((op) => op.op_name === event.effect.split('ToOp')[1].replace('(', '').replace(')', ''))?.id
                 edges.push({
                     id: operation.id + '-' + index + '-' + target,
-                    source: operation.id,
-                    target: target ? target : '',
+                    source: "node-" + operation.id,
+                    target: "node-" + target ? "node-" + target : '',
                     animated: false,
                     markerEnd: {
                         type: MarkerType.ArrowClosed,

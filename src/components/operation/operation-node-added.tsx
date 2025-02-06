@@ -2,14 +2,17 @@ import { Box, Button, MenuItem, Select, Typography } from '@mui/material';
 import { Handle, Position } from '@xyflow/react';
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import PopupMenu from '../menu/popup-menu.tsx';
+import PopupMenu, { PopupMenuProp } from '../menu/popup-menu.tsx';
+import { Operation } from '../../types/operation-machine.types.ts';
 
-const OperationNodeAdded: React.FC<{ data }> = ({ data }) => {
+const OperationNodeAdded: React.FC<{ data: Operation, options: PopupMenuProp[] }> = ({ data, options }) => {
     const [selected, setSelected] = useState<string>("");
     const [modesList, setModeList] = useState<string[]>(["QLaw", "Counter Velocity", "Pointing Nadir", "Along Velocity"])
+    const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(options ? options : []);
+
     useEffect(() => {
         if (data?.mode) {
-            setSelected(data?.mode as string);
+            setSelected(data?.mode.mode_name as string);
         }
     }, [data.mode]);
     return (
@@ -28,8 +31,8 @@ const OperationNodeAdded: React.FC<{ data }> = ({ data }) => {
             }}
         >
             <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <Typography sx={{ fontSize: "14px", fontWeight: "bold" }} variant="h6">{data.label as string} </Typography>
-                <PopupMenu items={[]} />
+                <Typography sx={{ fontSize: "14px", fontWeight: "bold" }} variant="h6">{data.op_name as string} </Typography>
+                <PopupMenu items={menuOptions} />
             </Box>
             <Select
                 value={selected}
