@@ -20,23 +20,11 @@ const PopupMenu: React.FC<{ items: PopupMenuProp[] }> = ({ items }) => {
 
   const clickItem = (item) => {
     handleClose();
+    item.action();
   };
   return (
     <div>
-      <Button
-        disableRipple
-        size="small"
-        onClick={handleClick}
-        sx={{
-          borderRadius: 50,
-          color: "#49454F",
-          padding: "16px",
-          width: "24px",
-          height: "24px",
-          minWidth: "24px",
-          minHeight: "24px",
-        }}
-      >
+      <Button disableRipple size="small" onClick={handleClick} sx={buttonStyle}>
         <MoreVertIcon fontSize="small" />
       </Button>
       <Menu
@@ -56,7 +44,7 @@ const PopupMenu: React.FC<{ items: PopupMenuProp[] }> = ({ items }) => {
         }}
       >
         {items.map((item, index) => (
-          <MenuItem key={item.label + index} onClick={() => item.action()}>
+          <MenuItem key={item.label + index} onClick={() => clickItem(item)}>
             {item.label}
           </MenuItem>
         ))}
@@ -66,3 +54,13 @@ const PopupMenu: React.FC<{ items: PopupMenuProp[] }> = ({ items }) => {
 };
 
 export default PopupMenu;
+
+const buttonStyle = {
+  borderRadius: 50,
+  color: "#49454F",
+  padding: "16px",
+  width: "24px",
+  height: "24px",
+  minWidth: "24px",
+  minHeight: "24px",
+};

@@ -13,12 +13,7 @@ const IenaiButton: React.FC<IenaiButtonProps> = ({ onClick, label, icon }) => {
       onClick={onClick}
       color={"primary"}
       variant={"contained"}
-      sx={{
-        borderRadius: "100px",
-        backgroundColor: "#5641E2",
-        textTransform: "none",
-        height: "40px",
-      }}
+      sx={buttonStyle}
       startIcon={icon ? icon : null}
     >
       {label}
@@ -27,3 +22,10 @@ const IenaiButton: React.FC<IenaiButtonProps> = ({ onClick, label, icon }) => {
 };
 
 export default IenaiButton;
+
+const buttonStyle = {
+  borderRadius: "100px",
+  backgroundColor: "#5641E2",
+  textTransform: "none",
+  height: "40px",
+};
