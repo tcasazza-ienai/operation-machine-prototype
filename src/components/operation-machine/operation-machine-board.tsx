@@ -25,7 +25,6 @@ const OperationMachineBoard: React.FC = () => {
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { fitView } = useReactFlow();
 
   const refreshNodes = (operations: Operation[]) => {
     const newNodes = mappingToNodeOperations(operations);
@@ -38,7 +37,6 @@ const OperationMachineBoard: React.FC = () => {
     if (nodes.length > 0) {
       setEdges(mappingToEdgesOperations(opMachine.operations) as never[]);
     }
-    fitView();
   }, [nodes]);
 
   useEffect(() => {

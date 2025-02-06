@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "mode_name": "QLaw",
+    "pointing": {
+      "pointer": "+z",
+      "target": "AlongVelocity"
+    },
+    "system_mode": []
+  },
+  {
+    "id": "2",
+    "mode_name": "Counter Velocity",
+    "pointing": {
+      "pointer": "+x",
+      "target": "CounterVelocity"
+    },
+    "system_mode": []
+  },
+  {
+    "id": "3",
+    "mode_name": "Pointing Nadir",
+    "pointing": {
+      "pointer": "-z",
+      "target": "Nadir"
+    },
+    "system_mode": []
+  },
+  {
+    "id": "4",
+    "mode_name": "Along Velocity",
+    "pointing": {
+      "pointer": "+y",
+      "target": "AlongVelocity"
+    },
+    "system_mode": []
+  }
+]

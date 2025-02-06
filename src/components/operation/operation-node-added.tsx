@@ -1,30 +1,34 @@
-import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import { Handle, Position } from "@xyflow/react";
 import React, { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PopupMenu, { PopupMenuProp } from "../menu/popup-menu.tsx";
-import { Operation } from "../../types/operation-machine.types.ts";
+import modes from "../../data/modes/modes1.json";
+import { Mode, Operation } from "../../types/operation-machine.types.ts";
 
 const OperationNodeAdded: React.FC<{
   data: Operation;
   options: PopupMenuProp[];
-}> = ({ data, options }) => {
-  const [selected, setSelected] = useState<string>("");
-  const [modesList, setModeList] = useState<string[]>([
-    "QLaw",
-    "Counter Velocity",
-    "Pointing Nadir",
-    "Along Velocity",
-  ]);
+  selectOnChange: (mode: Mode) => void;
+}> = ({ data, options, selectOnChange }) => {
+  const [selected, setSelected] = useState<Mode>(data?.mode);
+  const [modesList, setModeList] = useState<Mode[]>(modes);
   const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(
     options ? options : []
   );
 
-  useEffect(() => {
-    if (data?.mode) {
-      setSelected(data?.mode.mode_name as string);
-    }
-  }, [data.mode]);
+  const selectMode = (e: SelectChangeEvent<string>) => {
+    const mode = modesList.find((mode) => mode.mode_name === e.target.value);
+    setSelected(mode || data.mode);
+    selectOnChange(mode || data.mode);
+  };
   return (
     <Box
       className="nodrag"
@@ -53,17 +57,17 @@ const OperationNodeAdded: React.FC<{
         <PopupMenu items={menuOptions} />
       </Box>
       <Select
-        value={selected}
+        value={selected.mode_name}
         className="nodrag"
         displayEmpty
         renderValue={
-          selected !== ""
+          selected.id !== ""
             ? undefined
             : () => (
                 <Typography sx={{ color: "#49454F" }}>Select mode</Typography>
               )
         }
-        onChange={(e) => setSelected(e.target.value)}
+        onChange={(e) => selectMode(e)}
         sx={{
           position: "relative",
           width: "100%",
@@ -105,8 +109,8 @@ const OperationNodeAdded: React.FC<{
           </Button>
         </Box>
         {modesList.map((item, index) => (
-          <MenuItem value={item} key={item + index}>
-            {item}
+          <MenuItem value={item.mode_name} key={item.mode_name + index}>
+            {item.mode_name}
           </MenuItem>
         ))}
       </Select>

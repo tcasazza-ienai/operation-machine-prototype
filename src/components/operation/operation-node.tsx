@@ -87,6 +87,12 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
     setOpMachine(newOpMachine);
   };
 
+  const onChangeMode = (mode: Mode) => {
+    let newOpMachine = { ...opMachine };
+    newOpMachine.operations.filter((op) => op.id === data.id)[0].mode = mode;
+    setOpMachine(newOpMachine);
+  };
+
   return (
     <>
       {editMode.active ? (
@@ -104,6 +110,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
         </Box>
       ) : dataLabel.length > 0 ? (
         <OperationNodeAdded
+          selectOnChange={onChangeMode}
           data={data as Operation}
           options={operationOptions}
         />
