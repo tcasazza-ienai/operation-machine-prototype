@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Select, MenuItem } from "@mui/material";
+import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import Spacecraft1 from "../../data/spacecraft/spacecraft-1.json";
 import Spacecraft2 from "../../data/spacecraft/spacecraft-2.json";
 import { Spacecraft } from "../../types/spacecraft.types";
+import BasicDialog from "../modals/basic-dialog.tsx";
+import { useSpacecraftStore } from "../../store/spacecraftStore.ts";
 
 const SpacecraftSelect: React.FC = () => {
   const emptySpacecraft: Spacecraft = {
@@ -26,33 +28,55 @@ const SpacecraftSelect: React.FC = () => {
     Spacecraft1,
     Spacecraft2,
   ]);
-  const [spacecraftSelected, setSpacecraftSelected] =
-    useState<Spacecraft>(Spacecraft1);
+  const spacecraftSelected = useSpacecraftStore((state) => state.spacecraft);
+  const setSpacecraftSelected = useSpacecraftStore(
+    (state) => state.updateSpacecraft
+  );
+  const [selected, setSelected] = useState<string>("");
+  const [changeSelectDialog, setChangeSelectDialog] = useState<boolean>(false);
+
+  const onChangeSelect = (e: SelectChangeEvent<string>) => {
+    setSelected(e.target.value as string);
+    setChangeSelectDialog(true);
+  };
+
+  const confirmChangeSelect = () => {
+    setSpacecraftSelected(
+      spacecraftList.find((spacecraft) => spacecraft.name === selected) ||
+        emptySpacecraft
+    );
+    setSelected("");
+    setChangeSelectDialog(false);
+  };
 
   return (
-    <Select
-      labelId="Spacecraft-label"
-      id="Spacecraft-select"
-      value={spacecraftSelected.name}
-      onChange={(e) =>
-        setSpacecraftSelected(
-          spacecraftList.find(
-            (spacecraft) => spacecraft.name === e.target.value
-          ) || emptySpacecraft
-        )
-      }
-      sx={selectStyle}
-    >
-      {spacecraftList.map((spacecraft, index) => (
-        <MenuItem
-          key={spacecraft.name + index}
-          value={spacecraft.name}
-          style={{ display: "flex", justifyContent: "start" }}
-        >
-          {spacecraft.name}
-        </MenuItem>
-      ))}
-    </Select>
+    <>
+      <Select
+        labelId="Spacecraft-label"
+        id="Spacecraft-select"
+        value={spacecraftSelected.name}
+        onChange={(e) => onChangeSelect(e)}
+        sx={selectStyle}
+      >
+        {spacecraftList.map((spacecraft, index) => (
+          <MenuItem
+            key={spacecraft.name + index}
+            value={spacecraft.name}
+            style={{ display: "flex", justifyContent: "start" }}
+          >
+            {spacecraft.name}
+          </MenuItem>
+        ))}
+      </Select>
+      <BasicDialog
+        onClose={() => setChangeSelectDialog(false)}
+        onConfirm={() => confirmChangeSelect()}
+        open={changeSelectDialog}
+        confirmBottonLabel="Accept"
+        title="Op Machine will be affected"
+        description="By selecting that spacecraft your oP Machine will be affected, some of the modes selected are not compatible with the spacecraft characteristics"
+      />
+    </>
   );
 };
 
