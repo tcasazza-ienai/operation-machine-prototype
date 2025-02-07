@@ -305,7 +305,9 @@ function createCustomTrigger<T = void>(className: string) {
     }
 
     public getTriggerName() {
-      return this.className;
+      const cleanedClassName = this.className.replace('_T', '');
+      const splitNameTokens = cleanedClassName.split(/(?=[A-Z])/);
+      return splitNameTokens.join(' ').trim()
     }
   };
 

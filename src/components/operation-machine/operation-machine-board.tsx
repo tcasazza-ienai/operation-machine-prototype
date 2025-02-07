@@ -29,6 +29,7 @@ import {
 } from "../../entities/OpMachine.ts";
 
 import dagre from "@dagrejs/dagre";
+import CustomEdge from "../edges/CustomEdge.tsx";
 
 const nodeWidth = 172;
 const nodeHeight = 36;
@@ -120,18 +121,60 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
       // Process events and create edges
       operation.getEvents().forEach((event, index) => {
         const effect = event.getEffect();
+        let isBidirectional = false;
 
         if (effect instanceof ToOp_E) {
           const targetOp = effect.getTargetOperation();
-          newEdges.push({
-            id: `${operation.getId()}-${targetOp.getId()}-${index}`,
+
+          //Check if target operation points to this operation
+          const eventsFromtTargetOperation = targetOp.getEvents();
+          if (eventsFromtTargetOperation.some(ev => {
+            const t_ef = ev.getEffect();
+            if (t_ef instanceof ToOp_E) {
+              const t_op = t_ef.getTargetOperation();
+              return t_op.getId() === operation.getId();
+            }
+          })) {
+            isBidirectional = true;
+          }
+
+          let newEdge: Edge = {
+            id: `${operation.getId()}-${targetOp.getId()}`,
             source: operation.getId(),
             target: targetOp.getId(),
             label: event.getTrigger().getTriggerName(),
-            type: "smoothstep",
+            type: "start-end",
             markerEnd: { type: MarkerType.ArrowClosed },
             className: "text-sm",
-          });
+            animated: true
+          }
+
+          if (isBidirectional) {
+            let data = {}
+            //If it is bidirectional then we can check if there is already an edge with data labels
+          const oppositeEdge: Edge | undefined = edges.find((edge: Edge) => edge.id === `${targetOp.getId()}-${operation.getId()}`)
+
+          if (!oppositeEdge) {
+            //no edge yet, assign data label as startLabel
+            data = {
+              startLabel: event.getTrigger().getTriggerName()
+            }
+          } else {
+            data = {
+              endLabel: event.getTrigger().getTriggerName()
+            }
+          }
+          newEdge = {
+            ...newEdge,
+            data: data
+          }
+          }
+          
+          // //Check if target operation already has data label
+          // const targetEdge = edges.find((edge: Edge) => edge.id ===  `${targetOp.getId()}-${operation.getId()}`)
+
+
+          newEdges.push(newEdge);
 
           // Recursively process target operation
           processOperation(targetOp);
@@ -150,10 +193,11 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
             id: `${operation.getId()}-terminate-${index}`,
             source: operation.getId(),
             target: "terminate",
-            label: event.getTrigger().toString(),
+            label: event.getTrigger().getTriggerName(),
             type: "smoothstep",
             markerEnd: { type: MarkerType.ArrowClosed },
             className: "text-sm",
+            animated: true
           });
         }
       });
@@ -214,10 +258,14 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
   //   useEffect(() => {
   //     refreshNodes(operationMachine.operations);
   //   }, [operationMachine]);
+  console.log('Edges: ', edges)
 
   const nodeTypes = {
     custom: OperationNode,
   };
+  const edgeTypes = {
+    'start-end': CustomEdge
+  }
   return (
     <Box
       sx={{
@@ -234,6 +282,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         panOnDrag={false}
