@@ -14,6 +14,7 @@ import modes from "../../data/modes/modes1.json";
 import { Mode, Operation } from "../../types/operation-machine.types.ts";
 import IenaiButton from "../common/ienai-button.tsx";
 import AddIcon from "@mui/icons-material/Add";
+import ModeSelector from "../modes/modeSelector.tsx";
 
 const OperationNodeAdded: React.FC<{
   data: Operation;
@@ -21,13 +22,14 @@ const OperationNodeAdded: React.FC<{
   selectOnChange: (mode: Mode) => void;
 }> = ({ data, options, selectOnChange }) => {
   const [selected, setSelected] = useState<Mode>(data?.mode);
-  const [modesList, setModeList] = useState<Mode[]>(modes);
+  //TO DO: Filter modes by system_mode of the current spacecraft selected
+  const [modeList, setModeList] = useState<Mode[]>(modes);
   const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(
     options ? options : []
   );
 
   const selectMode = (e: SelectChangeEvent<string>) => {
-    const mode = modesList.find((mode) => mode.mode_name === e.target.value);
+    const mode = modeList.find((mode) => mode.mode_name === e.target.value);
     setSelected(mode || data.mode);
     selectOnChange(mode || data.mode);
   };
@@ -40,7 +42,7 @@ const OperationNodeAdded: React.FC<{
         <PopupMenu items={menuOptions} />
       </Box>
       <Box sx={{ height: "57px" }}>
-        {modesList.length < 1 ? (
+        {modeList.length < 1 ? (
           <Box sx={addButtonContainerStyle}>
             <IenaiButton
               onClick={function (): void {
@@ -51,41 +53,11 @@ const OperationNodeAdded: React.FC<{
             />
           </Box>
         ) : (
-          <Select
-            value={selected.mode_name}
-            className="nodrag"
-            displayEmpty
-            renderValue={
-              selected.id !== ""
-                ? undefined
-                : () => (
-                    <Typography sx={{ color: "#49454F" }}>
-                      Select mode
-                    </Typography>
-                  )
-            }
-            onChange={(e) => selectMode(e)}
-            sx={selectStyle}
-          >
-            <Box sx={addModeContainerStyle}>
-              <>
-                <Typography
-                  sx={{ fontSize: "14px", fontWeight: "bold" }}
-                  variant="h6"
-                >
-                  Modes:
-                </Typography>
-                <Button disableRipple size="small" sx={addModeButtonStyle}>
-                  <AddCircleOutlineIcon fontSize="small" />
-                </Button>
-              </>
-            </Box>
-            {modesList.map((item, index) => (
-              <MenuItem value={item.mode_name} key={item.mode_name + index}>
-                {item.mode_name}
-              </MenuItem>
-            ))}
-          </Select>
+          <ModeSelector
+            modeList={modeList}
+            selectMode={selectMode}
+            selected={selected}
+          />
         )}
       </Box>
 
@@ -132,33 +104,6 @@ const addButtonContainerStyle = {
   display: "flex",
   justifyContent: "flex-start",
   alignItems: "center",
-};
-
-const selectStyle = {
-  position: "relative",
-  width: "100%",
-  color: "#49454F",
-  textAlign: "justify",
-};
-
-const addModeContainerStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  height: "40px",
-  alignItems: "center",
-  padding: "8px 12px",
-  borderBottom: "1px solid #CAC4D0",
-  zIndex: "-1",
-};
-
-const addModeButtonStyle = {
-  borderRadius: 50,
-  color: "#49454F",
-  padding: "16px",
-  width: "24px",
-  height: "24px",
-  minWidth: "24px",
-  minHeight: "24px",
 };
 
 const addTriggerContainerStyle = {

@@ -29,6 +29,14 @@ const PopupMenu: React.FC<{ items: PopupMenuProp[] }> = ({ items }) => {
       </Button>
       <Menu
         className="nodrag"
+        slotProps={{
+          paper: {
+            sx: {
+              background: "var(--Surface-Container, #F3EDF7)",
+              paddingTop: "0px",
+            },
+          },
+        }}
         id="demo-positioned-menu"
         aria-labelledby="demo-positioned-button"
         anchorEl={anchorEl}

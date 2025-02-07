@@ -20,6 +20,7 @@ import {
 import OperationNode from "../operation/operation-node.tsx";
 import "@xyflow/react/dist/style.css";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
+
 const OperationMachineBoard: React.FC = () => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
@@ -48,6 +49,8 @@ const OperationMachineBoard: React.FC = () => {
   }, [nodes]);
 
   useEffect(() => {
+    //TO DO: Ask about the functionality of what to do when the spacecraft is changed and
+    // the operation has a mode with a different system_mode than the selected spacecraft
     refreshNodes(opMachine.operations);
   }, [opMachine]);
 
