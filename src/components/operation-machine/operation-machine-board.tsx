@@ -41,10 +41,11 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
   // Configure graph settings
   dagreGraph.setGraph({
     rankdir: direction,
-    ranker: "network-simplex",
-    nodesep: 80,
-    ranksep: 100,
+    ranker: "longest-path",
+    nodesep: 280,
+    ranksep: 280,
     edgesep: 50,
+    width: 280
   });
 
   // Add nodes to dagre graph
@@ -77,9 +78,11 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
 
 type OperationNode = {
   id: string;
+  type: 'custom';
   data: {
     label: string;
     isInitial?: boolean;
+    isBiDirectional?: boolean;
   };
   position: { x: number; y: number };
   className?: string;
@@ -108,6 +111,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
       // Add node for current operation
       newNodes.push({
         id: operation.getId(),
+        type: 'custom',
         data: {
           label: operation.getOpName(),
           isInitial: operation.getIsInitial(),
@@ -150,6 +154,16 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
           }
 
           if (isBidirectional) {
+            //Update node
+            const biDirectionalNode = newNodes.find(node => node.id === operation.getId())
+
+            if (biDirectionalNode) {
+              biDirectionalNode['data'] = {
+                isBiDirectional: true,
+                ...biDirectionalNode.data
+              }
+            }
+
             let data = {}
             //If it is bidirectional then we can check if there is already an edge with data labels
           const oppositeEdge: Edge | undefined = edges.find((edge: Edge) => edge.id === `${targetOp.getId()}-${operation.getId()}`)
@@ -183,6 +197,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
             newNodes.push({
               id: "terminate",
               data: { label: "End Simulation" },
+              type: 'custom',
               position: { x: 0, y: 0 },
               className: "px-4 py-2 rounded border border-red-500",
             });
@@ -259,6 +274,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
   //     refreshNodes(operationMachine.operations);
   //   }, [operationMachine]);
   console.log('Edges: ', edges)
+  console.log('Nodes: ', nodes)
 
   const nodeTypes = {
     custom: OperationNode,

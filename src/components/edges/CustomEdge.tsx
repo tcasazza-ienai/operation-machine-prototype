@@ -38,8 +38,11 @@ const CustomEdge: FC<
   targetY,
   sourcePosition,
   targetPosition,
-  data
+  data,
+  source,
+  target
 }) => {
+  
   const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
@@ -48,7 +51,27 @@ const CustomEdge: FC<
     targetY,
     targetPosition,
   });
+  const isBidirectional = source === target;
 
+  // Calculate the midpoint between source and target
+  const midX = (sourceX + targetX) / 2;
+  const midY = (sourceY + targetY) / 2;
+
+  // Calculate the distance between nodes
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  // Calculate control point offset (adjust this value to control curve size)
+  const offset = distance * 0.4;
+
+  // Calculate the perpendicular offset for the control point
+  const perpX = -dy / distance * offset;
+  const perpY = dx / distance * offset;
+
+  // Create a quadratic curve path
+  const path = `M ${sourceX} ${sourceY} 
+                Q ${midX + perpX} ${midY + perpY} ${targetX} ${targetY}`;
   // const [edgePath] = getSmoothStepPath({
   //   sourceX,
   //   sourceY,
@@ -62,7 +85,7 @@ const CustomEdge: FC<
  
   return (
     <>
-      <BaseEdge id={id} path={edgePath}/>
+      <BaseEdge id={id} path={path}/>
       <EdgeLabelRenderer>
         {data.startLabel && (
           <EdgeLabel

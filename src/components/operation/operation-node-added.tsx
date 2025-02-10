@@ -54,7 +54,7 @@ const OperationNodeAdded: React.FC<{ data }> = ({ data }) => {
             </Select>
             <Handle
                 type="source"
-                position={Position.Right}
+                position={Position.Bottom}
                 style={{ visibility: "hidden" }}
             />
             <Handle
