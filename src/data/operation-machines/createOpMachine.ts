@@ -1,4 +1,5 @@
 import {
+  AtAscendingNode_T,
   AtEpoch_T,
   AtReservoirLevel_T,
   Event360,
@@ -125,6 +126,65 @@ export const createOpsMachine_Tutorial5 = () => {
   nominalOp.addEventToOperation(eventEpoch);
 
   thrustingOp.addEventToOperation(eventThr);
+
+  const opsMachine = new OperationMachine([nominalOp, thrustingOp]);
+
+  return opsMachine;
+};
+
+export const createOpsMachine_Tutorial5_2 = () => {
+  //Propulsion System
+  const ps = new SimpleElectricPropulsion360(
+    "ElectricPropulsion",
+    0.45,
+    1250,
+    0.8,
+    0.1
+  );
+
+  //Mode
+  const nominalMode = new Mode360("NominalMode", undefined, [
+    new PM_Off("Off"),
+  ]);
+  const thrustingMode = new Mode360("ThrustingMode", undefined, [
+    new PM_Thrust("Thrust"),
+  ]);
+
+  const nominalId = getRandomId();
+  const thrustId = getRandomId();
+
+  //Op
+  const nominalOp = new Operation360(nominalId, "NOM", nominalMode);
+  nominalOp.setIsInitial();
+  const thrustingOp = new Operation360(thrustId, "THR", thrustingMode);
+
+  //Events
+  const eventNom = new Event360(
+    new OnSemiMajorAxis_T({ direction: "<", sma: 6780 }),
+    new ToOp_E(thrustingOp)
+  );
+
+  const eventThr = new Event360(
+    //new OnSemiMajorAxis_T({ direction: ">", sma: 6840 }),
+    new OnBatteryLevel_T({ direction: ">", capacity: 4 }),
+    new ToOp_E(nominalOp)
+  );
+
+  const eventEpoch = new Event360(
+    new AtEpoch_T({ epoch: "2015-02-01T00:00:00" }),
+    new TerminateSimulation_E()
+  );
+
+  const endEvent = new Event360(
+    new AtAscendingNode_T(),
+    new TerminateSimulation_E()
+  );
+
+  nominalOp.addEventToOperation(eventNom);
+  nominalOp.addEventToOperation(eventEpoch);
+
+  thrustingOp.addEventToOperation(eventThr);
+  thrustingOp.addEventToOperation(endEvent);
 
   const opsMachine = new OperationMachine([nominalOp, thrustingOp]);
 
