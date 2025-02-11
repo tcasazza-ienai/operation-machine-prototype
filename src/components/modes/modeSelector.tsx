@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Select,
   MenuItem,
@@ -12,57 +12,84 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Mode } from "../../types/operation-machine.types";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import ModeModal from "../modals/mode-modal.tsx";
 
 interface ModeSelectorProps {
   selected: Mode;
   selectMode: (event: SelectChangeEvent<string>) => void;
-  modeList: Mode[];
+  modesList: Mode[];
 }
 const ModeSelector: React.FC<ModeSelectorProps> = ({
   selected,
-  modeList: modesList,
+  modesList,
   selectMode,
 }) => {
+  const [modeModal, setModeModal] = useState<boolean>(false);
+  const [editedMode, setEditedMode] = useState<Mode>();
+
   return (
-    <Select
-      value={selected.mode_name}
-      className="nodrag"
-      displayEmpty
-      renderValue={
-        selected.id !== ""
-          ? undefined
-          : () => <Typography sx={{ color: "#49454F" }}>Select mode</Typography>
-      }
-      onChange={(e) => selectMode(e)}
-      sx={selectStyle}
-    >
-      <Box sx={addModeContainerStyle}>
-        <>
-          <Typography
-            sx={{ fontSize: "14px", fontWeight: "bold" }}
-            variant="h6"
-          >
-            Modes:
-          </Typography>
-          <Button disableRipple size="small" sx={addModeButtonStyle}>
-            <AddCircleOutlineIcon fontSize="small" />
-          </Button>
-        </>
-      </Box>
-      {modesList.map((item, index) => (
-        <MenuItem value={item.mode_name} sx={menuItemDesign} key={index}>
-          {item.mode_name}
-          <Box className="icons" sx={{ display: "none", gap: "8px" }}>
-            <Tooltip title="Edit">
-              <ModeEditOutlinedIcon fontSize="small" />
-            </Tooltip>
-            <Tooltip title="Duplicate">
-              <ContentCopyRoundedIcon fontSize="small" />
-            </Tooltip>
-          </Box>
-        </MenuItem>
-      ))}
-    </Select>
+    <Box>
+      <Select
+        value={selected.mode_name}
+        className="nodrag"
+        displayEmpty
+        renderValue={
+          selected.id !== ""
+            ? undefined
+            : () => (
+                <Typography sx={{ color: "#49454F" }}>Select mode</Typography>
+              )
+        }
+        onChange={(e) => selectMode(e)}
+        sx={selectStyle}
+      >
+        <Box sx={addModeContainerStyle}>
+          <>
+            <Typography
+              sx={{ fontSize: "14px", fontWeight: "bold" }}
+              variant="h6"
+            >
+              Modes:
+            </Typography>
+            <Button
+              disableRipple
+              size="small"
+              sx={addModeButtonStyle}
+              onClick={() => setModeModal(true)}
+            >
+              <AddCircleOutlineIcon fontSize="small" />
+            </Button>
+          </>
+        </Box>
+        {modesList.map((item, index) => (
+          <MenuItem value={item.mode_name} sx={menuItemDesign} key={index}>
+            {item.mode_name}
+            <Box className="icons" sx={{ display: "none", gap: "8px" }}>
+              <Tooltip title="Edit">
+                <ModeEditOutlinedIcon
+                  onClick={() => {
+                    setModeModal(true);
+                    setEditedMode(item);
+                  }}
+                  fontSize="small"
+                />
+              </Tooltip>
+              <Tooltip title="Duplicate">
+                <ContentCopyRoundedIcon fontSize="small" />
+              </Tooltip>
+            </Box>
+          </MenuItem>
+        ))}
+      </Select>
+      <ModeModal
+        onClose={() => {
+          setModeModal(false);
+          setEditedMode(undefined);
+        }}
+        open={modeModal}
+        mode={editedMode}
+      />
+    </Box>
   );
 };
 

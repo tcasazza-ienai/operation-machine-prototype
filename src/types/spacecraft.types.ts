@@ -7,7 +7,7 @@ import { System } from "./systems.types";
 
 export type Spacecraft = {
   name: string;
-  sc_systems: SpacecraftSystem;
+  sc_systems: SpacecraftSystem[];
   override_dry_mass: number;
   area: number;
   CD: number;

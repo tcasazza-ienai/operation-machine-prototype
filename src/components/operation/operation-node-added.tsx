@@ -10,26 +10,30 @@ import { Handle, Position } from "@xyflow/react";
 import React, { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PopupMenu, { PopupMenuProp } from "../menu/popup-menu.tsx";
-import modes from "../../data/modes/modes1.json";
 import { Mode, Operation } from "../../types/operation-machine.types.ts";
 import IenaiButton from "../common/ienai-button.tsx";
 import AddIcon from "@mui/icons-material/Add";
 import ModeSelector from "../modes/modeSelector.tsx";
+import ModeModal from "../modals/mode-modal.tsx";
+import { useModesStore } from "../../store/modesStore.ts";
 
 const OperationNodeAdded: React.FC<{
   data: Operation;
   options: PopupMenuProp[];
   selectOnChange: (mode: Mode) => void;
 }> = ({ data, options, selectOnChange }) => {
+  const modes = useModesStore((state) => state.modes);
+  const setModes = useModesStore((state) => state.updateModes);
   const [selected, setSelected] = useState<Mode>(data?.mode);
   //TO DO: Filter modes by system_mode of the current spacecraft selected
-  const [modeList, setModeList] = useState<Mode[]>(modes);
+  const [modeList, setModeList] = useState<Mode[]>([]);
   const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(
     options ? options : []
   );
+  const [modeModal, setModeModal] = useState<boolean>(false);
 
   const selectMode = (e: SelectChangeEvent<string>) => {
-    const mode = modeList.find((mode) => mode.mode_name === e.target.value);
+    const mode = modes.find((mode) => mode.mode_name === e.target.value);
     setSelected(mode || data.mode);
     selectOnChange(mode || data.mode);
   };
@@ -42,19 +46,17 @@ const OperationNodeAdded: React.FC<{
         <PopupMenu items={menuOptions} />
       </Box>
       <Box sx={{ height: "57px" }}>
-        {modeList.length < 1 ? (
+        {modes.length < 1 ? (
           <Box sx={addButtonContainerStyle}>
             <IenaiButton
-              onClick={function (): void {
-                throw new Error("Function not implemented.");
-              }}
+              onClick={() => setModeModal(true)}
               label={"Add Mode"}
               icon={<AddIcon fontSize="medium" />}
             />
           </Box>
         ) : (
           <ModeSelector
-            modeList={modeList}
+            modesList={modes}
             selectMode={selectMode}
             selected={selected}
           />
@@ -74,6 +76,7 @@ const OperationNodeAdded: React.FC<{
       <Box sx={addTriggerContainerStyle}>
         <AddCircleOutlineIcon sx={addTriggerButtonStyle} />
       </Box>
+      <ModeModal onClose={() => setModeModal(false)} open={modeModal} />
     </Box>
   );
 };

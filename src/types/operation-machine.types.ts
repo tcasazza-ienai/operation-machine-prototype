@@ -1,5 +1,5 @@
 import { Propulsion } from "./propulsion.types";
-import { SpacecraftSystem } from "./spacecraft.types";
+import { Spacecraft, SpacecraftSystem } from "./spacecraft.types";
 
 export type OperationMachine = {
   id: string;
@@ -43,13 +43,13 @@ type Pointing = {
   target: string | NormalTargets;
 };
 
-type SphereGeometry = {
+export type SphereGeometry = {
   area: number;
   CD: number;
   CR: number;
 };
 
-enum NormalTargets {
+export enum NormalTargets {
   av = "AlongVelocity",
   cv = "CounterVelocity",
   n = "Nadir",

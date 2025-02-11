@@ -1,13 +1,19 @@
 import React from "react";
-import Button from "@mui/material/Button";
+import Button, { ButtonProps } from "@mui/material/Button";
 
 interface IenaiButtonProps {
   onClick: () => void;
   label: string;
   icon?: React.ReactNode;
+  props?: ButtonProps;
 }
 
-const IenaiButton: React.FC<IenaiButtonProps> = ({ onClick, label, icon }) => {
+const IenaiButton: React.FC<IenaiButtonProps> = ({
+  onClick,
+  label,
+  icon,
+  props,
+}) => {
   return (
     <Button
       onClick={onClick}
@@ -15,6 +21,7 @@ const IenaiButton: React.FC<IenaiButtonProps> = ({ onClick, label, icon }) => {
       variant={"contained"}
       sx={buttonStyle}
       startIcon={icon ? icon : null}
+      {...props}
     >
       {label}
     </Button>
