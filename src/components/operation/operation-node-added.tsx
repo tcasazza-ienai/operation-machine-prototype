@@ -5,7 +5,6 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PopupMenu from "../menu/popup-menu.tsx";
 
 const OperationNodeAdded: React.FC<{ data }> = ({ data }) => {
-  console.log("DAT ====> ", data);
   const { isBiDirectional, dataFlow, hasEndNode, isEndNode } = data;
   const [selected, setSelected] = useState<string>("");
   const [modesList, setModeList] = useState<string[]>([

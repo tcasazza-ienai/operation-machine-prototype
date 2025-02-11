@@ -1,19 +1,19 @@
-import { Propulsion360 } from "./Propulsion";
-import { SpaceCraftSystem360 } from "./SpaceCraftSystem";
-import { System360 } from "./System";
+import { Propulsion360 } from "./Propulsion.ts";
+import { SpaceCraftSystem360 } from "./SpaceCraftSystem.ts";
+import { System360 } from "./System.ts";
 
 export class Spacecraft360 {
   private readonly name: string;
   private readonly sc_systems: SpaceCraftSystem360<
     System360 | Propulsion360
   >[] = [];
-  private readonly override_dry_mass: number;
+  private readonly override_dry_mass?: number;
   private readonly area: number;
   private readonly CD: number;
 
   constructor(
     name: string,
-    override_dry_mass: number,
+    override_dry_mass?: number,
     area: number = 0.0,
     CD: number = 2.2,
     sc_systems: SpaceCraftSystem360<System360 | Propulsion360>[] = []

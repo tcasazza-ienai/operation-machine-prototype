@@ -30,6 +30,7 @@ import {
 
 import dagre from "@dagrejs/dagre";
 import CustomEdge from "../edges/CustomEdge.tsx";
+import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
 
 const nodeWidth = 280;
 const nodeHeight = 100;
@@ -44,12 +45,13 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
     ranker: "tight-tree",
     nodesep: 300,
     ranksep: 100,
-    edgesep: 200,
+    edgesep: 300,
     marginx: 50,
   });
 
   // Add nodes to dagre graph
   nodes.forEach((node) => {
+    console.log("NODE SETTING: ", node);
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });
 
@@ -64,13 +66,22 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
   });
 
   // Get new node positions
-  const layoutedNodes = nodes.map((node) => {
+  const layoutedNodes = nodes.map((node, index) => {
     const dagreNode = dagreGraph.node(node.id);
+    let position_x = dagreNode.x - nodeWidth / 2;
+    let position_y = dagreNode.y - nodeHeight / 2;
+    if (index === nodes.length - 1) {
+      const previousNode = dagreGraph.node(nodes[index - 1].id);
+      //position_y = previousNode.y - nodeHeight / 2;
+      position_x = previousNode.x + nodeWidth * 1.5;
+      console.log("\nTHIS IS THE LAST NOOOOOODE!!!!!\n");
+    }
+
     return {
       ...node,
       position: {
-        x: dagreNode.x - nodeWidth / 2,
-        y: dagreNode.y - nodeHeight / 2,
+        x: position_x,
+        y: position_y,
       },
     };
   });
@@ -96,7 +107,6 @@ type OperationNode = {
 const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
   operations,
 }) => {
-  console.log("OPS ===> ", operations);
   const [operationMachine, setOperationMachine] =
     useState<OperationMachine>(operationMachine1);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -315,14 +325,14 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
   //   useEffect(() => {
   //     refreshNodes(operationMachine.operations);
   //   }, [operationMachine]);
-  console.log("Edges: ", edges);
-  console.log("Nodes: ", nodes);
+
+  console.log("NODES => ", nodes);
 
   const nodeTypes = {
     custom: OperationNode,
   };
   const edgeTypes = {
-    "start-end": CustomEdge,
+    "start-end": CustomEdgeOther,
   };
   return (
     <Box
@@ -344,7 +354,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         panOnDrag={false}
-        zoomOnScroll={false}
+        zoomOnScroll={true}
         zoomOnPinch={false}
         style={{ width: "100%" }}
         nodesDraggable

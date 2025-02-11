@@ -1,5 +1,5 @@
-import { Propulsion360 } from "./Propulsion";
-import { System360 } from "./System";
+import { Propulsion360 } from "./Propulsion.ts";
+import { System360 } from "./System.ts";
 
 export class SpaceCraftSystem360<T extends System360 | Propulsion360> {
   private readonly functional_id: string;

@@ -1,5 +1,5 @@
-import { GroundStation } from "./GroundStation";
-import { Propulsion360, SimplePropulsion360 } from "./Propulsion";
+import { GroundStation } from "./GroundStation.ts";
+import { Propulsion360, SimplePropulsion360 } from "./Propulsion.ts";
 
 export class OperationMachine {
   private readonly operations: Operation360[] = [];
@@ -305,9 +305,9 @@ function createCustomTrigger<T = void>(className: string) {
     }
 
     public getTriggerName() {
-      const cleanedClassName = this.className.replace('_T', '');
+      const cleanedClassName = this.className.replace("_T", "");
       const splitNameTokens = cleanedClassName.split(/(?=[A-Z])/);
-      return splitNameTokens.join(' ').trim()
+      return splitNameTokens.join(" ").trim();
     }
   };
 
