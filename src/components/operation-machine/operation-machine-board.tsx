@@ -352,12 +352,11 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        panOnDrag={false}
-        zoomOnScroll={true}
         zoomOnPinch={false}
         style={{ width: "100%" }}
         nodesDraggable
       >
+        <Controls />
         <Background gap={1} color="transparent" />
       </ReactFlow>
     </Box>

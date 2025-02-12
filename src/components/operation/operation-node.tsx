@@ -108,7 +108,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
             selectedMode={data.mode as Mode}
           />
         </Box>
-      ) : dataLabel.length > 0 ? (
+      ) : dataLabel && dataLabel.length > 0 ? (
         <OperationNodeAdded
           selectOnChange={onChangeMode}
           data={data as Operation}
