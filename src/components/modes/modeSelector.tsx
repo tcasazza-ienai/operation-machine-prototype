@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   MenuItem,
@@ -26,6 +26,16 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
 }) => {
   const [modeModal, setModeModal] = useState<boolean>(false);
   const [editedMode, setEditedMode] = useState<Mode>();
+
+  const handleEditMode = async (mode: Mode) => {
+    setEditedMode(mode);
+  };
+
+  useEffect(() => {
+    if (editedMode !== undefined && editedMode.id !== "0") {
+      setModeModal(true);
+    }
+  }, [editedMode]);
 
   return (
     <Box>
@@ -68,8 +78,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
               <Tooltip title="Edit">
                 <ModeEditOutlinedIcon
                   onClick={() => {
-                    setModeModal(true);
-                    setEditedMode(item);
+                    handleEditMode(item);
                   }}
                   fontSize="small"
                 />

@@ -55,3 +55,10 @@ export enum NormalTargets {
   n = "Nadir",
   sf = "SunFacing",
 }
+
+export type QLaw = {
+  orbitTargeted: string;
+  w_a: string;
+  w_e: string;
+  w_i: string;
+};
