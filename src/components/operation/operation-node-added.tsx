@@ -46,7 +46,7 @@ const OperationNodeAdded: React.FC<{
         <PopupMenu items={menuOptions} />
       </Box>
       <Box sx={{ height: "57px" }}>
-        {modes.length < 1 ? (
+        {modes && modes.length < 1 ? (
           <Box sx={addButtonContainerStyle}>
             <IenaiButton
               onClick={() => setModeModal(true)}

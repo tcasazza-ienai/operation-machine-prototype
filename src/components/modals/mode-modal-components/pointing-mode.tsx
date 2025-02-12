@@ -64,23 +64,12 @@ const PointingMode: React.FC<PointingModeProps> = ({
         ...formMode,
         pointing: { ...formMode.pointing, pointer: "+x" },
       });
-    } else if (
-      pointingType === "spacecraft_system" &&
-      !formMode.pointing.pointer
-    ) {
-      setFormMode({
-        ...formMode,
-        pointing: {
-          ...formMode.pointing,
-          pointer: spacecraftSelected.sc_systems[0].functional_id,
-        },
-      });
     }
   }, [pointingType, formMode, setFormMode]);
 
   useEffect(() => {
     if (
-      spacecraftSelected.sc_systems.some(
+      spacecraftSelected.sc_systems?.some(
         (system) => system.functional_id === formMode.pointing.pointer
       )
     ) {
@@ -257,7 +246,7 @@ const PointingMode: React.FC<PointingModeProps> = ({
                 })
               }
             >
-              {spacecraftSelected.sc_systems.map((target, index) => (
+              {spacecraftSelected.sc_systems?.map((target, index) => (
                 <MenuItem
                   key={target.functional_id + index}
                   value={target.functional_id}

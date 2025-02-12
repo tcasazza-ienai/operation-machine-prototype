@@ -175,7 +175,7 @@ const ModeModal: React.FC<{
                     : ""
                 }
                 onChange={(e) => {
-                  const selectedSystem = spacecraftSelected.sc_systems.find(
+                  const selectedSystem = spacecraftSelected.sc_systems?.find(
                     (system) => system.functional_id === e.target.value
                   );
                   const newSystemMode: SpacecraftSystem[] = [];
@@ -194,7 +194,8 @@ const ModeModal: React.FC<{
                 defaultValue=""
               >
                 <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.sc_systems?.length > 0 &&
+                {spacecraftSelected?.sc_systems &&
+                  spacecraftSelected?.sc_systems?.length > 0 &&
                   spacecraftSelected.sc_systems.map((system, index) => (
                     <MenuItem
                       key={system.functional_id + index}
@@ -218,7 +219,7 @@ const ModeModal: React.FC<{
                     : ""
                 }
                 onChange={(e) => {
-                  const selectedSystem = spacecraftSelected.sc_systems.find(
+                  const selectedSystem = spacecraftSelected.sc_systems?.find(
                     (system) => system.functional_id === e.target.value
                   );
                   const newSystemMode: SpacecraftSystem[] = [];
@@ -238,7 +239,8 @@ const ModeModal: React.FC<{
                 defaultValue=""
               >
                 <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.sc_systems?.length > 0 &&
+                {spacecraftSelected?.sc_systems &&
+                  spacecraftSelected?.sc_systems?.length > 0 &&
                   spacecraftSelected.sc_systems
                     .filter(
                       (system) =>
