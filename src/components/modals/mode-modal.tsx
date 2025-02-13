@@ -23,7 +23,7 @@ import { SpacecraftSystem } from "../../types/spacecraft.types.ts";
 import PointingMode from "./mode-modal-components/pointing-mode.tsx";
 import GeometryMode from "./mode-modal-components/geometry-mode.tsx";
 
-const emptyMode: Mode360 = {
+const emptyMode: Mode = {
   id: "0",
   name: "",
   pointing: {
@@ -43,7 +43,7 @@ const emptySphericalGeometry: {
 const ModeModal: React.FC<{
   open: boolean;
   onClose: () => void;
-  mode?: Mode360;
+  mode?: Mode;
 }> = ({ open, onClose, mode }) => {
   const spacecraftSelected = useSpacecraftStore((state) => state.spacecraft);
   const modes = useModesStore((state) => state.modes);
@@ -173,9 +173,9 @@ const ModeModal: React.FC<{
                     : ""
                 }
                 onChange={(e) => {
-                  const selectedSystem = spacecraftSelected.sc_systems?.find(
-                    (system) => system.functional_id === e.target.value
-                  );
+                  const selectedSystem = (
+                    spacecraftSelected.sc_systems ?? []
+                  ).find((system) => system.functional_id === e.target.value);
                   const newSystemMode: SpacecraftSystem[] = [];
 
                   if (selectedSystem) newSystemMode.push(selectedSystem);
@@ -192,9 +192,8 @@ const ModeModal: React.FC<{
                 defaultValue=""
               >
                 <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.sc_systems &&
-                  spacecraftSelected?.sc_systems?.length > 0 &&
-                  spacecraftSelected.sc_systems.map((system, index) => (
+                {(spacecraftSelected?.sc_systems?.length ?? 0) > 0 &&
+                  spacecraftSelected.sc_systems?.map((system, index) => (
                     <MenuItem
                       key={system.functional_id + index}
                       value={system.functional_id}
@@ -237,10 +236,9 @@ const ModeModal: React.FC<{
                 defaultValue=""
               >
                 <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.sc_systems &&
-                  spacecraftSelected?.sc_systems?.length > 0 &&
+                {(spacecraftSelected?.sc_systems?.length ?? 0) > 0 &&
                   spacecraftSelected.sc_systems
-                    .filter(
+                    ?.filter(
                       (system) =>
                         system.functional_id !==
                         formMode.system_mode?.[0]?.functional_id

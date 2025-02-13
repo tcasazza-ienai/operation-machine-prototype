@@ -106,12 +106,20 @@ export class Mode360 {
     return this.systems_modes;
   }
 
+  public getId(): string {
+    return this.id;
+  }
+
   public getModeName(): string {
     return this.name;
   }
 
   public getPointing(): Pointing360 {
     return this.pointing;
+  }
+
+  public getOverrideGeometry(): OverrideGeometry | undefined {
+    return this.override_geometry;
   }
 }
 
@@ -130,6 +138,14 @@ export class Pointing360 {
   constructor(pointer: string, target: Target360) {
     this.pointer = pointer;
     this.target = target;
+  }
+
+  public getPointer(): string {
+    return this.pointer;
+  }
+
+  public getTarget(): Target360 {
+    return this.target;
   }
 }
 
@@ -217,16 +233,37 @@ export class PDM_Off extends BasePowerDeviceMode {
 
 /////// END POWER DEVICE MODES ///////////
 
-export abstract class OverrideGeometry {}
+export abstract class OverrideGeometry {
+  protected readonly area: number = 0.0;
+  protected readonly CD: number = 0.0;
+  protected readonly CR: number = 0.0;
+
+  constructor(area?: number, CD?: number, CR?: number) {
+    this.area = area ? area : this.area;
+    this.CD = CD ? CD : this.CD;
+    this.CR = CR ? CR : this.CR;
+  }
+
+  public getArea(): number {
+    return this.area;
+  }
+
+  public getCD(): number {
+    return this.area;
+  }
+
+  public getCR(): number {
+    return this.area;
+  }
+}
 
 export class SphereGeometry360 extends OverrideGeometry {
-  private readonly area: number = 0.0;
-  private readonly CD: number = 2.2;
-  private readonly CR: number = 2.2;
+  area = 0.0;
+  CD = 2.2;
+  CR = 2.2;
 
   constructor(area?: number, CD?: number, CR?: number) {
     super();
-
     this.area = area ? area : this.area;
     this.CD = CD ? CD : this.CD;
     this.CR = CR ? CR : this.CR;
