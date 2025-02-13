@@ -34,6 +34,7 @@ const CustomEdge: FC<EdgeProps<Edge<{ label: string }>>> = ({
         <div
           style={{
             transform: `translate(-50%, -10%) translate(${labelX}px,${labelY}px)`,
+            fontSize: "18px",
           }}
           className="edge-label-renderer__custom-edge nodrag nopan"
         >

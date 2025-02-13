@@ -174,7 +174,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
             label: event.getTrigger().getTriggerName(),
             type: "start-end",
             markerEnd: { type: MarkerType.ArrowClosed },
-            className: "text-sm",
+            className: "text-lg",
             animated: true,
           };
 
@@ -250,7 +250,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
               data: { label: "End Simulation", isEndNode: true },
               type: "custom",
               position: { x: 0, y: 0 },
-              className: "px-4 py-2 rounded border border-red-500",
+              className: "px-4 py-2 rounded border border-red-500 text-[18px]",
             });
             hasTerminateNode = true;
           }
@@ -263,7 +263,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
             label: event.getTrigger().getTriggerName(),
             type: "smoothstep",
             markerEnd: { type: MarkerType.ArrowClosed },
-            className: "text-sm",
+            className: "text-lg",
             animated: true,
           });
         }

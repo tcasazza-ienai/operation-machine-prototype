@@ -333,5 +333,6 @@ export const mapNodes_v2 = (nodes: NodePosition[]): OperationNode[] => {
       x: node.x,
       y: node.y,
     },
+    className: "px-4 py-2 rounded border border-red-500 text-[18px]",
   }));
 };

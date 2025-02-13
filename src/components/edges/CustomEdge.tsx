@@ -12,23 +12,7 @@ import { Box } from "@mui/material";
 // this is a little helper component to render the actual edge label
 function EdgeLabel({ transform, label }: { transform: string; label: string }) {
   return (
-    <div style={{ position: "relative" }}>
-      <div
-        style={{
-          position: "absolute",
-          background: "transparent",
-          padding: 10,
-          color: "#ff5050",
-          fontSize: 12,
-          fontWeight: 700,
-          zIndex: 5,
-          transform,
-        }}
-        className="nodrag nopan"
-      >
-        {label}
-      </div>
-    </div>
+
   );
 }
 
@@ -88,7 +72,7 @@ const CustomEdge: FC<
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} />
+      <BaseEdge id={id} path={edgePath} style={{ fontSize: "18px" }} />
       <EdgeLabelRenderer>
         {data.startLabel && (
           <EdgeLabel
