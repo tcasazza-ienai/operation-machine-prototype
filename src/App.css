@@ -13,7 +13,7 @@
   gap: 15px;
   display: flex;
   font-size: calc(10px + 2vmin);
-  color: #1d1b20;
+  color: white !important;
 }
 
 .App-body {
@@ -54,6 +54,12 @@
 }
 
 .react-flow__edge-text {
-  font-size: 18px !important;
+  color: "smokewhite";
+  font-size: 17px !important;
+  font-weight: 700;
   fill: rgb(250, 0, 0, 0.5);
+}
+
+.react-flow__edge-textbg {
+  fill: #a53a36;
 }

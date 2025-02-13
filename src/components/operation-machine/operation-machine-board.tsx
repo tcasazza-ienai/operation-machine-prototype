@@ -339,7 +339,6 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
       sx={{
         border: "2px solid #ddd",
         borderRadius: "8px",
-        padding: "16px",
         height: "70vh",
         display: "flex",
         flexDirection: "column",

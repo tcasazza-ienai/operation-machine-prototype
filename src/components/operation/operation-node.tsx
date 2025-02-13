@@ -21,7 +21,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
             padding: 2,
             border: "1px solid #1D1B20",
             borderRadius: "12px",
-            background: "rgb(250, 0, 0, 0.5)",
+            background: "#A53A36",
             position: "relative",
             minWidth: "280px",
             textAlign: "center",
