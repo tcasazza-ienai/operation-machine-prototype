@@ -36,7 +36,7 @@ const getRandomId = () => {
 };
 
 export const createSimpleOpMachine = (): OperationMachine => {
-  const nominalMode = new Mode360("NominalMode");
+  const nominalMode = new Mode360("0", "NominalMode");
 
   //Trigger
   const onSmaTrigger = new OnSemiMajorAxis_T({ direction: "<", sma: 6678.0 });
@@ -73,7 +73,7 @@ export const createOpsMachine_Tutorial4 = (): OperationMachine => {
   const thrustMode = new PM_Thrust("Thrust");
 
   //Mode
-  const nominalMode = new Mode360("NominalMode", undefined, [thrustMode]);
+  const nominalMode = new Mode360("0", "NominalMode", undefined, [thrustMode]);
 
   //Trigger
   const atResLevel = new AtReservoirLevel_T({ level: 0.05 });
@@ -106,10 +106,10 @@ export const createOpsMachine_Tutorial5 = () => {
   );
 
   //Mode
-  const nominalMode = new Mode360("NominalMode", undefined, [
+  const nominalMode = new Mode360("0", "NominalMode", undefined, [
     new PM_Off("Off"),
   ]);
-  const thrustingMode = new Mode360("ThrustingMode", undefined, [
+  const thrustingMode = new Mode360("0", "ThrustingMode", undefined, [
     new PM_Thrust("Thrust"),
   ]);
 

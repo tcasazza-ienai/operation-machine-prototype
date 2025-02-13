@@ -265,7 +265,6 @@ const OperationMachineBoard: React.FC = () => {
       sx={{
         border: "2px solid #ddd",
         borderRadius: "8px",
-        padding: "16px",
         height: "70vh",
         display: "flex",
         flexDirection: "column",
