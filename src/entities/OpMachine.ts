@@ -70,6 +70,7 @@ export class Operation360 {
 }
 
 export class Mode360 {
+  private id: string;
   private name: string;
   private readonly pointing: Pointing360 = new Pointing360(
     "+x",
@@ -79,11 +80,13 @@ export class Mode360 {
   private readonly override_geometry?: OverrideGeometry;
 
   constructor(
+    id: string,
     name: string,
     pointing?: Pointing360,
     systems_modes?: SystemsMode[],
     override_geometry?: OverrideGeometry
   ) {
+    this.id = id;
     this.name = name;
     if (pointing) {
       this.pointing = pointing;
@@ -105,6 +108,10 @@ export class Mode360 {
 
   public getModeName(): string {
     return this.name;
+  }
+
+  public getPointing(): Pointing360 {
+    return this.pointing;
   }
 }
 

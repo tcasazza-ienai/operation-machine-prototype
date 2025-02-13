@@ -5,6 +5,6 @@ import { combine } from "zustand/middleware";
 
 export const useModesStore = create(
   combine({ modes: modes as Mode[] }, (set) => ({
-    updateModes: (newModes: Mode[]) => set({ modes: newModes }),
+    updateModes: (newModes: Mode360[]) => set({ modes: newModes }),
   }))
 );

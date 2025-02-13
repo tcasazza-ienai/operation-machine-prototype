@@ -23,9 +23,9 @@ import { SpacecraftSystem } from "../../types/spacecraft.types.ts";
 import PointingMode from "./mode-modal-components/pointing-mode.tsx";
 import GeometryMode from "./mode-modal-components/geometry-mode.tsx";
 
-const emptyMode: Mode = {
+const emptyMode: Mode360 = {
   id: "0",
-  mode_name: "",
+  name: "",
   pointing: {
     pointer: "",
     target: "",
@@ -43,7 +43,7 @@ const emptySphericalGeometry: {
 const ModeModal: React.FC<{
   open: boolean;
   onClose: () => void;
-  mode?: Mode;
+  mode?: Mode360;
 }> = ({ open, onClose, mode }) => {
   const spacecraftSelected = useSpacecraftStore((state) => state.spacecraft);
   const modes = useModesStore((state) => state.modes);
@@ -54,7 +54,7 @@ const ModeModal: React.FC<{
     useState<boolean>(false);
 
   const confirmValidation = () => {
-    if (!formMode.mode_name) return false;
+    if (!formMode.name) return false;
     if (!formMode.pointing.pointer || formMode.pointing.pointer === "")
       return false;
     if (!formMode.pointing.target) return false;
@@ -131,10 +131,8 @@ const ModeModal: React.FC<{
         </DialogContentText>
 
         <TextField
-          value={formMode.mode_name}
-          onChange={(e) =>
-            setFormMode({ ...formMode, mode_name: e.target.value })
-          }
+          value={formMode.name}
+          onChange={(e) => setFormMode({ ...formMode, name: e.target.value })}
           sx={{
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#79747E",

@@ -20,7 +20,7 @@ import { useModesStore } from "../../store/modesStore.ts";
 const OperationNodeAdded: React.FC<{
   data: Operation;
   options: PopupMenuProp[];
-  selectOnChange: (mode: Mode) => void;
+  selectOnChange: (mode: Mode360) => void;
 }> = ({ data, options, selectOnChange }) => {
   const modes = useModesStore((state) => state.modes);
   const setModes = useModesStore((state) => state.updateModes);
@@ -33,7 +33,7 @@ const OperationNodeAdded: React.FC<{
   const [modeModal, setModeModal] = useState<boolean>(false);
 
   const selectMode = (e: SelectChangeEvent<string>) => {
-    const mode = modes.find((mode) => mode.mode_name === e.target.value);
+    const mode = modes.find((mode) => mode.name === e.target.value);
     setSelected(mode || data.mode);
     selectOnChange(mode || data.mode);
   };

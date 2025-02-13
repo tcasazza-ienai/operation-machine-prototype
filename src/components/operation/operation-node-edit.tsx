@@ -17,10 +17,10 @@ const OperationNodeEdit: React.FC<{
   defaultName: string;
   operationName: string;
   setOperationName: (newName) => void;
-  selectedMode?: Mode;
+  selectedMode?: Mode360;
 }> = ({ defaultName, operationName, selectedMode, setOperationName }) => {
   const [selected, setSelected] = useState<string>(
-    selectedMode?.mode_name ? selectedMode.mode_name : ""
+    selectedMode?.name ? selectedMode.name : ""
   );
   const textFieldRef = useRef<HTMLInputElement>(null);
 

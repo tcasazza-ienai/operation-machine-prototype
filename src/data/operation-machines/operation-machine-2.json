@@ -4,7 +4,7 @@
       "id": "1",
       "op_name": "NOM",
       "mode": {
-        "mode_name": "Along Velocity",
+        "name": "Along Velocity",
         "pointing": {
           "pointer": "+x",
           "target": "AlongVelocity"
@@ -33,7 +33,7 @@
       "id": "2",
       "op_name": "COMM",
       "mode": {
-        "mode_name": "Pointing Nadir",
+        "name": "Pointing Nadir",
         "pointing": {
           "pointer": "+y",
           "target": "Nadir"

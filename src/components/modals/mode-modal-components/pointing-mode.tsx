@@ -28,7 +28,7 @@ const emptyQLaw: QLaw = {
 type PointingType = "body_axis" | "spacecraft_system";
 
 interface PointingModeProps {
-  formMode: Mode;
+  formMode: Mode360;
   setFormMode: React.Dispatch<React.SetStateAction<Mode>>;
 }
 const PointingMode: React.FC<PointingModeProps> = ({

@@ -5,7 +5,7 @@
       "id": "1",
       "op_name": "COAST",
       "mode": {
-        "mode_name": "Counter Velocity",
+        "name": "Counter Velocity",
         "pointing": {
           "pointer": "+x",
           "target": "CounterVelocity"
@@ -33,7 +33,7 @@
       "id": "2",
       "op_name": "THRUST",
       "mode": {
-        "mode_name": "QLaw",
+        "name": "QLaw",
         "pointing": {
           "pointer": "+z",
           "target": "QLaw"
@@ -64,7 +64,7 @@
       "id": "3",
       "op_name": "THRUST2",
       "mode": {
-        "mode_name": "QLaw",
+        "name": "QLaw",
         "pointing": {
           "pointer": "+z",
           "target": "QLaw"
@@ -95,7 +95,7 @@
       "id": "4",
       "op_name": "THRUST1",
       "mode": {
-        "mode_name": "QLaw",
+        "name": "QLaw",
         "pointing": {
           "pointer": "+z",
           "target": "QLaw"

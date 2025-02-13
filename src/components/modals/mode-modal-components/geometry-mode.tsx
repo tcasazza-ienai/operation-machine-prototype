@@ -11,9 +11,10 @@ import {
 } from "@mui/material";
 import { Mode, SphereGeometry } from "../../../types/operation-machine.types";
 import { useEdges } from "@xyflow/react";
+import { Mode360 } from "../../../entities/OpMachine";
 
 interface GeometryModeProps {
-  formMode: Mode;
+  formMode: Mode360;
   setFormMode: React.Dispatch<React.SetStateAction<Mode>>;
   sphericalGeometryStatus: boolean;
   setSphericalGeometryStatus: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,6 +41,9 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
       setFormMode({
         ...formMode,
         override_geometry: undefined,
+        id: formMode.id,
+        name: formMode.getModeName(),
+        pointing: formMode.getPointing(),
       });
       setSphericalGeometryForm({ area: "", cd: "", cr: "" });
     }

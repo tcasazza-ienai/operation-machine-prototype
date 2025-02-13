@@ -38,7 +38,9 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   }>({ active: false });
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [duplicateModal, setDuplicateModal] = useState<boolean>(false);
-  const [dataLabel, setDataLabel] = useState<string>(data.op_name as string);
+  const [dataLabel, setDataLabel] = useState<string>(
+    (data.operation as Operation).op_name as string
+  );
 
   const onBlurEditOperation = () => {
     if (data.id !== "") {
@@ -55,7 +57,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
     newOpMachine.operations.push({
       id: (opMachine.operations.length + 2).toString(),
       op_name: (dataLabel || defaultName()).toUpperCase(),
-      mode: { id: "", mode_name: "", pointing: { pointer: "", target: "" } },
+      mode: { id: "", name: "", pointing: { pointer: "", target: "" } },
       events: [],
     });
     setOpMachine(newOpMachine);
@@ -87,7 +89,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
     setOpMachine(newOpMachine);
   };
 
-  const onChangeMode = (mode: Mode) => {
+  const onChangeMode = (mode: Mode360) => {
     let newOpMachine = { ...opMachine };
     newOpMachine.operations.filter((op) => op.id === data.id)[0].mode = mode;
     setOpMachine(newOpMachine);

@@ -15,9 +15,9 @@ import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import ModeModal from "../modals/mode-modal.tsx";
 
 interface ModeSelectorProps {
-  selected: Mode;
+  selected: Mode360;
   selectMode: (event: SelectChangeEvent<string>) => void;
-  modesList: Mode[];
+  modesList: Mode360[];
 }
 const ModeSelector: React.FC<ModeSelectorProps> = ({
   selected,
@@ -27,7 +27,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   const [modeModal, setModeModal] = useState<boolean>(false);
   const [editedMode, setEditedMode] = useState<Mode>();
 
-  const handleEditMode = async (mode: Mode) => {
+  const handleEditMode = async (mode: Mode360) => {
     setEditedMode(mode);
   };
 
@@ -40,7 +40,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   return (
     <Box>
       <Select
-        value={selected.mode_name}
+        value={selected.name}
         className="nodrag"
         displayEmpty
         renderValue={
@@ -72,8 +72,8 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
           </>
         </Box>
         {modesList.map((item, index) => (
-          <MenuItem value={item.mode_name} sx={menuItemDesign} key={index}>
-            {item.mode_name}
+          <MenuItem value={item.name} sx={menuItemDesign} key={index}>
+            {item.name}
             <Box className="icons" sx={{ display: "none", gap: "8px" }}>
               <Tooltip title="Edit">
                 <ModeEditOutlinedIcon

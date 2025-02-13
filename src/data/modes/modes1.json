@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "mode_name": "QLaw",
+    "name": "QLaw",
     "pointing": {
       "pointer": "+z",
       "target": "AlongVelocity"
@@ -10,7 +10,7 @@
   },
   {
     "id": "2",
-    "mode_name": "Counter Velocity",
+    "name": "Counter Velocity",
     "pointing": {
       "pointer": "+x",
       "target": "CounterVelocity"
@@ -19,7 +19,7 @@
   },
   {
     "id": "3",
-    "mode_name": "Pointing Nadir",
+    "name": "Pointing Nadir",
     "pointing": {
       "pointer": "-z",
       "target": "Nadir"
@@ -28,7 +28,7 @@
   },
   {
     "id": "4",
-    "mode_name": "Along Velocity",
+    "name": "Along Velocity",
     "pointing": {
       "pointer": "+y",
       "target": "AlongVelocity"

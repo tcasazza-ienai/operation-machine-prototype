@@ -10,7 +10,6 @@ import {
   useNodesState,
   useReactFlow,
 } from "@xyflow/react";
-import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Operation,
@@ -24,7 +23,10 @@ import {
 import OperationNode from "../operation/operation-node.tsx";
 import "@xyflow/react/dist/style.css";
 import {
+  Mode360,
   Operation360,
+  Pointing360,
+  Target360,
   TerminateSimulation_E,
   ToOp_E,
 } from "../../entities/OpMachine.ts";
@@ -35,6 +37,13 @@ import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
 
 const nodeWidth = 280;
 const nodeHeight = 100;
+
+const endSimulationOperation: Operation360 = new Operation360(
+  "0",
+  "End Simulation",
+  new Mode360("End Simulation"),
+  []
+);
 
 const getLayoutedElements = (nodes, edges, direction = "TB") => {
   const dagreGraph = new dagre.graphlib.Graph();
@@ -90,8 +99,6 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
   return { nodes: layoutedNodes, edges };
 };
 
-const endSimulationOperation: Operation360 = {};
-
 type OperationNode = {
   id: string;
   type: "custom";
@@ -121,7 +128,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
     let hasTerminateNode = false;
 
     // Helper function to process operations recursively
-    const processOperation = (operation: Operation360) => {
+    const processOperation = (operation) => {
       if (processedOperations.has(operation.getId())) return;
       processedOperations.add(operation.getId());
 
@@ -302,7 +309,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
   //     const initialOperations = operations;
   //     initialOperations.push({
   //       op_name: "",
-  //       mode: { mode_name: "", pointing: { pointer: "", target: "" } },
+  //       mode: { name: "", pointing: { pointer: "", target: "" } },
   //       events: [],
   //     });
   //     const initialNodes = mappingToNodeOperations(initialOperations);
@@ -354,11 +361,12 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        panOnDrag={false}
+        zoomOnScroll={true}
         zoomOnPinch={false}
         style={{ width: "100%" }}
         nodesDraggable
       >
-        <Controls />
         <Background gap={1} color="transparent" />
       </ReactFlow>
     </Box>
@@ -418,7 +426,7 @@ const OperationMachineBoardexample: React.FC = () => {
       newOperationMachine.operations.push({
         id: "",
         op_name: "",
-        mode: { id: "", mode_name: "", pointing: { pointer: "", target: "" } },
+        mode: { id: "", name: "", pointing: { pointer: "", target: "" } },
         events: [],
       });
       setOpMachine(newOperationMachine);
@@ -495,7 +503,7 @@ const OperationMachineBoardbefore: React.FC = () => {
       newOperationMachine.operations.push({
         id: "",
         op_name: "",
-        mode: { id: "", mode_name: "", pointing: { pointer: "", target: "" } },
+        mode: { id: "", name: "", pointing: { pointer: "", target: "" } },
         events: [],
       });
       setOpMachine(newOperationMachine);
