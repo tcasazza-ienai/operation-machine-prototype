@@ -1,4 +1,4 @@
-import { Mode360 } from "../entities/OpMachine";
+import { Event360, Mode360 } from "../entities/OpMachine";
 import { Propulsion } from "./propulsion.types";
 import { Spacecraft, SpacecraftSystem } from "./spacecraft.types";
 
@@ -10,8 +10,8 @@ export type OperationMachine = {
 export type Operation = {
   id: string;
   op_name: string;
-  mode: Mode360;
-  events: OperationEvent[];
+  mode?: Mode;
+  events?: Event360[];
 };
 
 export type Mode = {

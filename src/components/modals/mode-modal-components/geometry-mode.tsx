@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { Mode, SphereGeometry } from "../../../types/operation-machine.types";
 import { useEdges } from "@xyflow/react";
-import { Mode360 } from "../../../entities/OpMachine";
 
 interface GeometryModeProps {
   formMode: Mode;

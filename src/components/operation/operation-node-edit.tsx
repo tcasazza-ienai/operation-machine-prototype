@@ -17,7 +17,7 @@ const OperationNodeEdit: React.FC<{
   defaultName: string;
   operationName: string;
   setOperationName: (newName) => void;
-  selectedMode?: Mode360;
+  selectedMode?: Mode;
 }> = ({ defaultName, operationName, selectedMode, setOperationName }) => {
   const [selected, setSelected] = useState<string>(
     selectedMode?.name ? selectedMode.name : ""

@@ -18,14 +18,18 @@ export class OperationMachine {
   public getOperations(): Operation360[] {
     return this.operations;
   }
+
+  public getOperationById(id: string): Operation360 | undefined {
+    return this.operations.find((operation) => operation.getId() === id);
+  }
 }
 
 export class Operation360 {
-  private readonly id: string;
-  private readonly op_name: string;
-  private readonly mode: Mode360;
-  private readonly events: Event360[] = [];
-  private isInitial: boolean = false;
+  protected readonly id: string;
+  protected op_name: string;
+  protected readonly mode: Mode360;
+  protected readonly events: Event360[] = [];
+  protected isInitial: boolean = false;
 
   constructor(
     id: string,
@@ -66,6 +70,10 @@ export class Operation360 {
 
   public getOpMode(): Mode360 {
     return this.mode;
+  }
+
+  public setOpName(name: string) {
+    this.op_name = name;
   }
 }
 

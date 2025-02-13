@@ -17,14 +17,26 @@ import ModeSelector from "../modes/modeSelector.tsx";
 import ModeModal from "../modals/mode-modal.tsx";
 import { useModesStore } from "../../store/modesStore.ts";
 
+const emptyMode: Mode = {
+  id: "0",
+  name: "",
+  pointing: {
+    pointer: "",
+    target: "",
+  },
+  system_mode: [],
+};
+
 const OperationNodeAdded: React.FC<{
   data: Operation;
   options: PopupMenuProp[];
-  selectOnChange: (mode: Mode360) => void;
+  selectOnChange: (mode: Mode) => void;
 }> = ({ data, options, selectOnChange }) => {
   const modes = useModesStore((state) => state.modes);
   const setModes = useModesStore((state) => state.updateModes);
-  const [selected, setSelected] = useState<Mode>(data?.mode);
+  const [selected, setSelected] = useState<Mode>(
+    data?.mode ? data?.mode : emptyMode
+  );
   //TO DO: Filter modes by system_mode of the current spacecraft selected
   const [modeList, setModeList] = useState<Mode[]>([]);
   const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(
@@ -34,14 +46,14 @@ const OperationNodeAdded: React.FC<{
 
   const selectMode = (e: SelectChangeEvent<string>) => {
     const mode = modes.find((mode) => mode.name === e.target.value);
-    setSelected(mode || data.mode);
-    selectOnChange(mode || data.mode);
+    setSelected(mode || (data?.mode ? data?.mode : emptyMode));
+    selectOnChange(mode || (data?.mode ? data?.mode : emptyMode));
   };
   return (
     <Box className="nodrag" sx={nodeContainerStyle}>
       <Box sx={titleContainterStyle}>
         <Typography sx={titleStyle} variant="h6">
-          {data.op_name as string}{" "}
+          {data.op_name as string}
         </Typography>
         <PopupMenu items={menuOptions} />
       </Box>
@@ -91,7 +103,6 @@ const nodeContainerStyle = {
   position: "relative",
   minWidth: "280px",
   textAlign: "center",
-  cursor: "auto",
   overflow: "visible",
 };
 

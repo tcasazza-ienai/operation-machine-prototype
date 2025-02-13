@@ -1,5 +1,5 @@
 import { NodeProps } from "@xyflow/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OperationNodeAdded from "./operation-node-added.tsx";
 import OperationNodeEmpty from "./operation-node-empty.tsx";
 import { Box } from "@mui/material";
@@ -11,6 +11,14 @@ import {
   OperationEvent,
 } from "../../types/operation-machine.types.ts";
 import BasicDialog from "../modals/basic-dialog.tsx";
+import {
+  Event360,
+  Mode360,
+  Operation360,
+  OperationMachine,
+  Pointing360,
+  Target360,
+} from "../../entities/OpMachine.ts";
 
 const OperationNode: React.FC<NodeProps> = ({ data }) => {
   const [operationOptions, setOperationOptions] = useState<
@@ -29,8 +37,9 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
   const defaultName = () =>
     "OPERATION " +
-    (opMachine.operations.filter((op) => op.op_name.includes("OPERATION"))
-      .length +
+    (opMachine
+      .getOperations()
+      .filter((op) => op.getOpName().includes("OPERATION")).length +
       1);
   const [editMode, setEditMode] = useState<{
     active: boolean;
@@ -53,21 +62,25 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   };
 
   const newOperation = () => {
-    let newOpMachine = { ...opMachine };
-    newOpMachine.operations.push({
-      id: (opMachine.operations.length + 2).toString(),
-      op_name: (dataLabel || defaultName()).toUpperCase(),
-      mode: { id: "", name: "", pointing: { pointer: "", target: "" } },
-      events: [],
-    });
+    const newOpMachine: OperationMachine = Object.assign({}, opMachine);
+    newOpMachine.addOperationToOpMachine(
+      new Operation360(
+        (opMachine.getOperations().length + 2).toString(),
+        (dataLabel || defaultName()).toUpperCase(),
+        new Mode360("", "", new Pointing360("", Target360.ALONG_VELOCITY)),
+        []
+      )
+    );
     setOpMachine(newOpMachine);
   };
 
   const editOperation = () => {
-    let newOpMachine = { ...opMachine };
-    newOpMachine.operations.filter((op) => op.id === data.id)[0].op_name =
-      dataLabel || defaultName();
-    setOpMachine(newOpMachine);
+    const newOpMachine: OperationMachine = Object.assign({}, opMachine);
+    const operation = newOpMachine.getOperationById(data.id as string);
+    if (operation) {
+      operation.setOpName(dataLabel || defaultName());
+      setOpMachine(newOpMachine);
+    }
   };
 
   const deleteOperation = () => {
@@ -84,16 +97,20 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
       id: (opMachine.operations.length + 2).toString(),
       op_name: (dataLabel || defaultName()).toUpperCase(),
       mode: data.mode as Mode,
-      events: data.events as OperationEvent[],
+      events: data.events as Event360[],
     });
     setOpMachine(newOpMachine);
   };
 
-  const onChangeMode = (mode: Mode360) => {
+  const onChangeMode = (mode: Mode) => {
     let newOpMachine = { ...opMachine };
     newOpMachine.operations.filter((op) => op.id === data.id)[0].mode = mode;
     setOpMachine(newOpMachine);
   };
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <>
@@ -107,13 +124,13 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
             defaultName={defaultName()}
             operationName={dataLabel}
             setOperationName={setDataLabel}
-            selectedMode={data.mode as Mode}
+            selectedMode={(data.operation as Operation).mode as Mode}
           />
         </Box>
       ) : dataLabel && dataLabel.length > 0 ? (
         <OperationNodeAdded
           selectOnChange={onChangeMode}
-          data={data as Operation}
+          data={data.operation as Operation}
           options={operationOptions}
         />
       ) : (

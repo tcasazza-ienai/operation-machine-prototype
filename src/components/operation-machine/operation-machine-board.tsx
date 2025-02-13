@@ -3,7 +3,6 @@ import {
   Background,
   Controls,
   Edge,
-  Handle,
   MarkerType,
   ReactFlow,
   useEdgesState,
@@ -11,39 +10,26 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Operation,
-  OperationMachine,
-} from "../../types/operation-machine.types";
-import operationMachine1 from "../../data/operation-machines/operation-machine-1.json";
-import {
-  mappingToEdgesOperations,
-  mappingToNodeOperations,
-} from "../../utils/nodeOperations.ts";
+import { Operation } from "../../types/operation-machine.types";
 import OperationNode from "../operation/operation-node.tsx";
 import "@xyflow/react/dist/style.css";
 import {
-  Mode360,
   Operation360,
-  Pointing360,
-  Target360,
   TerminateSimulation_E,
   ToOp_E,
 } from "../../entities/OpMachine.ts";
 
 import dagre from "@dagrejs/dagre";
-import CustomEdge from "../edges/CustomEdge.tsx";
 import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
+import { useOpMachineStore } from "../../store/opMachineStore.ts";
 
 const nodeWidth = 280;
 const nodeHeight = 100;
 
-const endSimulationOperation: Operation360 = new Operation360(
-  "0",
-  "End Simulation",
-  new Mode360("End Simulation"),
-  []
-);
+const endSimulationOperation: Operation = {
+  id: "0",
+  op_name: "End Simulation",
+};
 
 const getLayoutedElements = (nodes, edges, direction = "TB") => {
   const dagreGraph = new dagre.graphlib.Graph();
@@ -103,7 +89,7 @@ type OperationNode = {
   id: string;
   type: "custom";
   data: {
-    operation: Operation360;
+    operation: Operation;
     isInitial?: boolean;
     isBiDirectional?: boolean;
     dataFlow?: "LL" | "RR";
@@ -114,9 +100,9 @@ type OperationNode = {
   className?: string;
 };
 
-const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
-  operations,
-}) => {
+const OperationMachineBoard: React.FC = () => {
+  const opMachine = useOpMachineStore((state) => state.opMachine);
+  const [operations, setOperations] = useState<Operation360[]>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { fitView } = useReactFlow();
@@ -141,17 +127,6 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         },
         position: { x: 0, y: 0 }, // Initial position, will be calculated by dagre
       };
-
-      // // Add node for current operation
-      // newNodes.push({
-      //   id: operation.getId(),
-      //   type: "custom",
-      //   data: {
-      //     label: operation.getOpName(),
-      //     isInitial: operation.getIsInitial(),
-      //   },
-      //   position: { x: 0, y: 0 }, // Initial position, will be calculated by dagre
-      // });
 
       // Process events and create edges
       operation.getEvents().forEach((event, index) => {
@@ -203,42 +178,6 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
                 flow === "RR" ? event.getTrigger().getTriggerName() : undefined,
             };
           }
-
-          // if (isBidirectional) {
-          //   //Update node
-          //   const biDirectionalNode = newNodes.find(
-          //     (node) => node.id === operation.getId()
-          //   );
-
-          //   if (biDirectionalNode) {
-          //     biDirectionalNode["data"] = {
-          //       isBiDirectional: true,
-          //       ...biDirectionalNode.data,
-          //     };
-          //   }
-
-          //   let data = {};
-          //   //If it is bidirectional then we can check if there is already an edge with data labels
-          //   const oppositeEdge: Edge | undefined = edges.find(
-          //     (edge: Edge) =>
-          //       edge.id === `${targetOp.getId()}-${operation.getId()}`
-          //   );
-
-          //   if (!oppositeEdge) {
-          //     //no edge yet, assign data label as startLabel
-          //     data = {
-          //       startLabel: event.getTrigger().getTriggerName(),
-          //     };
-          //   } else {
-          //     data = {
-          //       endLabel: event.getTrigger().getTriggerName(),
-          //     };
-          //   }
-          //   newEdge = {
-          //     ...newEdge,
-          //     data: data,
-          //   };
-          // }
 
           // //Check if target operation already has data label
           // const targetEdge = edges.find((edge: Edge) => edge.id ===  `${targetOp.getId()}-${operation.getId()}`)
@@ -305,36 +244,15 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
     setEdges(newEdges);
   }, [operations, buildGraphElements, setNodes, setEdges]);
 
-  //   const refreshNodes = (operations: Operation[]) => {
-  //     const initialOperations = operations;
-  //     initialOperations.push({
-  //       op_name: "",
-  //       mode: { name: "", pointing: { pointer: "", target: "" } },
-  //       events: [],
-  //     });
-  //     const initialNodes = mappingToNodeOperations(initialOperations);
-
-  //     setNodes(initialNodes as never[]);
-  //   };
-
-  //   useEffect(() => {
-  //     if (nodes.length > 0) {
-  //       setEdges(
-  //         mappingToEdgesOperations(operationMachine.operations) as never[]
-  //       );
-  //     }
-  //     fitView();
-  //   }, [nodes]);
-
-  //   useEffect(() => {
-  //     fitView();
-  //   }, [edges]);
-
-  //   useEffect(() => {
-  //     refreshNodes(operationMachine.operations);
-  //   }, [operationMachine]);
+  useEffect(() => {
+    fitView();
+  }, [nodes]);
 
   console.log("NODES => ", nodes);
+
+  useEffect(() => {
+    setOperations(opMachine.getOperations());
+  }, [opMachine]);
 
   const nodeTypes = {
     custom: OperationNode,
@@ -361,12 +279,11 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        panOnDrag={false}
-        zoomOnScroll={true}
-        zoomOnPinch={false}
         style={{ width: "100%" }}
+        deleteKeyCode={""}
         nodesDraggable
       >
+        <Controls />
         <Background gap={1} color="transparent" />
       </ReactFlow>
     </Box>
