@@ -89,7 +89,7 @@ type OperationNode = {
   id: string;
   type: "custom";
   data: {
-    operation: Operation;
+    operation: Operation360;
     isInitial?: boolean;
     isBiDirectional?: boolean;
     dataFlow?: "LL" | "RR";
@@ -122,7 +122,12 @@ const OperationMachineBoard: React.FC = () => {
         id: operation.getId(),
         type: "custom",
         data: {
-          operation: operation,
+          operation: new Operation360(
+            operation.id,
+            operation.name,
+            operation.mode,
+            operation.events
+          ),
           isInitial: operation.getIsInitial(),
         },
         position: { x: 0, y: 0 }, // Initial position, will be calculated by dagre
@@ -217,6 +222,7 @@ const OperationMachineBoard: React.FC = () => {
       });
     };
 
+    console.log("SE REFRESCAN: ", operations);
     // Start processing from initial operations
     operations.forEach((op) => {
       if (op.getIsInitial()) {
@@ -240,18 +246,20 @@ const OperationMachineBoard: React.FC = () => {
 
   useEffect(() => {
     const { nodes: newNodes, edges: newEdges } = buildGraphElements();
+    console.log("NEW NODES", newNodes);
     setNodes(newNodes);
     setEdges(newEdges);
   }, [operations, buildGraphElements, setNodes, setEdges]);
 
   useEffect(() => {
+    console.log(nodes);
     fitView();
   }, [nodes]);
 
-  console.log("NODES => ", nodes);
-
   useEffect(() => {
-    setOperations(opMachine.getOperations());
+    console.log("ENTRA: ", [...opMachine.getOperations()]); // Generar una nueva referencia
+    setOperations([...opMachine.getOperations()]);
+    setNodes([]);
   }, [opMachine]);
 
   const nodeTypes = {

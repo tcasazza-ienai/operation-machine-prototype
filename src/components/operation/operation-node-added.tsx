@@ -16,27 +16,27 @@ import AddIcon from "@mui/icons-material/Add";
 import ModeSelector from "../modes/modeSelector.tsx";
 import ModeModal from "../modals/mode-modal.tsx";
 import { useModesStore } from "../../store/modesStore.ts";
+import {
+  Mode360,
+  Operation360,
+  Pointing360,
+  Target360,
+} from "../../entities/OpMachine.ts";
 
-const emptyMode: Mode = {
-  id: "0",
-  name: "",
-  pointing: {
-    pointer: "",
-    target: "",
-  },
-  system_mode: [],
-};
+const emptyMode: Mode360 = new Mode360(
+  "0",
+  "",
+  new Pointing360("", Target360.ALONG_VELOCITY)
+);
 
 const OperationNodeAdded: React.FC<{
-  data: Operation;
+  operation: Operation360;
   options: PopupMenuProp[];
-  selectOnChange: (mode: Mode) => void;
-}> = ({ data, options, selectOnChange }) => {
+  selectOnChange: (mode: Mode360) => void;
+}> = ({ operation, options, selectOnChange }) => {
   const modes = useModesStore((state) => state.modes);
   const setModes = useModesStore((state) => state.updateModes);
-  const [selected, setSelected] = useState<Mode>(
-    data?.mode ? data?.mode : emptyMode
-  );
+  const [selected, setSelected] = useState<Mode360>(emptyMode);
   //TO DO: Filter modes by system_mode of the current spacecraft selected
   const [modeList, setModeList] = useState<Mode[]>([]);
   const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(
@@ -46,14 +46,19 @@ const OperationNodeAdded: React.FC<{
 
   const selectMode = (e: SelectChangeEvent<string>) => {
     const mode = modes.find((mode) => mode.name === e.target.value);
-    setSelected(mode || (data?.mode ? data?.mode : emptyMode));
-    selectOnChange(mode || (data?.mode ? data?.mode : emptyMode));
+    setSelected(mode || (operation?.mode ? operation?.mode : emptyMode));
+    selectOnChange(mode || (operation?.mode ? operation?.mode : emptyMode));
   };
+
+  useEffect(() => {
+    if (operation instanceof Operation360)
+      setSelected(operation?.getOpMode() ? operation?.getOpMode() : emptyMode);
+  }, [operation]);
   return (
     <Box className="nodrag" sx={nodeContainerStyle}>
       <Box sx={titleContainterStyle}>
         <Typography sx={titleStyle} variant="h6">
-          {data.op_name as string}
+          {operation.getOpName() as string}
         </Typography>
         <PopupMenu items={menuOptions} />
       </Box>

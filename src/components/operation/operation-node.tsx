@@ -47,12 +47,10 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   }>({ active: false });
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [duplicateModal, setDuplicateModal] = useState<boolean>(false);
-  const [dataLabel, setDataLabel] = useState<string>(
-    (data.operation as Operation).op_name as string
-  );
+  const [dataLabel, setDataLabel] = useState<string>("");
 
   const onBlurEditOperation = () => {
-    if (data.id !== "") {
+    if ((data.operation as Operation360).getId() !== "") {
       editOperation();
     } else {
       newOperation();
@@ -62,7 +60,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   };
 
   const newOperation = () => {
-    const newOpMachine: OperationMachine = Object.assign({}, opMachine);
+    let newOpMachine = new OperationMachine(opMachine.getOperations());
     newOpMachine.addOperationToOpMachine(
       new Operation360(
         (opMachine.getOperations().length + 2).toString(),
@@ -76,7 +74,9 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
 
   const editOperation = () => {
     const newOpMachine: OperationMachine = Object.assign({}, opMachine);
-    const operation = newOpMachine.getOperationById(data.id as string);
+    const operation = newOpMachine.getOperationById(
+      (data.operation as Operation360).getId() as string
+    );
     if (operation) {
       operation.setOpName(dataLabel || defaultName());
       setOpMachine(newOpMachine);
@@ -84,31 +84,46 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   };
 
   const deleteOperation = () => {
-    let newOpMachine = { ...opMachine };
-    newOpMachine.operations = newOpMachine.operations.filter(
-      (op) => op.id !== data.id
+    let newOpMachine = new OperationMachine(opMachine.getOperations());
+
+    console.log("HOLA", newOpMachine);
+    newOpMachine.setOperations(
+      newOpMachine
+        .getOperations()
+        .filter((op) => op.getId() !== (data.operation as Operation360).getId())
     );
     setOpMachine(newOpMachine);
   };
 
   const duplicateOperation = () => {
-    let newOpMachine = { ...opMachine };
-    newOpMachine.operations.push({
-      id: (opMachine.operations.length + 2).toString(),
-      op_name: (dataLabel || defaultName()).toUpperCase(),
-      mode: data.mode as Mode,
-      events: data.events as Event360[],
-    });
+    let newOpMachine = new OperationMachine(opMachine.getOperations());
+    newOpMachine.addOperationToOpMachine(
+      new Operation360(
+        (opMachine.getOperations().length + 2).toString(),
+        (dataLabel || defaultName()).toUpperCase(),
+        (data.operation as Operation360).getOpMode(),
+        (data.operation as Operation360).getEvents()
+      )
+    );
     setOpMachine(newOpMachine);
   };
 
-  const onChangeMode = (mode: Mode) => {
-    let newOpMachine = { ...opMachine };
-    newOpMachine.operations.filter((op) => op.id === data.id)[0].mode = mode;
+  const onChangeMode = (mode: Mode360) => {
+    let newOpMachine = new OperationMachine(opMachine.getOperations());
+    newOpMachine
+      .getOperationById((data.operation as Operation360).getId())
+      ?.setMode(mode);
     setOpMachine(newOpMachine);
   };
 
   useEffect(() => {
+    if (data.operation)
+      setDataLabel(
+        new Operation360(
+          data.operation.id,
+          data.operation.name
+        ).getOpName() as string
+      );
     console.log(data);
   }, [data]);
 
@@ -130,7 +145,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
       ) : dataLabel && dataLabel.length > 0 ? (
         <OperationNodeAdded
           selectOnChange={onChangeMode}
-          data={data.operation as Operation}
+          operation={data.operation as Operation360}
           options={operationOptions}
         />
       ) : (

@@ -2,7 +2,7 @@ import { GroundStation } from "./GroundStation.ts";
 import { Propulsion360, SimplePropulsion360 } from "./Propulsion.ts";
 
 export class OperationMachine {
-  private readonly operations: Operation360[] = [];
+  private operations: Operation360[] = [];
 
   constructor(operations?: Operation360[]) {
     if (operations && operations.length > 0) {
@@ -22,13 +22,17 @@ export class OperationMachine {
   public getOperationById(id: string): Operation360 | undefined {
     return this.operations.find((operation) => operation.getId() === id);
   }
+
+  public setOperations(operations: Operation360[]) {
+    this.operations = operations;
+  }
 }
 
 export class Operation360 {
   protected readonly id: string;
   protected op_name: string;
-  protected readonly mode: Mode360;
-  protected readonly events: Event360[] = [];
+  protected mode: Mode360;
+  protected events: Event360[] = [];
   protected isInitial: boolean = false;
 
   constructor(
@@ -74,6 +78,10 @@ export class Operation360 {
 
   public setOpName(name: string) {
     this.op_name = name;
+  }
+
+  public setMode(mode: Mode360) {
+    this.mode = mode;
   }
 }
 

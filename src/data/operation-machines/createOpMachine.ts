@@ -159,10 +159,10 @@ export const createOpsMachine_Tutorial5_2 = () => {
   );
 
   //Mode
-  const nominalMode = new Mode360("NominalMode", undefined, [
+  const nominalMode = new Mode360("0", "NominalMode", undefined, [
     new PM_Off("Off"),
   ]);
-  const thrustingMode = new Mode360("ThrustingMode", undefined, [
+  const thrustingMode = new Mode360("0", "ThrustingMode", undefined, [
     new PM_Thrust("Thrust"),
   ]);
 
