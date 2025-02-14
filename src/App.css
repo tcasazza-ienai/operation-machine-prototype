@@ -55,11 +55,36 @@
 
 .react-flow__edge-text {
   color: "smokewhite";
-  font-size: 17px !important;
+  font-size: 20px !important;
   font-weight: 700;
   fill: rgb(250, 0, 0, 0.5);
 }
 
 .react-flow__edge-textbg {
-  fill: #a53a36;
+  fill: #a53a36 !important;
+  width: 200px;
+}
+
+body {
+  background-color: hsla(0, 0%, 10%, 0.8);
+}
+
+.App-body {
+  background-color: transparent;
+}
+
+.App-header {
+  background-color: transparent;
+}
+
+.MuiInputBase-root .MuiSelect-select {
+  font-size: x-large !important;
+}
+
+h6 {
+  font-size: x-large !important;
+}
+
+.MuiSvgIcon-fontSizeMedium {
+  color: white !important;
 }

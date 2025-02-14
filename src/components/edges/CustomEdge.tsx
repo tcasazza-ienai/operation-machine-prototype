@@ -72,7 +72,7 @@ const CustomEdge: FC<
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} style={{ fontSize: "18px" }} />
+      <BaseEdge id={id} path={edgePath} style={{ fontSize: "20px" }} />
       <EdgeLabelRenderer>
         {data.startLabel && (
           <EdgeLabel
