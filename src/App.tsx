@@ -14,13 +14,10 @@ import {
   createOpsMachine_Tutorial4,
   createOpsMachine_Tutorial_6,
 } from "./data/operation-machines/createOpMachine.ts";
+import { useOpMachineStore } from "./store/opMachineStore.ts";
 
 function App() {
-  const opMachine = createSimpleOpMachine();
-  const opsMachine2 = createOpsMachine_Tutorial5_2();
-  const opsMachine3 = createOpsMachine_Tutorial_6();
-
-  console.log(opsMachine3);
+  const opMachine = useOpMachineStore((state) => state.opMachine);
 
   return (
     <div className="App">
@@ -31,7 +28,7 @@ function App() {
       <body className="App-body">
         <SpacecraftSelect />
         <ReactFlowProvider>
-          <OperationMachineBoard operations={opsMachine3.getOperations()} />
+          <OperationMachineBoard operations={opMachine.getOperations()} />
         </ReactFlowProvider>
       </body>
     </div>

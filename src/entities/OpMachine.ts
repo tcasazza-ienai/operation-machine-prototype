@@ -5,7 +5,7 @@ export class OperationMachine {
   private readonly operations: Operation360[] = [];
 
   constructor(operations?: Operation360[]) {
-    if (operations && operations.length > 0) {
+    if (operations && operations?.length > 0) {
       this.operations = operations;
     }
   }
@@ -18,12 +18,20 @@ export class OperationMachine {
   public getOperations(): Operation360[] {
     return this.operations;
   }
+
+  public getOperationById(id: string): Operation360 | undefined {
+    return this.operations.find((operation) => operation.getId() === id);
+  }
+
+  public deleteOperationById(id: string): void {
+    this.operations.filter((op) => op.getId() !== id);
+  }
 }
 
 export class Operation360 {
   private readonly id: string;
-  private readonly op_name: string;
-  private readonly mode: Mode360;
+  private op_name: string;
+  private mode: Mode360;
   private readonly events: Event360[] = [];
   private isInitial: boolean = false;
 
@@ -67,23 +75,34 @@ export class Operation360 {
   public getOpMode(): Mode360 {
     return this.mode;
   }
+
+  public setOpName(name: string): void {
+    this.op_name = name;
+  }
+
+  public setOpMode(mode: Mode360): void {
+    this.mode = mode;
+  }
 }
 
 export class Mode360 {
+  private id: string;
   private name: string;
-  private readonly pointing: Pointing360 = new Pointing360(
+  private pointing: Pointing360 = new Pointing360(
     "+x",
     Target360.ALONG_VELOCITY
   );
-  private readonly systems_modes: SystemsMode[] = [];
-  private readonly override_geometry?: OverrideGeometry;
+  private systems_modes: SystemsMode[] = [];
+  private override_geometry?: OverrideGeometry;
 
   constructor(
+    id: string,
     name: string,
     pointing?: Pointing360,
     systems_modes?: SystemsMode[],
     override_geometry?: OverrideGeometry
   ) {
+    this.id = id;
     this.name = name;
     if (pointing) {
       this.pointing = pointing;
@@ -103,8 +122,47 @@ export class Mode360 {
     return this.systems_modes;
   }
 
+  public getModeId(): string {
+    return this.id;
+  }
+
   public getModeName(): string {
     return this.name;
+  }
+  public getPointing(): Pointing360 {
+    return this.pointing;
+  }
+
+  public getSystemsModes(): SystemsMode[] {
+    return this.systems_modes;
+  }
+
+  public getSystemsModeByIndex(index: number): SystemsMode {
+    return this.systems_modes[index];
+  }
+
+  public getOverrideGeometry(): OverrideGeometry | undefined {
+    return this.override_geometry;
+  }
+
+  public setModeName(name: string): void {
+    this.name = name;
+  }
+
+  public setPointing(pointing: Pointing360): void {
+    this.pointing = pointing;
+  }
+
+  public setSystemsModes(systems_modes: SystemsMode[]): void {
+    this.systems_modes = systems_modes;
+  }
+
+  public setOverrideGeometry(override_geometry: OverrideGeometry): void {
+    this.override_geometry = override_geometry;
+  }
+
+  public setOverrideGeometryEmpty(): void {
+    this.override_geometry = undefined;
   }
 }
 
@@ -117,11 +175,26 @@ export enum Target360 {
 }
 
 export class Pointing360 {
-  private readonly pointer: string;
-  private readonly target: Target360;
+  private pointer: string;
+  private target: string;
 
-  constructor(pointer: string, target: Target360) {
+  constructor(pointer: string, target: string) {
     this.pointer = pointer;
+    this.target = target;
+  }
+
+  public getPointer(): string {
+    return this.pointer;
+  }
+
+  public getTarget(): string {
+    return this.target;
+  }
+  public setPointer(pointer: string): void {
+    this.pointer = pointer;
+  }
+
+  public setTarget(target: Target360): void {
     this.target = target;
   }
 }
@@ -133,6 +206,14 @@ export abstract class SystemsMode {
   constructor(name: string, baseClass: string) {
     this.name = name;
     this.baseClass = baseClass;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getBaseClass(): string {
+    return this.baseClass;
   }
 }
 
@@ -213,9 +294,9 @@ export class PDM_Off extends BasePowerDeviceMode {
 export abstract class OverrideGeometry {}
 
 export class SphereGeometry360 extends OverrideGeometry {
-  private readonly area: number = 0.0;
-  private readonly CD: number = 2.2;
-  private readonly CR: number = 2.2;
+  private area: number = 0.0;
+  private CD: number = 2.2;
+  private CR: number = 2.2;
 
   constructor(area?: number, CD?: number, CR?: number) {
     super();
@@ -223,6 +304,29 @@ export class SphereGeometry360 extends OverrideGeometry {
     this.area = area ? area : this.area;
     this.CD = CD ? CD : this.CD;
     this.CR = CR ? CR : this.CR;
+  }
+  public getArea(): number {
+    return this.area;
+  }
+
+  public setArea(area: number): void {
+    this.area = area;
+  }
+
+  public getCD(): number {
+    return this.CD;
+  }
+
+  public setCD(CD: number): void {
+    this.CD = CD;
+  }
+
+  public getCR(): number {
+    return this.CR;
+  }
+
+  public setCR(CR: number): void {
+    this.CR = CR;
   }
 }
 

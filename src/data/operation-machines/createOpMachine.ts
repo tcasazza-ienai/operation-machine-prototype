@@ -36,7 +36,7 @@ const getRandomId = () => {
 };
 
 export const createSimpleOpMachine = (): OperationMachine => {
-  const nominalMode = new Mode360("NominalMode");
+  const nominalMode = new Mode360("1", "NominalMode");
 
   //Trigger
   const onSmaTrigger = new OnSemiMajorAxis_T({ direction: "<", sma: 6678.0 });
@@ -73,7 +73,7 @@ export const createOpsMachine_Tutorial4 = (): OperationMachine => {
   const thrustMode = new PM_Thrust("Thrust");
 
   //Mode
-  const nominalMode = new Mode360("NominalMode", undefined, [thrustMode]);
+  const nominalMode = new Mode360("1", "NominalMode", undefined, [thrustMode]);
 
   //Trigger
   const atResLevel = new AtReservoirLevel_T({ level: 0.05 });
@@ -106,10 +106,10 @@ export const createOpsMachine_Tutorial5 = () => {
   );
 
   //Mode
-  const nominalMode = new Mode360("NominalMode", undefined, [
+  const nominalMode = new Mode360("1", "NominalMode", undefined, [
     new PM_Off("Off"),
   ]);
-  const thrustingMode = new Mode360("ThrustingMode", undefined, [
+  const thrustingMode = new Mode360("2", "ThrustingMode", undefined, [
     new PM_Thrust("Thrust"),
   ]);
 
@@ -159,10 +159,10 @@ export const createOpsMachine_Tutorial5_2 = () => {
   );
 
   //Mode
-  const nominalMode = new Mode360("NominalMode", undefined, [
+  const nominalMode = new Mode360("1", "NominalMode", undefined, [
     new PM_Off("Off"),
   ]);
-  const thrustingMode = new Mode360("ThrustingMode", undefined, [
+  const thrustingMode = new Mode360("2", "ThrustingMode", undefined, [
     new PM_Thrust("Thrust"),
   ]);
 
@@ -256,18 +256,21 @@ export const createOpsMachine_Tutorial_6 = () => {
   );
 
   const nominalMode = new Mode360(
+    "3",
     "NOM",
     new Pointing360("+x", Target360.COUNTER_VELOCITY),
     [new PM_Thrust("Thrust"), new PDM_On("ADCS"), new PDM_Idle("COMs")]
   );
 
   const coastingMode = new Mode360(
+    "4",
     "COAST",
     new Pointing360("+z", Target360.SUN_FACING),
     [new PM_Off("Off"), new PDM_On("ADCS"), new PDM_Idle("COMs")]
   );
 
   const commMode = new Mode360(
+    "5",
     "COMMS",
     new Pointing360("-z", Target360.NADIR),
     [new PM_Idle("PROP", 2), new PDM_On("ADCS_ON"), new PDM_On("COMS_ON")]

@@ -23,6 +23,7 @@ import {
 import OperationNode from "../operation/operation-node.tsx";
 import "@xyflow/react/dist/style.css";
 import {
+  Mode360,
   Operation360,
   TerminateSimulation_E,
   ToOp_E,
@@ -93,7 +94,7 @@ type OperationNode = {
   id: string;
   type: "custom";
   data: {
-    label: string;
+    operation: Operation360;
     isInitial?: boolean;
     isBiDirectional?: boolean;
     dataFlow?: "LL" | "RR";
@@ -107,8 +108,6 @@ type OperationNode = {
 const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
   operations,
 }) => {
-  const [operationMachine, setOperationMachine] =
-    useState<OperationMachine>(operationMachine1);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { fitView } = useReactFlow();
@@ -128,7 +127,7 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         id: operation.getId(),
         type: "custom",
         data: {
-          label: operation.getOpName(),
+          operation: operation,
           isInitial: operation.getIsInitial(),
         },
         position: { x: 0, y: 0 }, // Initial position, will be calculated by dagre
@@ -247,7 +246,14 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
           if (!hasTerminateNode) {
             newNodes.push({
               id: "terminate",
-              data: { label: "End Simulation", isEndNode: true },
+              data: {
+                operation: new Operation360(
+                  "",
+                  "End Simulation",
+                  new Mode360("", "")
+                ),
+                isEndNode: true,
+              },
               type: "custom",
               position: { x: 0, y: 0 },
               className: "px-4 py-2 rounded border border-red-500",
@@ -295,6 +301,9 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
     const { nodes: newNodes, edges: newEdges } = buildGraphElements();
     setNodes(newNodes);
     setEdges(newEdges);
+    setTimeout(() => {
+      fitView();
+    }, 300);
   }, [operations, buildGraphElements, setNodes, setEdges]);
 
   //   const refreshNodes = (operations: Operation[]) => {
@@ -353,12 +362,12 @@ const OperationMachineBoard: React.FC<{ operations: Operation360[] }> = ({
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        panOnDrag={false}
         zoomOnScroll={true}
         zoomOnPinch={false}
         style={{ width: "100%" }}
         nodesDraggable
       >
+        <Controls showInteractive={false} />
         <Background gap={1} color="transparent" />
       </ReactFlow>
     </Box>
