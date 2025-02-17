@@ -56,6 +56,7 @@
 .react-flow__edge-text {
   color: "smokewhite";
   font-size: 20px !important;
+  fill: whitesmoke !important;
   font-weight: 700;
   fill: rgb(250, 0, 0, 0.5);
 }
