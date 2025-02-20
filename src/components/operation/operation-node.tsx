@@ -13,6 +13,7 @@ import {
 } from "../../entities/OpMachine.ts";
 import OperationNodeEdit from "./operation-node-edit.tsx";
 import BasicDialog from "../modals/basic-dialog.tsx";
+import OperationEndSimulationNode from "./operation-end-simulation-node.tsx";
 
 const OperationNode: React.FC<NodeProps> = ({ data }) => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
@@ -114,14 +115,26 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
 
   useEffect(() => {
     setDataLabel((data.operation as Operation360).getOpName());
+    console.log(data);
   }, [data]);
   return (
     <>
-      {editMode.active ? (
+      {(data.operation as Operation360).getId() === "" &&
+      (data.operation as Operation360).getOpName() === "End Simulation" ? (
+        <OperationEndSimulationNode />
+      ) : editMode.active ? (
         <Box
           onBlur={() => {
             onBlurEditOperation();
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              if (document.activeElement) {
+                (document.activeElement as HTMLElement).blur();
+              }
+            }
+          }}
+          tabIndex={0}
         >
           <OperationNodeEdit
             defaultName={defaultName()}
