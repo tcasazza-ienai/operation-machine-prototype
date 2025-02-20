@@ -24,7 +24,6 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
   sphericalGeometryStatus,
   setSphericalGeometryStatus,
 }) => {
-  // Estado para manejar el valor del Select
   const [geometryType, setGeometryType] = useState<string>(
     sphericalGeometryStatus ? "Spherical geometry" : "Spacecraft geometry"
   );

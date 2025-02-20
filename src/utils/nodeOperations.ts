@@ -100,7 +100,6 @@ const processOperation = (
     position: { x: 0, y: 0 },
   };
 
-  // Se agrega el nodo de la operación una única vez
   newNodes.push(currentNode);
 
   operation.getEvents().forEach((event, index) => {
@@ -156,7 +155,6 @@ const processOperation = (
       );
     } else if (effect instanceof TerminateSimulation_E) {
       currentNode.data = { hasEndNode: true, ...currentNode.data };
-      // Se agrega el nodo "terminate" solo si no existe
       if (!newNodes.some((n) => n.id === "terminate")) {
         newNodes.push({
           id: "terminate",
@@ -184,7 +182,6 @@ const processOperation = (
         className: "text-sm",
         animated: true,
       });
-      // Se agrega el nodo "0" solo si no existe
       if (!newNodes.some((n) => n.id === "0")) {
         newNodes.push({
           id: "0",
