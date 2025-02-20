@@ -166,7 +166,6 @@ const SystemMode: React.FC<{
                 : ""
             }
             renderValue={() => {
-              console.log("formMode", formMode.getSystemsModes());
               return formMode.getSystemsModes() &&
                 formMode.getSystemsModes()?.length > 0 ? (
                 <div>{`${

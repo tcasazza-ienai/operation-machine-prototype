@@ -37,7 +37,6 @@ const OperationMachineBoard: React.FC = () => {
   const { fitView } = useReactFlow();
 
   const refreshNodes = (operations: Operation360[]) => {
-    console.log("operations", operations);
     const { nodes: newNodes, edges: newEdges } = buildGraphElements(opMachine);
 
     setNodes(newNodes);
@@ -52,7 +51,6 @@ const OperationMachineBoard: React.FC = () => {
   }, [edges]);
 
   useEffect(() => {
-    console.log("opMachine", opMachine.getOperations());
     refreshNodes(opMachine.getOperations());
   }, [opMachine]);
   const nodeTypes = {

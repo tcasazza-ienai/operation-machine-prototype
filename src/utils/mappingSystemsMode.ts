@@ -59,7 +59,6 @@ function parseSystemMode(systemMode: SystemsMode): {
   mode: PropultionModeType | PowerDeviceModeType;
   power?: number;
 } {
-  console.log("systemMode", systemMode);
   const name = systemMode.getName();
   let systemBaseClass: SystemBaseClass;
   let mode: PropultionModeType | PowerDeviceModeType;

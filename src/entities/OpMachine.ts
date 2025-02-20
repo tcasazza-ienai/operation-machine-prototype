@@ -316,8 +316,8 @@ export abstract class OverrideGeometry {}
 
 export class SphereGeometry360 extends OverrideGeometry {
   private area: number = 0.0;
-  private CD: number = 2.2;
-  private CR: number = 2.2;
+  private CD: number = 0.0;
+  private CR: number = 0.0;
 
   constructor(area?: number, CD?: number, CR?: number) {
     super();

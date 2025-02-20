@@ -27,7 +27,6 @@ const nodeWidth = 280;
 const nodeHeight = 100;
 
 export const buildGraphElements = (opMachine: OperationMachine) => {
-  console.log("opMachine", opMachine);
   const newNodes: OperationNode[] = [];
   const newEdges: Edge[] = [];
   const processedOperations = new Set<string>();

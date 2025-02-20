@@ -29,7 +29,6 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   const [editedMode, setEditedMode] = useState<Mode360>();
 
   const handleEditMode = async (mode: Mode360) => {
-    console.log("mode", mode);
     setEditedMode(mode);
   };
 
