@@ -32,10 +32,6 @@ const OperationMachineBoard: React.FC = () => {
   };
 
   useEffect(() => {
-    fitView();
-  }, [edges]);
-
-  useEffect(() => {
     refreshNodes(opMachine.getOperations());
   }, [opMachine]);
   const nodeTypes = {

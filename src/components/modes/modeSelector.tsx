@@ -13,6 +13,7 @@ import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import ModeModal from "../modals/mode-modal.tsx";
 import { Mode360 } from "../../entities/OpMachine.ts";
+import BasicDialog from "../modals/basic-dialog.tsx";
 
 interface ModeSelectorProps {
   selected: Mode360;
@@ -26,9 +27,22 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
 }) => {
   const [modeModal, setModeModal] = useState<boolean>(false);
   const [editedMode, setEditedMode] = useState<Mode360>();
+  const [duplicatedMode, setDuplicatedMode] = useState<Mode360>();
+  const [changeSelectDialog, setChangeSelectDialog] = useState<boolean>(false);
 
   const handleEditMode = async (mode: Mode360) => {
     setEditedMode(mode);
+  };
+
+  const confirmDuplicateMode = async (mode: Mode360) => {
+    const newMode = new Mode360(
+      (modesList.length + 1).toString(),
+      mode.getModeName() + " (copy)",
+      mode.getPointing(),
+      mode.getSystemsModes(),
+      mode.getOverrideGeometry()
+    );
+    modesList.push(newMode);
   };
 
   useEffect(() => {
@@ -84,7 +98,13 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
                 />
               </Tooltip>
               <Tooltip title="Duplicate">
-                <ContentCopyRoundedIcon fontSize="small" />
+                <ContentCopyRoundedIcon
+                  onClick={() => {
+                    setChangeSelectDialog(true);
+                    setDuplicatedMode(item);
+                  }}
+                  fontSize="small"
+                />
               </Tooltip>
             </Box>
           </MenuItem>
@@ -97,6 +117,18 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
         }}
         open={modeModal}
         mode={editedMode}
+      />
+      <BasicDialog
+        onClose={() => setChangeSelectDialog(false)}
+        onConfirm={() => {
+          duplicatedMode
+            ? confirmDuplicateMode(duplicatedMode)
+            : setChangeSelectDialog(false);
+        }}
+        open={changeSelectDialog}
+        confirmBottonLabel="Accept"
+        title="Duplicate Mode"
+        description={`Are you sure you want to duplicate this mode?: ${duplicatedMode?.getModeName()}`}
       />
     </Box>
   );
