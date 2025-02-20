@@ -51,31 +51,26 @@ const SystemMode: React.FC<{
     e: SelectChangeEvent<string>,
     selectNumber: number
   ) => {
-    // Si se modifica el primer select y se queda vacío,
-    // se actualiza formMode para que ambos selects queden vacíos.
     if (selectNumber === 0 && e.target.value.trim() === "") {
       const updatedFormMode = new Mode360(
         formMode.getModeId(),
         formMode.getModeName(),
         formMode.getPointing(),
-        [], // Vacío: se limpian ambos selects
+        [],
         formMode.getOverrideGeometry()
       );
       setFormMode(updatedFormMode);
       return;
     }
 
-    // Para los demás casos, se continúa con la lógica normal.
     const [functionalId, modeType] = e.target.value.split("-");
     const selectedSystem = spacecraftSelected
       .getScSystems()
       .find((system) => system.getFunctionalId() === functionalId);
 
-    // Se arma un arreglo de dos posiciones de forma explícita.
     const newSystemMode: SystemsMode[] = [];
 
     if (selectNumber === 0) {
-      // Actualizar el primer select (índice 0)
       if (selectedSystem) {
         newSystemMode[0] = createSystemMode(
           selectedSystem.getFunctionalId(),
@@ -83,12 +78,10 @@ const SystemMode: React.FC<{
           modeType as PropultionModeType | PowerDeviceModeType
         );
       }
-      // Se conserva el valor del segundo select, si existe.
       if (formMode.getSystemsModes()?.[1] !== undefined) {
         newSystemMode[1] = formMode.getSystemsModeByIndex(1);
       }
     } else if (selectNumber === 1) {
-      // Para modificar el segundo select, se verifica que el primero esté lleno.
       if (formMode.getSystemsModes()?.[0] === undefined) return;
       newSystemMode[0] = formMode.getSystemsModeByIndex(0);
       if (selectedSystem) {
