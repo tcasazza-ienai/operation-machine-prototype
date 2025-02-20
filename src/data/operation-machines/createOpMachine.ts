@@ -29,7 +29,6 @@ import {
   SolarPanel360,
   Structure360,
 } from "../../entities/System.ts";
-import { SpacecraftSystem } from "../../types/spacecraft.types.ts";
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000).toString(16);

@@ -58,7 +58,6 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
 
   useEffect(() => {
     if (sphericalGeometryStatus) {
-      // Se actualiza formMode con la nueva geometría
       const updatedFormMode = new Mode360(
         formMode.getModeId(),
         formMode.getModeName(),
@@ -75,7 +74,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
       );
       setFormMode(updatedFormMode);
     }
-  }, [sphericalGeometryForm]); // Se actualiza cuando cambia el formulario
+  }, [sphericalGeometryForm]);
 
   useEffect(() => {
     const currentOverrideGeometry = formMode.getOverrideGeometry();
@@ -85,7 +84,6 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
         cd: currentOverrideGeometry.getCD().toString(),
         cr: currentOverrideGeometry.getCR().toString(),
       };
-      // Actualizar solo si hay diferencias
       if (
         sphericalGeometryForm.area !== newForm.area ||
         sphericalGeometryForm.cd !== newForm.cd ||
@@ -110,7 +108,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
         <InputLabel>Geometry</InputLabel>
         <Select
           label="Geometry"
-          value={geometryType} // Se usa "value" para hacerlo controlado
+          value={geometryType}
           fullWidth
           onChange={handleGeometry}
         >
@@ -123,9 +121,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
           <TextField
             label="Area*"
             type="number"
-            value={
-              sphericalGeometryForm.area // Se pasa el valor directamente
-            }
+            value={sphericalGeometryForm.area}
             onChange={(e) => {
               const value =
                 e.target.value

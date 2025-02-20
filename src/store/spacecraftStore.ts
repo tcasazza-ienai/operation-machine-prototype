@@ -1,8 +1,5 @@
 import { create } from "zustand";
-import spacefract1 from "../data/spacecraft/spacecraft-1.json";
-import { OperationMachine } from "../types/operation-machine.types";
 import { combine } from "zustand/middleware";
-import { Spacecraft } from "../types/spacecraft.types";
 import { Spacecraft360 } from "../entities/Spacecraft.ts";
 import { SpaceCraftSystem360 } from "../entities/SpaceCraftSystem.ts";
 import { SimpleElectricPropulsion360 } from "../entities/Propulsion.ts";

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import modes from "../data/modes/modes1.json";
 import { combine } from "zustand/middleware";
 import { Mode360 } from "../entities/OpMachine.ts";
 

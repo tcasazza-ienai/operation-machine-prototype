@@ -1,5 +1,4 @@
-import { Propulsion } from "./propulsion.types";
-import { Spacecraft, SpacecraftSystem } from "./spacecraft.types";
+import { SpacecraftSystem } from "./spacecraft.types";
 
 export type OperationMachine = {
   id: string;
@@ -26,17 +25,6 @@ export type OperationEvent = {
   trigger: string;
   effect: string;
 };
-
-// CONSULTAR CON SAM
-type Effect =
-  | ((target_op_name: string) => number) // ToOp(target_op_name)
-  | ((
-      DV_r: number,
-      DV_c: number,
-      DV_n: number,
-      propulsion_system: Propulsion
-    ) => void) // Impulse
-  | (() => void); // TerminateSimulation()
 
 type Pointing = {
   pointer: string;

@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from "@mui/material";
+import { Box, SelectChangeEvent, Typography } from "@mui/material";
 import { Handle, Position } from "@xyflow/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PopupMenu, { PopupMenuProp } from "../menu/popup-menu.tsx";
 import { Mode360, Operation360 } from "../../entities/OpMachine.ts";
@@ -24,7 +17,7 @@ const OperationNodeAdded: React.FC<{
 }> = ({ data, options, selectOnChange }) => {
   const modes = useModesStore((state) => state.modes);
 
-  const { operation, isBiDirectional, dataFlow, hasEndNode, isEndNode } = data;
+  const { operation, isBiDirectional, dataFlow, isEndNode } = data;
   const [selected, setSelected] = useState<Mode360>(
     (data.operation as Operation360).getOpMode()
   );

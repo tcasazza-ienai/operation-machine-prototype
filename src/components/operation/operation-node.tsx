@@ -1,8 +1,7 @@
-import { Box, Button, Menu, MenuItem, Select, Typography } from "@mui/material";
-import { Handle, NodeProps, Position } from "@xyflow/react";
+import { Box } from "@mui/material";
+import { NodeProps } from "@xyflow/react";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import OperationNodeAdded from "./operation-node-added.tsx";
 import OperationNodeEmpty from "./operation-node-empty.tsx";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
@@ -11,7 +10,6 @@ import {
   Mode360,
   Operation360,
   OperationMachine,
-  Pointing360,
 } from "../../entities/OpMachine.ts";
 import OperationNodeEdit from "./operation-node-edit.tsx";
 import BasicDialog from "../modals/basic-dialog.tsx";

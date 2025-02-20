@@ -1,5 +1,4 @@
 import {
-  BasePropulsionMode,
   PDM_Idle,
   PDM_Off,
   PDM_On,

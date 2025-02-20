@@ -11,17 +11,9 @@ import {
 } from "@mui/material";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import QLawInputs from "./qlaw-inputs.tsx";
-import {
-  Mode,
-  NormalTargets,
-  QLaw,
-} from "../../../types/operation-machine.types.ts";
+import { NormalTargets, QLaw } from "../../../types/operation-machine.types.ts";
 import { useSpacecraftStore } from "../../../store/spacecraftStore.ts";
-import {
-  Mode360,
-  Pointing360,
-  Target360,
-} from "../../../entities/OpMachine.ts";
+import { Mode360, Pointing360 } from "../../../entities/OpMachine.ts";
 
 const emptyQLaw: QLaw = {
   orbitTargeted: "",

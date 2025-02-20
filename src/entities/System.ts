@@ -60,11 +60,7 @@ export class SolarPanel360 extends System360 {
   }
 }
 
-export class Structure360 extends System360 {
-  constructor(name: string, mass: number, cost: number) {
-    super(name, mass, cost);
-  }
-}
+export class Structure360 extends System360 {}
 
 export class PowerDevice360 extends System360 {
   private readonly power: number;

@@ -9,7 +9,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Mode } from "../../types/operation-machine.types";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import ModeModal from "../modals/mode-modal.tsx";

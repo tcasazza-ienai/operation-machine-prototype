@@ -1,5 +1,13 @@
 import { GroundStation } from "./GroundStation.ts";
-import { Propulsion360, SimplePropulsion360 } from "./Propulsion.ts";
+import { Propulsion360 } from "./Propulsion.ts";
+
+export enum Target360 {
+  ALONG_VELOCITY = "AlongVelocity",
+  COUNTER_VELOCITY = "CounterVelocity",
+  Q_LAW = "QLaw",
+  NADIR = "Nadir",
+  SUN_FACING = "SunFacing",
+}
 
 export class OperationMachine {
   private readonly operations: Operation360[] = [];
@@ -167,14 +175,6 @@ export class Mode360 {
   public setOverrideGeometryEmpty(): void {
     this.override_geometry = undefined;
   }
-}
-
-export enum Target360 {
-  ALONG_VELOCITY = "AlongVelocity",
-  COUNTER_VELOCITY = "CounterVelocity",
-  Q_LAW = "QLaw",
-  NADIR = "Nadir",
-  SUN_FACING = "SunFacing",
 }
 
 export class Pointing360 {
@@ -564,6 +564,6 @@ function createImpulseToElementEffect(numberOfElements: number) {
   return CustomImpulseToElementsEffectClass;
 }
 
-const ImpulseToElement_E = createImpulseToElementEffect(1);
-const ImpulseToTwoElements_E = createImpulseToElementEffect(2);
-const ImpulseToThreeElements_E = createImpulseToElementEffect(3);
+export const ImpulseToElement_E = createImpulseToElementEffect(1);
+export const ImpulseToTwoElements_E = createImpulseToElementEffect(2);
+export const ImpulseToThreeElements_E = createImpulseToElementEffect(3);

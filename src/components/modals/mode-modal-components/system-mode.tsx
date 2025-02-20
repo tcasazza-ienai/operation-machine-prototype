@@ -19,7 +19,6 @@ import {
   parseSystemMode,
   SystemBaseClass,
 } from "../../../utils/mappingSystemsMode.ts";
-import { SphereGeometry } from "../../../types/operation-machine.types.ts";
 import { useSpacecraftStore } from "../../../store/spacecraftStore.ts";
 import { Spacecraft360 } from "../../../entities/Spacecraft.ts";
 
@@ -38,14 +37,6 @@ const SystemMode: React.FC<{
     "STARTUP",
   ];
   const powerDeviceModeTypes: PowerDeviceModeType[] = ["IDLE", "OFF", "ON"];
-
-  const emptySphericalGeometry: {
-    activate: boolean;
-    measurements: SphereGeometry;
-  } = {
-    activate: false,
-    measurements: { area: 0, CD: 0, CR: 0 },
-  };
 
   const onChangeSystemMode = (
     e: SelectChangeEvent<string>,
@@ -200,7 +191,7 @@ const SystemMode: React.FC<{
           <InputLabel>Object Name (Functional ID)</InputLabel>
           <Select
             label="Object Name (Functional ID)"
-            disabled={formMode.getSystemsModes()?.length == 0}
+            disabled={formMode.getSystemsModes()?.length === 0}
             value={
               formMode.getSystemsModes()?.length > 1
                 ? `${formMode.getSystemsModeByIndex(1)?.getName() || ""}-${

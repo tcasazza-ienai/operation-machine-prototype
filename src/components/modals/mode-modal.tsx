@@ -6,36 +6,14 @@ import {
   DialogActions,
   Button,
   Box,
-  Select,
   TextField,
-  MenuItem,
-  Typography,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent,
 } from "@mui/material";
-import { SphereGeometry } from "../../types/operation-machine.types.ts";
 import IenaiButton from "../common/ienai-button.tsx";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { useSpacecraftStore } from "../../store/spacecraftStore.ts";
 import { useModesStore } from "../../store/modesStore.ts";
-import { SpacecraftSystem } from "../../types/spacecraft.types.ts";
 import PointingMode from "./mode-modal-components/pointing-mode.tsx";
 import GeometryMode from "./mode-modal-components/geometry-mode.tsx";
-import {
-  Mode360,
-  SphereGeometry360,
-  SystemsMode,
-  PropultionModeType,
-  PowerDeviceModeType,
-} from "../../entities/OpMachine.ts";
-import { Spacecraft360 } from "../../entities/Spacecraft.ts";
-import {
-  createSystemMode,
-  parseSystemMode,
-  SystemBaseClass,
-} from "../../utils/mappingSystemsMode.ts";
-import { Mode } from "@mui/icons-material";
+import { Mode360, SphereGeometry360 } from "../../entities/OpMachine.ts";
 import SystemMode from "./mode-modal-components/system-mode.tsx";
 
 const emptyMode: Mode360 = new Mode360("0", "");

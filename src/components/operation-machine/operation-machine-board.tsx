@@ -2,30 +2,15 @@ import { Box } from "@mui/material";
 import {
   Background,
   Controls,
-  Edge,
-  Handle,
-  MarkerType,
   ReactFlow,
   useEdgesState,
   useNodesState,
   useReactFlow,
 } from "@xyflow/react";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  Operation,
-  OperationMachine,
-} from "../../types/operation-machine.types";
-import operationMachine1 from "../../data/operation-machines/operation-machine-1.json";
+import React, { useEffect } from "react";
 import OperationNode from "../operation/operation-node.tsx";
 import "@xyflow/react/dist/style.css";
-import {
-  Mode360,
-  Operation360,
-  TerminateSimulation_E,
-  ToOp_E,
-} from "../../entities/OpMachine.ts";
-
-import CustomEdge from "../edges/CustomEdge.tsx";
+import { Operation360 } from "../../entities/OpMachine.ts";
 import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";

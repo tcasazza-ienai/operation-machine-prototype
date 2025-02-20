@@ -1,16 +1,8 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, MenuItem, Select, TextField, Typography } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import React, { useEffect, useRef, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import PopupMenu from "../menu/popup-menu.tsx";
-import { Mode } from "../../types/operation-machine.types.ts";
 import { Mode360 } from "../../entities/OpMachine.ts";
 
 const OperationNodeEdit: React.FC<{
