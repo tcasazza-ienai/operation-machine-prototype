@@ -26,31 +26,25 @@ import {
   Mode360,
   SphereGeometry360,
   SystemsMode,
+  PropultionModeType,
+  PowerDeviceModeType,
 } from "../../entities/OpMachine.ts";
 import { Spacecraft360 } from "../../entities/Spacecraft.ts";
 import {
   createSystemMode,
+  parseSystemMode,
   SystemBaseClass,
 } from "../../utils/mappingSystemsMode.ts";
 import { Mode } from "@mui/icons-material";
+import SystemMode from "./mode-modal-components/system-mode.tsx";
 
 const emptyMode: Mode360 = new Mode360("0", "");
 
-const emptySphericalGeometry: {
-  activate: boolean;
-  measurements: SphereGeometry;
-} = {
-  activate: false,
-  measurements: { area: 0, CD: 0, CR: 0 },
-};
 const ModeModal: React.FC<{
   open: boolean;
   onClose: () => void;
   mode?: Mode360;
 }> = ({ open, onClose, mode }) => {
-  const spacecraftSelected: Spacecraft360 = useSpacecraftStore(
-    (state) => state.spacecraft
-  );
   const modes = useModesStore((state) => state.modes);
   const setModes = useModesStore((state) => state.updateModes);
 
@@ -89,7 +83,14 @@ const ModeModal: React.FC<{
         )
       );
     } else {
-      setModes([...modes, formMode]);
+      const newMode = new Mode360(
+        (modes.length + 1).toString(),
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
+      );
+      setModes([...modes, newMode]);
     }
     closeForm();
   };
@@ -183,135 +184,7 @@ const ModeModal: React.FC<{
           formMode={formMode}
           setFormMode={setFormMode}
         />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            marginTop: "16px",
-            gap: "16px",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }}>System Mode</Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <FormControl fullWidth>
-              <InputLabel>Object Name (Functional ID)</InputLabel>
-              <Select
-                label="Object Name (Functional ID)"
-                value={
-                  formMode.getSystemsModes() &&
-                  formMode.getSystemsModes()?.length > 0
-                    ? formMode.getSystemsModeByIndex(0).getName()
-                    : ""
-                }
-                onChange={(e) => {
-                  const selectedSystem = spacecraftSelected
-                    .getScSystems()
-                    .find(
-                      (system) => system.getFunctionalId() === e.target.value
-                    );
-                  const newSystemMode: SystemsMode[] = [];
-
-                  if (selectedSystem) {
-                    console.log(
-                      selectedSystem.getSystem().constructor
-                        .name as SystemBaseClass
-                    );
-                    newSystemMode.push(
-                      createSystemMode(
-                        selectedSystem.getFunctionalId(),
-                        selectedSystem.getSystem().constructor
-                          .name as SystemBaseClass
-                      )
-                    );
-                  }
-                  if (
-                    formMode.getSystemsModes() &&
-                    formMode.getSystemsModeByIndex(1)
-                  ) {
-                    newSystemMode.push(formMode.getSystemsModeByIndex(1));
-                  }
-                  if (newSystemMode !== undefined) {
-                    const updatedFormMode = new Mode360(
-                      formMode.getModeId(),
-                      formMode.getModeName()
-                    );
-                    updatedFormMode.setSystemsModes(newSystemMode);
-                    setFormMode(updatedFormMode);
-                  }
-                }}
-                defaultValue=""
-              >
-                <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.getScSystems()?.length > 0 &&
-                  spacecraftSelected.getScSystems().map((system, index) => (
-                    <MenuItem
-                      key={system.getFunctionalId() + index}
-                      value={system.getFunctionalId()}
-                    >
-                      {system.getFunctionalId()}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Object Name (Functional ID)</InputLabel>
-              <Select
-                label="Object Name (Functional ID)"
-                disabled={formMode.getSystemsModes()?.length == 0}
-                value={
-                  formMode.getSystemsModes() &&
-                  formMode.getSystemsModes()[1] &&
-                  formMode.getSystemsModes()?.length > 0
-                    ? formMode.getSystemsModes()[1].getName()
-                    : ""
-                }
-                onChange={(e) => {
-                  const selectedSystem = spacecraftSelected
-                    .getScSystems()
-                    .find(
-                      (system) => system.getFunctionalId() === e.target.value
-                    );
-                  const newSystemMode: SystemsMode[] = [];
-
-                  if (
-                    formMode.getSystemsModes() &&
-                    formMode.getSystemsModeByIndex(0)
-                  )
-                    newSystemMode.push(formMode.getSystemsModeByIndex(0));
-                  if (selectedSystem) {
-                    newSystemMode.push(
-                      createSystemMode(
-                        selectedSystem.getFunctionalId(),
-                        selectedSystem.getSystem().constructor
-                          .name as SystemBaseClass
-                      )
-                    );
-                  }
-                  if (newSystemMode !== undefined) {
-                    const updatedFormMode = new Mode360(
-                      formMode.getModeId(),
-                      formMode.getModeName()
-                    );
-                    updatedFormMode.setSystemsModes(newSystemMode);
-                    setFormMode(updatedFormMode);
-                  }
-                }}
-                defaultValue=""
-              >
-                <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.getScSystems()?.length > 0 &&
-                  spacecraftSelected.getScSystems().map((system, index) => (
-                    <MenuItem
-                      key={system.getFunctionalId() + index}
-                      value={system.getFunctionalId()}
-                    >
-                      {system.getFunctionalId()}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </Box>
+        <SystemMode formMode={formMode} setFormMode={setFormMode} />
 
         <DialogActions sx={{ alignSelf: "flex-start" }}>
           <IenaiButton

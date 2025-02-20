@@ -99,8 +99,8 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
     const newOperation = new Operation360(
       (opMachine.getOperations()?.length + 2).toString(),
       (dataLabel || defaultName()).toUpperCase(),
-      data.mode as Mode360,
-      data.events as Event360[]
+      (data.operation as Operation360).getOpMode() as Mode360,
+      (data.operation as Operation360).getEvents() as Event360[]
     );
 
     newOpMachine.addOperationToOpMachine(newOperation);

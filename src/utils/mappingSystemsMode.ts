@@ -8,47 +8,92 @@ import {
   PM_SelectOperatingPoint,
   PM_Startup,
   PM_Thrust,
+  PowerDeviceModeType,
+  PropultionModeType,
   SystemsMode,
 } from "../entities/OpMachine.ts";
-export type SystemBaseClass =
-  | "BasePropulsionMode"
-  | "PM_Off"
-  | "PM_Thrust"
-  | "PM_Idle"
-  | "PM_Startup"
-  | "PM_SelectOperatingPoint"
-  | "BasePowerDeviceMode"
-  | "PDM_On"
-  | "PDM_Idle"
-  | "PDM_Off";
+export type SystemBaseClass = "SimpleElectricPropulsion360" | "PowerDevice360";
 
 function createSystemMode(
   name: string,
-  baseClass: SystemBaseClass,
+  systemBaseClass: SystemBaseClass,
+  mode: PropultionModeType | PowerDeviceModeType,
   power?: number
 ): SystemsMode {
-  switch (baseClass) {
-    case "BasePropulsionMode":
-      return new BasePropulsionMode(name);
-    case "PM_Off":
-      return new PM_Off(name);
-    case "PM_Thrust":
-      return new PM_Thrust(name);
-    case "PM_Idle":
-      return new PM_Idle(name, power ? power : 0);
-    case "PM_Startup":
-      return new PM_Startup(name, power ? power : 0);
-    case "PM_SelectOperatingPoint":
-      return new PM_SelectOperatingPoint(name, "default");
-    case "PDM_On":
-      return new PDM_On(name);
-    case "PDM_Idle":
-      return new PDM_Idle(name);
-    case "PDM_Off":
-      return new PDM_Off(name);
-    default:
-      throw new Error(`Unknown baseClass: ${baseClass}`);
+  if (systemBaseClass === "SimpleElectricPropulsion360" && mode === "OFF") {
+    return new PM_Off(name);
+  } else if (
+    systemBaseClass === "SimpleElectricPropulsion360" &&
+    mode === "THRUST"
+  ) {
+    return new PM_Thrust(name);
+  } else if (
+    systemBaseClass === "SimpleElectricPropulsion360" &&
+    mode === "IDLE"
+  ) {
+    return new PM_Idle(name, power ? power : 0);
+  } else if (
+    systemBaseClass === "SimpleElectricPropulsion360" &&
+    mode === "STARTUP"
+  ) {
+    return new PM_Startup(name, power ? power : 0);
+  } else if (
+    systemBaseClass === "SimpleElectricPropulsion360" &&
+    mode === "SELECT_OPERATING_POINT"
+  ) {
+    return new PM_SelectOperatingPoint(name, "default");
+  } else if (systemBaseClass === "PowerDevice360" && mode === "ON") {
+    return new PDM_On(name);
+  } else if (systemBaseClass === "PowerDevice360" && mode === "IDLE") {
+    return new PDM_Idle(name);
+  } else if (systemBaseClass === "PowerDevice360" && mode === "OFF") {
+    return new PDM_Off(name);
+  } else {
+    throw new Error(`Unknown baseClass or mode: ${systemBaseClass}, ${mode}`);
   }
 }
 
-export { createSystemMode };
+function parseSystemMode(systemMode: SystemsMode): {
+  name: string;
+  systemBaseClass: SystemBaseClass;
+  mode: PropultionModeType | PowerDeviceModeType;
+  power?: number;
+} {
+  console.log("systemMode", systemMode);
+  const name = systemMode.getName();
+  let systemBaseClass: SystemBaseClass;
+  let mode: PropultionModeType | PowerDeviceModeType;
+  let power: number | undefined;
+
+  if (systemMode instanceof PM_Off) {
+    systemBaseClass = "SimpleElectricPropulsion360";
+    mode = "OFF";
+  } else if (systemMode instanceof PM_Thrust) {
+    systemBaseClass = "SimpleElectricPropulsion360";
+    mode = "THRUST";
+  } else if (systemMode instanceof PM_Idle) {
+    systemBaseClass = "SimpleElectricPropulsion360";
+    mode = "IDLE";
+  } else if (systemMode instanceof PM_Startup) {
+    systemBaseClass = "SimpleElectricPropulsion360";
+    mode = "STARTUP";
+  } else if (systemMode instanceof PM_SelectOperatingPoint) {
+    systemBaseClass = "SimpleElectricPropulsion360";
+    mode = "SELECT_OPERATING_POINT";
+  } else if (systemMode instanceof PDM_On) {
+    systemBaseClass = "PowerDevice360";
+    mode = "ON";
+  } else if (systemMode instanceof PDM_Idle) {
+    systemBaseClass = "PowerDevice360";
+    mode = "IDLE";
+  } else if (systemMode instanceof PDM_Off) {
+    systemBaseClass = "PowerDevice360";
+    mode = "OFF";
+  } else {
+    throw new Error(`Unknown SystemsMode instance: ${systemMode}`);
+  }
+
+  return { name, systemBaseClass, mode, power };
+}
+
+export { createSystemMode, parseSystemMode };

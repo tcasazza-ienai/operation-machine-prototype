@@ -24,7 +24,10 @@ export class OperationMachine {
   }
 
   public deleteOperationById(id: string): void {
-    this.operations.filter((op) => op.getId() !== id);
+    const index = this.operations.findIndex((op) => op.getId() === id);
+    if (index !== -1) {
+      this.operations.splice(index, 1);
+    }
   }
 }
 
@@ -198,14 +201,28 @@ export class Pointing360 {
     this.target = target;
   }
 }
+export type PropultionModeType =
+  | "OFF"
+  | "IDLE"
+  | "THRUST"
+  | "STARTUP"
+  | "SELECT_OPERATING_POINT";
+
+export type PowerDeviceModeType = "ON" | "OFF" | "IDLE";
 
 export abstract class SystemsMode {
   protected readonly name: string;
   protected readonly baseClass: string;
+  protected readonly mode: PowerDeviceModeType | PropultionModeType;
 
-  constructor(name: string, baseClass: string) {
+  constructor(
+    name: string,
+    baseClass: string,
+    mode: PowerDeviceModeType | PropultionModeType
+  ) {
     this.name = name;
     this.baseClass = baseClass;
+    this.mode = mode;
   }
 
   public getName(): string {
@@ -215,24 +232,28 @@ export abstract class SystemsMode {
   public getBaseClass(): string {
     return this.baseClass;
   }
+
+  public getMode(): string {
+    return this.mode;
+  }
 }
 
 //////// PROPULSION MODES //////////////
 export class BasePropulsionMode extends SystemsMode {
-  constructor(name: string) {
-    super(name, "Propulsion");
+  constructor(name: string, mode: PropultionModeType) {
+    super(name, "Propulsion", mode);
   }
 }
 
 export class PM_Off extends BasePropulsionMode {
   constructor(name: string) {
-    super(name);
+    super(name, "OFF");
   }
 }
 
 export class PM_Thrust extends BasePropulsionMode {
   constructor(name: string) {
-    super(name);
+    super(name, "THRUST");
   }
 }
 
@@ -240,7 +261,7 @@ export class PM_Idle extends BasePropulsionMode {
   private readonly power: number;
 
   constructor(name: string, power: number) {
-    super(name);
+    super(name, "IDLE");
     this.power = power;
   }
 }
@@ -249,7 +270,7 @@ export class PM_Startup extends BasePropulsionMode {
   private readonly power: number;
 
   constructor(name: string, power: number) {
-    super(name);
+    super(name, "STARTUP");
     this.power = power;
   }
 }
@@ -258,7 +279,7 @@ export class PM_SelectOperatingPoint extends BasePropulsionMode {
   private readonly perf_point: string;
 
   constructor(name: string, perf_point: string) {
-    super(name);
+    super(name, "SELECT_OPERATING_POINT");
     this.perf_point = perf_point;
   }
 }
@@ -266,26 +287,26 @@ export class PM_SelectOperatingPoint extends BasePropulsionMode {
 
 ////// POWER DEVICE MODES //////
 export class BasePowerDeviceMode extends SystemsMode {
-  constructor(name: string) {
-    super(name, "Power Device");
+  constructor(name: string, mode: PowerDeviceModeType) {
+    super(name, "Power Device", mode);
   }
 }
 
 export class PDM_On extends BasePowerDeviceMode {
   constructor(name: string) {
-    super(name);
+    super(name, "ON");
   }
 }
 
 export class PDM_Idle extends BasePowerDeviceMode {
   constructor(name: string) {
-    super(name);
+    super(name, "IDLE");
   }
 }
 
 export class PDM_Off extends BasePowerDeviceMode {
   constructor(name: string) {
-    super(name);
+    super(name, "OFF");
   }
 }
 

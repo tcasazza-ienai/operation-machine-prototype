@@ -56,7 +56,10 @@ const PointingMode: React.FC<PointingModeProps> = ({
   const changePointer = (newPointer: string) => {
     const updatedFormMode = new Mode360(
       formMode.getModeId(),
-      formMode.getModeName()
+      formMode.getModeName(),
+      formMode.getPointing(),
+      formMode.getSystemsModes(),
+      formMode.getOverrideGeometry()
     );
     updatedFormMode.setPointing(
       new Pointing360(newPointer, formMode.getPointing().getTarget())
@@ -108,7 +111,10 @@ const PointingMode: React.FC<PointingModeProps> = ({
 
       const updatedFormMode = new Mode360(
         formMode.getModeId(),
-        formMode.getModeName()
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
       );
       updatedFormMode.setPointing(
         new Pointing360(formMode.getPointing().getPointer(), qLawString)
@@ -260,7 +266,8 @@ const PointingMode: React.FC<PointingModeProps> = ({
                   key={target.getFunctionalId() + index}
                   value={target.getFunctionalId()}
                 >
-                  {target.getFunctionalId()}
+                  {target.getSystem().constructor.name.replace("360", "")} (
+                  {target.getFunctionalId()})
                 </MenuItem>
               ))}
             </Select>
@@ -280,7 +287,10 @@ const PointingMode: React.FC<PointingModeProps> = ({
             onChange={(e) => {
               const updatedFormMode = new Mode360(
                 formMode.getModeId(),
-                formMode.getModeName()
+                formMode.getModeName(),
+                formMode.getPointing(),
+                formMode.getSystemsModes(),
+                formMode.getOverrideGeometry()
               );
               updatedFormMode.setPointing(
                 new Pointing360(

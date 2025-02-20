@@ -38,13 +38,17 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
 
   const handleGeometry = (e: SelectChangeEvent<string>) => {
     const geometry = e.target.value;
+    console.log("geometry", geometry);
     if (geometry === "Spherical geometry") {
       setSphericalGeometryStatus(true);
     } else {
       setSphericalGeometryStatus(false);
       const updatedFormMode = new Mode360(
         formMode.getModeId(),
-        formMode.getModeName()
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
       );
       updatedFormMode.setOverrideGeometryEmpty();
       setFormMode(updatedFormMode);
@@ -58,7 +62,10 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
       setSphericalGeometryStatus(false);
       const updatedFormMode = new Mode360(
         formMode.getModeId(),
-        formMode.getModeName()
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
       );
       updatedFormMode.setOverrideGeometry(
         new SphereGeometry360(

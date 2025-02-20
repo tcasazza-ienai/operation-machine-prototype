@@ -24,7 +24,7 @@ export class Battery360 extends System360 {
   }
 }
 
-type SolarCell = {
+export type SolarCell = {
   efficiency: number;
   area: number;
   mass: number;

@@ -29,6 +29,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   const [editedMode, setEditedMode] = useState<Mode360>();
 
   const handleEditMode = async (mode: Mode360) => {
+    console.log("mode", mode);
     setEditedMode(mode);
   };
 
@@ -41,11 +42,11 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   return (
     <Box>
       <Select
-        value={selected.getModeName()}
+        value={selected?.getModeName()}
         className="nodrag"
         displayEmpty
         renderValue={
-          selected.getModeId() !== ""
+          selected && selected.getModeId() !== ""
             ? undefined
             : () => (
                 <Typography sx={{ color: "#49454F" }}>Select mode</Typography>
@@ -60,7 +61,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
               sx={{ fontSize: "14px", fontWeight: "bold" }}
               variant="h6"
             >
-              Modes:
+              Operation Modes:
             </Typography>
             <Button
               disableRipple
