@@ -1,52 +1,49 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from "@mui/material";
+import { Box, SelectChangeEvent, Typography } from "@mui/material";
 import { Handle, Position } from "@xyflow/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PopupMenu, { PopupMenuProp } from "../menu/popup-menu.tsx";
-import { Mode, Operation } from "../../types/operation-machine.types.ts";
+import { Mode360, Operation360 } from "../../entities/OpMachine.ts";
+import { useModesStore } from "../../store/modesStore.ts";
 import IenaiButton from "../common/ienai-button.tsx";
 import AddIcon from "@mui/icons-material/Add";
 import ModeSelector from "../modes/modeSelector.tsx";
 import ModeModal from "../modals/mode-modal.tsx";
-import { useModesStore } from "../../store/modesStore.ts";
 
 const OperationNodeAdded: React.FC<{
-  data: Operation;
+  data;
   options: PopupMenuProp[];
-  selectOnChange: (mode: Mode) => void;
+  selectOnChange: (mode: Mode360) => void;
 }> = ({ data, options, selectOnChange }) => {
   const modes = useModesStore((state) => state.modes);
-  const setModes = useModesStore((state) => state.updateModes);
-  const [selected, setSelected] = useState<Mode>(data?.mode);
+
+  const { operation, isBiDirectional, dataFlow, isEndNode } = data;
+  const [selected, setSelected] = useState<Mode360>(
+    (data.operation as Operation360).getOpMode()
+  );
   //TO DO: Filter modes by system_mode of the current spacecraft selected
-  const [modeList, setModeList] = useState<Mode[]>([]);
+  const [modesList, setModeList] = useState<string[]>([]);
   const [menuOptions, setMenuOptions] = useState<PopupMenuProp[]>(
     options ? options : []
   );
   const [modeModal, setModeModal] = useState<boolean>(false);
 
   const selectMode = (e: SelectChangeEvent<string>) => {
-    const mode = modes.find((mode) => mode.mode_name === e.target.value);
-    setSelected(mode || data.mode);
-    selectOnChange(mode || data.mode);
+    const mode = modes.find((mode) => mode.getModeName() === e.target.value);
+    setSelected(mode || (data.operation as Operation360).getOpMode());
+    selectOnChange(mode || (data.operation as Operation360).getOpMode());
   };
+
   return (
-    <Box className="nodrag" sx={nodeContainerStyle}>
+    <Box sx={nodeContainerStyle}>
       <Box sx={titleContainterStyle}>
         <Typography sx={titleStyle} variant="h6">
-          {data.op_name as string}{" "}
+          {operation.op_name as string}{" "}
         </Typography>
         <PopupMenu items={menuOptions} />
       </Box>
       <Box sx={{ height: "57px" }}>
-        {modes.length < 1 ? (
+        {modes?.length < 1 ? (
           <Box sx={addButtonContainerStyle}>
             <IenaiButton
               onClick={() => setModeModal(true)}
@@ -62,16 +59,34 @@ const OperationNodeAdded: React.FC<{
           />
         )}
       </Box>
-
       <Handle
         type="source"
+        position={
+          isBiDirectional && dataFlow === "LL"
+            ? Position.Left
+            : dataFlow === "RR"
+            ? Position.Right
+            : Position.Right
+        }
+        style={{ visibility: "hidden" }}
+      />
+      <Handle
+        type="source"
+        id="terminate-sim-source"
         position={Position.Right}
         style={{ visibility: "hidden" }}
       />
       <Handle
         type="target"
-        position={Position.Right}
-        style={{ visibility: "hidden" }}
+        position={
+          isEndNode
+            ? Position.Left
+            : isBiDirectional && dataFlow === "LL"
+            ? Position.Right
+            : dataFlow === "RR"
+            ? Position.Left
+            : Position.Left
+        }
       />
       <Box sx={addTriggerContainerStyle}>
         <AddCircleOutlineIcon sx={addTriggerButtonStyle} />
@@ -91,7 +106,7 @@ const nodeContainerStyle = {
   position: "relative",
   minWidth: "280px",
   textAlign: "center",
-  cursor: "auto",
+  cursor: "drag",
   overflow: "visible",
 };
 

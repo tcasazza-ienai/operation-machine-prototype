@@ -9,12 +9,11 @@ import {
   Typography,
   SelectChangeEvent,
 } from "@mui/material";
-import { Mode, SphereGeometry } from "../../../types/operation-machine.types";
-import { useEdges } from "@xyflow/react";
+import { Mode360, SphereGeometry360 } from "../../../entities/OpMachine.ts";
 
 interface GeometryModeProps {
-  formMode: Mode;
-  setFormMode: React.Dispatch<React.SetStateAction<Mode>>;
+  formMode: Mode360;
+  setFormMode: React.Dispatch<React.SetStateAction<Mode360>>;
   sphericalGeometryStatus: boolean;
   setSphericalGeometryStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -25,6 +24,11 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
   sphericalGeometryStatus,
   setSphericalGeometryStatus,
 }) => {
+  // Estado para manejar el valor del Select
+  const [geometryType, setGeometryType] = useState<string>(
+    sphericalGeometryStatus ? "Spherical geometry" : "Spacecraft geometry"
+  );
+
   const [sphericalGeometryForm, setSphericalGeometryForm] = useState<{
     area: string;
     cd: string;
@@ -33,38 +37,60 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
 
   const handleGeometry = (e: SelectChangeEvent<string>) => {
     const geometry = e.target.value;
+    setGeometryType(geometry);
     if (geometry === "Spherical geometry") {
       setSphericalGeometryStatus(true);
     } else {
       setSphericalGeometryStatus(false);
-      setFormMode({
-        ...formMode,
-        override_geometry: undefined,
-      });
+      const updatedFormMode = new Mode360(
+        formMode.getModeId(),
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
+      );
+      updatedFormMode.setOverrideGeometryEmpty();
+      setFormMode(updatedFormMode);
+
       setSphericalGeometryForm({ area: "", cd: "", cr: "" });
     }
   };
 
   useEffect(() => {
     if (sphericalGeometryStatus) {
-      setFormMode({
-        ...formMode,
-        override_geometry: {
-          area: Number.parseFloat(sphericalGeometryForm.area),
-          CD: Number.parseFloat(sphericalGeometryForm.cd),
-          CR: Number.parseFloat(sphericalGeometryForm.cr),
-        },
-      });
+      const updatedFormMode = new Mode360(
+        formMode.getModeId(),
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
+      );
+      updatedFormMode.setOverrideGeometry(
+        new SphereGeometry360(
+          Number.parseFloat(sphericalGeometryForm.area),
+          Number.parseFloat(sphericalGeometryForm.cd),
+          Number.parseFloat(sphericalGeometryForm.cr)
+        )
+      );
+      setFormMode(updatedFormMode);
     }
   }, [sphericalGeometryForm]);
 
   useEffect(() => {
-    if (formMode.override_geometry) {
-      setSphericalGeometryForm({
-        area: formMode.override_geometry.area.toString(),
-        cd: formMode.override_geometry.CD.toString(),
-        cr: formMode.override_geometry.CR.toString(),
-      });
+    const currentOverrideGeometry = formMode.getOverrideGeometry();
+    if (currentOverrideGeometry instanceof SphereGeometry360) {
+      const newForm = {
+        area: currentOverrideGeometry.getArea().toString(),
+        cd: currentOverrideGeometry.getCD().toString(),
+        cr: currentOverrideGeometry.getCR().toString(),
+      };
+      if (
+        sphericalGeometryForm.area !== newForm.area ||
+        sphericalGeometryForm.cd !== newForm.cd ||
+        sphericalGeometryForm.cr !== newForm.cr
+      ) {
+        setSphericalGeometryForm(newForm);
+      }
     }
   }, []);
 
@@ -82,11 +108,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
         <InputLabel>Geometry</InputLabel>
         <Select
           label="Geometry"
-          defaultValue={
-            sphericalGeometryStatus === true
-              ? "Spherical geometry"
-              : "Spacecraft geometry"
-          }
+          value={geometryType}
           fullWidth
           onChange={handleGeometry}
         >
@@ -94,12 +116,12 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
           <MenuItem value="Spherical geometry">Spherical geometry</MenuItem>
         </Select>
       </FormControl>
-      {sphericalGeometryStatus === true && (
+      {sphericalGeometryStatus && (
         <Box sx={{ display: "flex", gap: "16px" }}>
           <TextField
             label="Area*"
             type="number"
-            value={formMode.override_geometry?.area || ""}
+            value={sphericalGeometryForm.area}
             onChange={(e) => {
               const value =
                 e.target.value
@@ -110,21 +132,12 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
                 area: value,
               });
             }}
-            sx={{
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#79747E",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "#79747E",
-                },
-            }}
             fullWidth
           />
           <TextField
             label="CD*"
             type="number"
-            value={formMode.override_geometry?.CD || ""}
+            value={sphericalGeometryForm.cd}
             onChange={(e) => {
               const value =
                 e.target.value
@@ -135,21 +148,12 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
                 cd: value,
               });
             }}
-            sx={{
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#79747E",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "#79747E",
-                },
-            }}
             fullWidth
           />
           <TextField
             label="CR*"
             type="number"
-            value={formMode.override_geometry?.CR || ""}
+            value={sphericalGeometryForm.cr}
             onChange={(e) => {
               const value =
                 e.target.value
@@ -159,15 +163,6 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
                 ...sphericalGeometryForm,
                 cr: value,
               });
-            }}
-            sx={{
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#79747E",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "#79747E",
-                },
             }}
             fullWidth
           />

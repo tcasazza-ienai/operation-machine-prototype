@@ -2,87 +2,73 @@ import { Box } from "@mui/material";
 import {
   Background,
   Controls,
-  Handle,
   ReactFlow,
   useEdgesState,
   useNodesState,
   useReactFlow,
 } from "@xyflow/react";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Operation,
-  OperationMachine,
-} from "../../types/operation-machine.types";
-import {
-  mappingToEdgesOperations,
-  mappingToNodeOperations,
-} from "../../utils/nodeOperations.ts";
+import React, { useEffect } from "react";
 import OperationNode from "../operation/operation-node.tsx";
 import "@xyflow/react/dist/style.css";
+import { Operation360 } from "../../entities/OpMachine.ts";
+import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
+import { buildGraphElements } from "../../utils/nodeOperations.ts";
 
 const OperationMachineBoard: React.FC = () => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
-  const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { fitView } = useReactFlow();
-  const hasFitViewRun = useRef(false);
 
-  const refreshNodes = (operations: Operation[]) => {
-    const newNodes = mappingToNodeOperations(operations);
+  const refreshNodes = (operations: Operation360[]) => {
+    const { nodes: newNodes, edges: newEdges } = buildGraphElements(opMachine);
+
+    setNodes(newNodes);
+    setEdges(newEdges);
     setTimeout(() => {
-      setNodes(newNodes as never[]);
-    }, 100);
+      fitView();
+    }, 300);
   };
 
   useEffect(() => {
-    if (nodes.length > 0) {
-      setEdges(mappingToEdgesOperations(opMachine.operations) as never[]);
-    }
-    setTimeout(() => {
-      if (!hasFitViewRun.current) {
-        fitView();
-        hasFitViewRun.current = true;
-      }
-    }, 200);
-  }, [nodes]);
+    fitView();
+  }, [edges]);
 
   useEffect(() => {
-    //TO DO: Ask about the functionality of what to do when the spacecraft is changed and
-    // the operation has a mode with a different system_mode than the selected spacecraft
-    refreshNodes(opMachine.operations);
+    refreshNodes(opMachine.getOperations());
   }, [opMachine]);
-
-  useEffect(() => {
-    if (!opMachine.operations.find((op) => op.id == "")) {
-      const newOperationMachine = opMachine;
-      newOperationMachine.operations.push({
-        id: "",
-        op_name: "",
-        mode: { id: "", mode_name: "", pointing: { pointer: "", target: "" } },
-        events: [],
-      });
-      setOpMachine(newOperationMachine);
-    }
-  }, []);
-
   const nodeTypes = {
     custom: OperationNode,
   };
+  const edgeTypes = {
+    "start-end": CustomEdgeOther,
+  };
   return (
-    <Box sx={operationMachineContainerStyle}>
+    <Box
+      sx={{
+        border: "2px solid #ddd",
+        borderRadius: "8px",
+        padding: "16px",
+        height: "70vh",
+        display: "flex",
+        flexDirection: "column",
+        marginTop: "20px",
+      }}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
+        zoomOnScroll={true}
         zoomOnPinch={false}
         style={{ width: "100%" }}
         nodesDraggable
       >
-        <Controls />
+        <Controls showInteractive={false} />
         <Background gap={1} color="transparent" />
       </ReactFlow>
     </Box>
@@ -90,12 +76,3 @@ const OperationMachineBoard: React.FC = () => {
 };
 
 export default OperationMachineBoard;
-
-const operationMachineContainerStyle = {
-  border: "2px solid #ddd",
-  borderRadius: "8px",
-  height: "70vh",
-  display: "flex",
-  flexDirection: "column",
-  marginTop: "20px",
-};

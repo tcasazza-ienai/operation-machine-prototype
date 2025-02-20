@@ -1,26 +1,18 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, MenuItem, Select, TextField, Typography } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import React, { useEffect, useRef, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
-import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import PopupMenu from "../menu/popup-menu.tsx";
-import { Mode } from "../../types/operation-machine.types.ts";
+import { Mode360 } from "../../entities/OpMachine.ts";
 
 const OperationNodeEdit: React.FC<{
   defaultName: string;
   operationName: string;
   setOperationName: (newName) => void;
-  selectedMode?: Mode;
+  selectedMode?: Mode360;
 }> = ({ defaultName, operationName, selectedMode, setOperationName }) => {
   const [selected, setSelected] = useState<string>(
-    selectedMode?.mode_name ? selectedMode.mode_name : ""
+    selectedMode?.getModeName() ? selectedMode.getModeName() : ""
   );
   const textFieldRef = useRef<HTMLInputElement>(null);
 

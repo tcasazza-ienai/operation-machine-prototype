@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Box,
   TextField,
@@ -8,7 +8,7 @@ import {
   MenuItem,
   Link,
 } from "@mui/material";
-import { Mode, QLaw } from "../../../types/operation-machine.types.ts";
+import { QLaw } from "../../../types/operation-machine.types.ts";
 import orbitalElements from "../../../data/mockedObjects/orbitalElements.json";
 
 interface QLawInputsProps {

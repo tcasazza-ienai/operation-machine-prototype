@@ -10,13 +10,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import QLawInputs from "../mode-modal-components/qlaw-inputs.tsx";
-import {
-  Mode,
-  NormalTargets,
-  QLaw,
-} from "../../../types/operation-machine.types.ts";
+import QLawInputs from "./qlaw-inputs.tsx";
+import { NormalTargets, QLaw } from "../../../types/operation-machine.types.ts";
 import { useSpacecraftStore } from "../../../store/spacecraftStore.ts";
+import { Mode360, Pointing360 } from "../../../entities/OpMachine.ts";
 
 const emptyQLaw: QLaw = {
   orbitTargeted: "",
@@ -28,8 +25,8 @@ const emptyQLaw: QLaw = {
 type PointingType = "body_axis" | "spacecraft_system";
 
 interface PointingModeProps {
-  formMode: Mode;
-  setFormMode: React.Dispatch<React.SetStateAction<Mode>>;
+  formMode: Mode360;
+  setFormMode: React.Dispatch<React.SetStateAction<Mode360>>;
 }
 const PointingMode: React.FC<PointingModeProps> = ({
   formMode,
@@ -47,42 +44,48 @@ const PointingMode: React.FC<PointingModeProps> = ({
   const [QLaw, setQLaw] = useState(emptyQLaw);
   const [pointingType, setPointingType] = useState<PointingType>("body_axis");
   const [initialUpdateState, setInitialUpdateState] = useState<boolean>(false);
+
+  const changePointer = (newPointer: string) => {
+    const updatedFormMode = new Mode360(
+      formMode.getModeId(),
+      formMode.getModeName(),
+      formMode.getPointing(),
+      formMode.getSystemsModes(),
+      formMode.getOverrideGeometry()
+    );
+    updatedFormMode.setPointing(
+      new Pointing360(newPointer, formMode.getPointing().getTarget())
+    );
+    setFormMode(updatedFormMode);
+  };
+
   const handleAlignment = (
     event: React.MouseEvent<HTMLElement>,
     newAlignment: PointingType
   ) => {
     setPointingType(newAlignment);
-    setFormMode({
-      ...formMode,
-      pointing: { ...formMode.pointing, pointer: "" },
-    });
+    changePointer("");
   };
 
   useEffect(() => {
-    if (pointingType === "body_axis" && !formMode.pointing.pointer) {
-      setFormMode({
-        ...formMode,
-        pointing: { ...formMode.pointing, pointer: "+x" },
-      });
+    if (pointingType === "body_axis" && !formMode.getPointing().getPointer()) {
+      changePointer("+x");
     } else if (
       pointingType === "spacecraft_system" &&
-      !formMode.pointing.pointer
+      !formMode.getPointing().getPointer()
     ) {
-      setFormMode({
-        ...formMode,
-        pointing: {
-          ...formMode.pointing,
-          pointer: spacecraftSelected.sc_systems[0].functional_id,
-        },
-      });
+      changePointer(spacecraftSelected.getScSystems()[0].getFunctionalId());
     }
   }, [pointingType, formMode, setFormMode]);
 
   useEffect(() => {
     if (
-      spacecraftSelected.sc_systems.some(
-        (system) => system.functional_id === formMode.pointing.pointer
-      )
+      spacecraftSelected
+        .getScSystems()
+        .some(
+          (system) =>
+            system.getFunctionalId() === formMode.getPointing().getPointer()
+        )
     ) {
       setPointingType("spacecraft_system");
     } else {
@@ -91,32 +94,37 @@ const PointingMode: React.FC<PointingModeProps> = ({
   }, [spacecraftSelected]);
 
   useEffect(() => {
-    if (formMode.pointing.target.includes("QLaw")) {
+    if (formMode.getPointing().getTarget().includes("QLaw")) {
       const { orbitTargeted, w_a, w_e, w_i } = QLaw;
       const qLawString = `QLaw("${orbitTargeted}", w_a=${w_a.replace(
         ",",
         "."
       )}, w_e=${w_e.replace(",", ".")}, w_i=${w_i.replace(",", ".")})`;
 
-      setFormMode({
-        ...formMode,
-        pointing: {
-          ...formMode.pointing,
-          target: qLawString,
-        },
-      });
+      const updatedFormMode = new Mode360(
+        formMode.getModeId(),
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
+      );
+      updatedFormMode.setPointing(
+        new Pointing360(formMode.getPointing().getPointer(), qLawString)
+      );
+      setFormMode(updatedFormMode);
     }
   }, [QLaw]);
 
   useEffect(() => {
     if (
-      formMode.pointing.target.startsWith("QLaw") &&
+      formMode.getPointing().getTarget().startsWith("QLaw") &&
       initialUpdateState === false
     ) {
       setInitialUpdateState(true);
-      const qLawParams = formMode.pointing.target.match(
-        /QLaw\("([^"]+)", w_a=([^,]+), w_e=([^,]+), w_i=([^)]+)\)/
-      );
+      const qLawParams = formMode
+        .getPointing()
+        .getTarget()
+        .match(/QLaw\("([^"]+)", w_a=([^,]+), w_e=([^,]+), w_i=([^)]+)\)/);
       if (qLawParams) {
         setQLaw({
           orbitTargeted: qLawParams[1],
@@ -221,17 +229,11 @@ const PointingMode: React.FC<PointingModeProps> = ({
             <InputLabel>Pointer (coordinate)*</InputLabel>
             <Select
               label="Pointer (coordinate)"
-              value={formMode.pointing.pointer}
+              value={formMode.getPointing().getPointer()}
               defaultValue=""
-              onChange={(e) =>
-                setFormMode({
-                  ...formMode,
-                  pointing: {
-                    ...formMode.pointing,
-                    pointer: e.target.value as string,
-                  },
-                })
-              }
+              onChange={(e) => {
+                changePointer(e.target.value);
+              }}
             >
               {pointerCoordinates.map((coordinate) => (
                 <MenuItem key={coordinate} value={coordinate}>
@@ -246,23 +248,18 @@ const PointingMode: React.FC<PointingModeProps> = ({
             <Select
               label="Object pointer"
               defaultValue=""
-              value={formMode.pointing.pointer}
-              onChange={(e) =>
-                setFormMode({
-                  ...formMode,
-                  pointing: {
-                    ...formMode.pointing,
-                    pointer: e.target.value as string,
-                  },
-                })
-              }
+              value={formMode.getPointing().getPointer()}
+              onChange={(e) => {
+                changePointer(e.target.value);
+              }}
             >
-              {spacecraftSelected.sc_systems.map((target, index) => (
+              {spacecraftSelected.getScSystems().map((target, index) => (
                 <MenuItem
-                  key={target.functional_id + index}
-                  value={target.functional_id}
+                  key={target.getFunctionalId() + index}
+                  value={target.getFunctionalId()}
                 >
-                  {target.functional_id}
+                  {target.getSystem().constructor.name.replace("360", "")} (
+                  {target.getFunctionalId()})
                 </MenuItem>
               ))}
             </Select>
@@ -274,20 +271,27 @@ const PointingMode: React.FC<PointingModeProps> = ({
           <Select
             label="Target"
             value={
-              formMode.pointing.target.includes("QLaw")
-                ? formMode.pointing.target.substring(0, 4)
-                : formMode.pointing.target
+              formMode.getPointing().getTarget().includes("QLaw")
+                ? formMode.getPointing().getTarget().substring(0, 4)
+                : formMode.getPointing().getTarget()
             }
             defaultValue=""
-            onChange={(e) =>
-              setFormMode({
-                ...formMode,
-                pointing: {
-                  ...formMode.pointing,
-                  target: e.target.value as string,
-                },
-              })
-            }
+            onChange={(e) => {
+              const updatedFormMode = new Mode360(
+                formMode.getModeId(),
+                formMode.getModeName(),
+                formMode.getPointing(),
+                formMode.getSystemsModes(),
+                formMode.getOverrideGeometry()
+              );
+              updatedFormMode.setPointing(
+                new Pointing360(
+                  formMode.getPointing().getPointer(),
+                  e.target.value
+                )
+              );
+              setFormMode(updatedFormMode);
+            }}
           >
             {pointerTargets.map((target, index) => (
               <MenuItem key={target + index} value={target}>
@@ -297,7 +301,7 @@ const PointingMode: React.FC<PointingModeProps> = ({
           </Select>
         </FormControl>
 
-        {formMode.pointing.target.includes("QLaw") && (
+        {formMode.getPointing().getTarget().includes("QLaw") && (
           <QLawInputs QLaw={QLaw} setQLaw={setQLaw} />
         )}
       </Box>

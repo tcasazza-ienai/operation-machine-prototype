@@ -8,12 +8,12 @@
 .App-header {
   display: flex;
   align-items: center;
-  background-color: #FFF;
+  background-color: #fff;
   margin: 12px;
   gap: 15px;
   display: flex;
   font-size: calc(10px + 2vmin);
-  color: #1D1B20;
+  color: #1d1b20;
 }
 
 .App-body {
@@ -33,9 +33,22 @@
   flex: 1 0 0;
   align-self: stretch;
   border-radius: 8px;
-  border: 1px solid var(--Outline, #79747E);
+  border: 1px solid var(--Outline, #79747e);
 }
 
 .react-flow__attribution {
   display: none;
+}
+
+.edge-label-renderer__custom-edge {
+  position: absolute;
+  background-color: #ffcc00;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.react-flow__edge-textbg {
+  fill: #f7f9fb;
 }

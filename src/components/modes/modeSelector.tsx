@@ -9,15 +9,15 @@ import {
   Tooltip,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Mode } from "../../types/operation-machine.types";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import ModeModal from "../modals/mode-modal.tsx";
+import { Mode360 } from "../../entities/OpMachine.ts";
 
 interface ModeSelectorProps {
-  selected: Mode;
+  selected: Mode360;
   selectMode: (event: SelectChangeEvent<string>) => void;
-  modesList: Mode[];
+  modesList: Mode360[];
 }
 const ModeSelector: React.FC<ModeSelectorProps> = ({
   selected,
@@ -25,14 +25,14 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   selectMode,
 }) => {
   const [modeModal, setModeModal] = useState<boolean>(false);
-  const [editedMode, setEditedMode] = useState<Mode>();
+  const [editedMode, setEditedMode] = useState<Mode360>();
 
-  const handleEditMode = async (mode: Mode) => {
+  const handleEditMode = async (mode: Mode360) => {
     setEditedMode(mode);
   };
 
   useEffect(() => {
-    if (editedMode !== undefined && editedMode.id !== "0") {
+    if (editedMode !== undefined && editedMode.getModeId() !== "0") {
       setModeModal(true);
     }
   }, [editedMode]);
@@ -40,11 +40,11 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
   return (
     <Box>
       <Select
-        value={selected.mode_name}
+        value={selected?.getModeName()}
         className="nodrag"
         displayEmpty
         renderValue={
-          selected.id !== ""
+          selected && selected.getModeId() !== ""
             ? undefined
             : () => (
                 <Typography sx={{ color: "#49454F" }}>Select mode</Typography>
@@ -59,7 +59,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
               sx={{ fontSize: "14px", fontWeight: "bold" }}
               variant="h6"
             >
-              Modes:
+              Operation Modes:
             </Typography>
             <Button
               disableRipple
@@ -72,8 +72,8 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({
           </>
         </Box>
         {modesList.map((item, index) => (
-          <MenuItem value={item.mode_name} sx={menuItemDesign} key={index}>
-            {item.mode_name}
+          <MenuItem value={item.getModeName()} sx={menuItemDesign} key={index}>
+            {item.getModeName()}
             <Box className="icons" sx={{ display: "none", gap: "8px" }}>
               <Tooltip title="Edit">
                 <ModeEditOutlinedIcon

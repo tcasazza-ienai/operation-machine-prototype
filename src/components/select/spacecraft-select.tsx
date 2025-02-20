@@ -1,36 +1,21 @@
 import React, { useState } from "react";
 import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
-import Spacecraft1 from "../../data/spacecraft/spacecraft-1.json";
-import Spacecraft2 from "../../data/spacecraft/spacecraft-2.json";
-import { Spacecraft } from "../../types/spacecraft.types";
+import { Spacecraft360 } from "../../entities/Spacecraft.ts";
+import {
+  createNewSimpleSpaceCraft,
+  createSpacecraft_tutorial5,
+} from "../../data/spacecraft/createSpacecraft.ts";
 import BasicDialog from "../modals/basic-dialog.tsx";
-import { useSpacecraftStore } from "../../store/spacecraftStore.ts";
 
 const SpacecraftSelect: React.FC = () => {
-  const emptySpacecraft: Spacecraft = {
-    name: "",
-    sc_systems: {
-      functional_id: "",
-      system: {
-        name: "",
-        mass: 0,
-        thrust: 0,
-        cost: 0,
-      },
-      functional_direction: "",
-    },
-    override_dry_mass: 0,
-    area: 0,
-    CD: 0,
-  };
+  const emptySpacecraft: Spacecraft360 = new Spacecraft360("");
 
-  const [spacecraftList, setSpacecraftList] = useState<Spacecraft[]>([
-    Spacecraft1,
-    Spacecraft2,
+  const [spacecraftList, setSpacecraftList] = useState<Spacecraft360[]>([
+    createNewSimpleSpaceCraft(),
+    createSpacecraft_tutorial5(),
   ]);
-  const spacecraftSelected = useSpacecraftStore((state) => state.spacecraft);
-  const setSpacecraftSelected = useSpacecraftStore(
-    (state) => state.updateSpacecraft
+  const [spacecraftSelected, setSpacecraftSelected] = useState<Spacecraft360>(
+    createNewSimpleSpaceCraft()
   );
   const [selected, setSelected] = useState<string>("");
   const [changeSelectDialog, setChangeSelectDialog] = useState<boolean>(false);
@@ -42,29 +27,34 @@ const SpacecraftSelect: React.FC = () => {
 
   const confirmChangeSelect = () => {
     setSpacecraftSelected(
-      spacecraftList.find((spacecraft) => spacecraft.name === selected) ||
+      spacecraftList.find((spacecraft) => spacecraft.getName() === selected) ||
         emptySpacecraft
     );
     setSelected("");
     setChangeSelectDialog(false);
   };
-
   return (
     <>
       <Select
         labelId="Spacecraft-label"
         id="Spacecraft-select"
-        value={spacecraftSelected.name}
+        value={spacecraftSelected.getName()}
         onChange={(e) => onChangeSelect(e)}
-        sx={selectStyle}
+        sx={{
+          width: "30%",
+          minWidth: "200px",
+          "& .MuiOutlinedInput-input": {
+            display: "flex",
+          },
+        }}
       >
         {spacecraftList.map((spacecraft, index) => (
           <MenuItem
-            key={spacecraft.name + index}
-            value={spacecraft.name}
+            key={spacecraft.getName() + index}
+            value={spacecraft.getName()}
             style={{ display: "flex", justifyContent: "start" }}
           >
-            {spacecraft.name}
+            {spacecraft.getName()}
           </MenuItem>
         ))}
       </Select>
@@ -81,11 +71,3 @@ const SpacecraftSelect: React.FC = () => {
 };
 
 export default SpacecraftSelect;
-
-const selectStyle = {
-  width: "30%",
-  minWidth: "200px",
-  "& .MuiOutlinedInput-input": {
-    display: "flex",
-  },
-};

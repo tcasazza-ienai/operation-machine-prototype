@@ -6,71 +6,69 @@ import {
   DialogActions,
   Button,
   Box,
-  Select,
   TextField,
-  MenuItem,
-  Typography,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent,
 } from "@mui/material";
-import { Mode, SphereGeometry } from "../../types/operation-machine.types.ts";
 import IenaiButton from "../common/ienai-button.tsx";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { useSpacecraftStore } from "../../store/spacecraftStore.ts";
 import { useModesStore } from "../../store/modesStore.ts";
-import { SpacecraftSystem } from "../../types/spacecraft.types.ts";
 import PointingMode from "./mode-modal-components/pointing-mode.tsx";
 import GeometryMode from "./mode-modal-components/geometry-mode.tsx";
+import { Mode360, SphereGeometry360 } from "../../entities/OpMachine.ts";
+import SystemMode from "./mode-modal-components/system-mode.tsx";
 
-const emptyMode: Mode = {
-  id: "0",
-  mode_name: "",
-  pointing: {
-    pointer: "",
-    target: "",
-  },
-  system_mode: [],
-};
+const emptyMode: Mode360 = new Mode360("0", "");
 
-const emptySphericalGeometry: {
-  activate: boolean;
-  measurements: SphereGeometry;
-} = {
-  activate: false,
-  measurements: { area: 0, CD: 0, CR: 0 },
-};
 const ModeModal: React.FC<{
   open: boolean;
   onClose: () => void;
-  mode?: Mode;
+  mode?: Mode360;
 }> = ({ open, onClose, mode }) => {
-  const spacecraftSelected = useSpacecraftStore((state) => state.spacecraft);
   const modes = useModesStore((state) => state.modes);
   const setModes = useModesStore((state) => state.updateModes);
 
-  const [formMode, setFormMode] = useState<Mode>(emptyMode);
+  const [formMode, setFormMode] = useState<Mode360>(emptyMode);
   const [sphericalGeometryStatus, setSphericalGeometryStatus] =
     useState<boolean>(false);
 
   const confirmValidation = () => {
-    if (!formMode.mode_name) return false;
-    if (!formMode.pointing.pointer || formMode.pointing.pointer === "")
+    if (!formMode.getModeName()) return false;
+    if (
+      !formMode.getPointing().getPointer() ||
+      formMode.getPointing().getPointer() === ""
+    )
       return false;
-    if (!formMode.pointing.target) return false;
-    if (sphericalGeometryStatus) {
-      if (!formMode.override_geometry?.area) return false;
-      if (!formMode.override_geometry?.CD) return false;
-      if (!formMode.override_geometry?.CR) return false;
+    if (!formMode.getPointing().getTarget()) return false;
+    if (
+      sphericalGeometryStatus &&
+      formMode.getOverrideGeometry() &&
+      formMode.getOverrideGeometry() instanceof SphereGeometry360
+    ) {
+      if (!(formMode.getOverrideGeometry() as SphereGeometry360)?.getArea())
+        return false;
+      if (!(formMode.getOverrideGeometry() as SphereGeometry360)?.getCD())
+        return false;
+      if (!(formMode.getOverrideGeometry() as SphereGeometry360)?.getCR())
+        return false;
     }
     return true;
   };
 
   const confirmForm = () => {
-    if (formMode.id !== "0") {
-      setModes(modes.map((m) => (m.id === formMode.id ? formMode : m)));
+    if (formMode.getModeId() !== "0") {
+      setModes(
+        modes.map((m) =>
+          m.getModeId() === formMode.getModeId() ? formMode : m
+        )
+      );
     } else {
-      setModes([...modes, formMode]);
+      const newMode = new Mode360(
+        (modes.length + 1).toString(),
+        formMode.getModeName(),
+        formMode.getPointing(),
+        formMode.getSystemsModes(),
+        formMode.getOverrideGeometry()
+      );
+      setModes([...modes, newMode]);
     }
     closeForm();
   };
@@ -86,7 +84,7 @@ const ModeModal: React.FC<{
 
   useEffect(() => {
     setFormMode(mode ? mode : emptyMode);
-    if (formMode.override_geometry) {
+    if (formMode.getOverrideGeometry() instanceof SphereGeometry360) {
       setSphericalGeometryStatus(true);
     }
   }, []);
@@ -131,10 +129,19 @@ const ModeModal: React.FC<{
         </DialogContentText>
 
         <TextField
-          value={formMode.mode_name}
-          onChange={(e) =>
-            setFormMode({ ...formMode, mode_name: e.target.value })
-          }
+          value={formMode.getModeName()}
+          onChange={(e) => {
+            const updatedMode: Mode360 = new Mode360(
+              formMode.getModeId(),
+              formMode.getModeName(),
+              formMode.getPointing(),
+              formMode.getSystemsModes(),
+              formMode.getOverrideGeometry()
+            );
+
+            updatedMode.setModeName(e.target.value);
+            setFormMode(updatedMode);
+          }}
           sx={{
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#79747E",
@@ -155,108 +162,7 @@ const ModeModal: React.FC<{
           formMode={formMode}
           setFormMode={setFormMode}
         />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            marginTop: "16px",
-            gap: "16px",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }}>System Mode</Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <FormControl fullWidth>
-              <InputLabel>Object Name (Functional ID)</InputLabel>
-              <Select
-                label="Object Name (Functional ID)"
-                value={
-                  formMode.system_mode && formMode.system_mode.length > 0
-                    ? formMode.system_mode[0].functional_id
-                    : ""
-                }
-                onChange={(e) => {
-                  const selectedSystem = spacecraftSelected.sc_systems.find(
-                    (system) => system.functional_id === e.target.value
-                  );
-                  const newSystemMode: SpacecraftSystem[] = [];
-
-                  if (selectedSystem) newSystemMode.push(selectedSystem);
-                  if (formMode.system_mode && formMode.system_mode[1]) {
-                    newSystemMode.push(formMode.system_mode[1]);
-                  }
-                  if (newSystemMode !== undefined) {
-                    setFormMode({
-                      ...formMode,
-                      system_mode: newSystemMode,
-                    });
-                  }
-                }}
-                defaultValue=""
-              >
-                <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.sc_systems?.length > 0 &&
-                  spacecraftSelected.sc_systems.map((system, index) => (
-                    <MenuItem
-                      key={system.functional_id + index}
-                      value={system.functional_id}
-                    >
-                      {system.functional_id}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Object Name (Functional ID)</InputLabel>
-              <Select
-                label="Object Name (Functional ID)"
-                disabled={formMode.system_mode?.length == 0}
-                value={
-                  formMode.system_mode &&
-                  formMode.system_mode[1] &&
-                  formMode.system_mode.length > 0
-                    ? formMode.system_mode[1].functional_id
-                    : ""
-                }
-                onChange={(e) => {
-                  const selectedSystem = spacecraftSelected.sc_systems.find(
-                    (system) => system.functional_id === e.target.value
-                  );
-                  const newSystemMode: SpacecraftSystem[] = [];
-
-                  if (formMode.system_mode && formMode.system_mode[0])
-                    newSystemMode.push(formMode.system_mode[0]);
-                  if (selectedSystem) {
-                    newSystemMode.push(selectedSystem);
-                  }
-                  if (newSystemMode !== undefined) {
-                    setFormMode({
-                      ...formMode,
-                      system_mode: newSystemMode,
-                    });
-                  }
-                }}
-                defaultValue=""
-              >
-                <MenuItem value="">_</MenuItem>
-                {spacecraftSelected?.sc_systems?.length > 0 &&
-                  spacecraftSelected.sc_systems
-                    .filter(
-                      (system) =>
-                        system.functional_id !==
-                        formMode.system_mode?.[0]?.functional_id
-                    )
-                    .map((system, index) => (
-                      <MenuItem
-                        key={system.functional_id + index}
-                        value={system.functional_id}
-                      >
-                        {system.functional_id}
-                      </MenuItem>
-                    ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </Box>
+        <SystemMode formMode={formMode} setFormMode={setFormMode} />
 
         <DialogActions sx={{ alignSelf: "flex-start" }}>
           <IenaiButton
