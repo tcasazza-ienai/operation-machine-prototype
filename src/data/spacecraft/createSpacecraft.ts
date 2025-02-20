@@ -1,6 +1,6 @@
 import { SimpleElectricPropulsion360 } from "../../entities/Propulsion.ts";
 import { Spacecraft360 } from "../../entities/Spacecraft.ts";
-import { SpaceCraftSystem360 } from "../../entities/SpaceCraftSystem";
+import { SpaceCraftSystem360 } from "../../entities/SpaceCraftSystem.ts";
 
 export const createNewSimpleSpaceCraft = () => {
   const sc: Spacecraft360 = new Spacecraft360(
@@ -9,6 +9,7 @@ export const createNewSimpleSpaceCraft = () => {
     14.0,
     2.4
   );
+  return sc;
 };
 
 export const createSpacecraft_tutorial5 = () => {
