@@ -1,6 +1,6 @@
 import React, { type FC } from "react";
 import {
-  getBezierPath,
+  getSmoothStepPath,
   EdgeLabelRenderer,
   BaseEdge,
   type EdgeProps,
@@ -18,7 +18,7 @@ const CustomEdge: FC<EdgeProps<Edge<{ label: string }>>> = ({
   data,
   label,
 }) => {
-  const [edgePath, labelX, labelY] = getBezierPath({
+  const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition,

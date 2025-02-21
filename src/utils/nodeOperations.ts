@@ -182,18 +182,6 @@ const processOperation = (
         className: "text-sm",
         animated: true,
       });
-      if (!newNodes.some((n) => n.id === "0")) {
-        newNodes.push({
-          id: "0",
-          data: {
-            operation: new Operation360("", "", new Mode360("", "")),
-            isEndNode: true,
-          },
-          type: "custom",
-          position: { x: 0, y: 0 },
-          className: "px-4 py-2 rounded border border-red-500",
-        });
-      }
     }
   });
 };

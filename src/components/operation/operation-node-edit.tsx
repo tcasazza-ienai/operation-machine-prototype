@@ -71,11 +71,11 @@ export default OperationNodeEdit;
 
 const nodeContainerStyle = {
   padding: 2,
-  border: "1px solid #1D1B20",
-  borderRadius: "12px",
+  border: "1px solid #ADAAAA",
+  borderRadius: "8px",
   background: "#FEF7FF",
   position: "relative",
-  minWidth: "280px",
+  minWidth: "180px",
   textAlign: "center",
   overflow: "visible",
 };

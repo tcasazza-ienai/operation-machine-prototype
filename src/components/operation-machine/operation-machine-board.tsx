@@ -8,9 +8,9 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import React, { useEffect } from "react";
-import OperationNode from "../operation/operation-node.tsx";
+import CustomNode from "../operation/custom-node.tsx";
 import "@xyflow/react/dist/style.css";
-import { Operation360 } from "../../entities/OpMachine.ts";
+import { Operation360, OperationMachine } from "../../entities/OpMachine.ts";
 import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";
@@ -21,8 +21,14 @@ const OperationMachineBoard: React.FC = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { fitView } = useReactFlow();
 
-  const refreshNodes = (operations: Operation360[]) => {
-    const { nodes: newNodes, edges: newEdges } = buildGraphElements(opMachine);
+  const refreshNodes = () => {
+    const { nodes: newNodes, edges: newEdges } = buildGraphElements(
+      new OperationMachine(
+        opMachine
+          .getOperations()
+          .filter((operation) => operation.getEvents().length > 0)
+      )
+    );
 
     setNodes(newNodes);
     setEdges(newEdges);
@@ -32,10 +38,11 @@ const OperationMachineBoard: React.FC = () => {
   };
 
   useEffect(() => {
-    refreshNodes(opMachine.getOperations());
+    refreshNodes();
   }, [opMachine]);
+
   const nodeTypes = {
-    custom: OperationNode,
+    custom: CustomNode,
   };
   const edgeTypes = {
     "start-end": CustomEdgeOther,
@@ -45,11 +52,9 @@ const OperationMachineBoard: React.FC = () => {
       sx={{
         border: "2px solid #ddd",
         borderRadius: "8px",
-        padding: "16px",
         height: "70vh",
         display: "flex",
         flexDirection: "column",
-        marginTop: "20px",
       }}
     >
       <ReactFlow

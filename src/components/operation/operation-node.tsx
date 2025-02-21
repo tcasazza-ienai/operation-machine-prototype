@@ -3,7 +3,6 @@ import { NodeProps } from "@xyflow/react";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import OperationNodeAdded from "./operation-node-added.tsx";
-import OperationNodeEmpty from "./operation-node-empty.tsx";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import {
   Event360,
@@ -15,19 +14,33 @@ import OperationNodeEdit from "./operation-node-edit.tsx";
 import BasicDialog from "../modals/basic-dialog.tsx";
 import OperationEndSimulationNode from "./operation-end-simulation-node.tsx";
 
-const OperationNode: React.FC<NodeProps> = ({ data }) => {
+const OperationNode: React.FC<{
+  operation: Operation360;
+  initialEditState?: {
+    active: boolean;
+    operationId?: string;
+  };
+  aditionalData?: any;
+}> = ({
+  operation,
+  initialEditState = { active: false, operationId: "" },
+  aditionalData,
+}) => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
 
   const [editMode, setEditMode] = useState<{
     active: boolean;
     operationId?: string;
-  }>({ active: false });
+  }>({
+    active: initialEditState.active,
+    operationId: initialEditState.operationId,
+  });
 
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [duplicateModal, setDuplicateModal] = useState<boolean>(false);
   const [dataLabel, setDataLabel] = useState<string>(
-    (data.operation as Operation360).getOpName()
+    (operation as Operation360).getOpName()
   );
 
   const [operationOptions, setOperationOptions] = useState<
@@ -38,7 +51,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
       action: () => {
         setEditMode({
           active: true,
-          operationId: (data.operation as Operation360).getId() as string,
+          operationId: (operation as Operation360).getId() as string,
         });
       },
     },
@@ -54,7 +67,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
       1);
 
   const onBlurEditOperation = () => {
-    if ((data.operation as Operation360).getId() !== "") {
+    if ((operation as Operation360).getId() !== "") {
       editOperation();
     } else {
       newOperation();
@@ -79,7 +92,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   const editOperation = () => {
     let newOpMachine = new OperationMachine(opMachine.getOperations());
     opMachine
-      .getOperationById((data.operation as Operation360).getId() as string)
+      .getOperationById((operation as Operation360).getId() as string)
       ?.setOpName(dataLabel || defaultName());
 
     setOpMachine(newOpMachine);
@@ -88,7 +101,7 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
   const deleteOperation = () => {
     let newOpMachine = new OperationMachine(opMachine.getOperations());
     newOpMachine.deleteOperationById(
-      (data.operation as Operation360).getId() as string
+      (operation as Operation360).getId() as string
     );
     setOpMachine(newOpMachine);
   };
@@ -98,8 +111,8 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
     const newOperation = new Operation360(
       (opMachine.getOperations()?.length + 2).toString(),
       (dataLabel || defaultName()).toUpperCase(),
-      (data.operation as Operation360).getOpMode() as Mode360,
-      (data.operation as Operation360).getEvents() as Event360[]
+      (operation as Operation360).getOpMode() as Mode360,
+      (operation as Operation360).getEvents() as Event360[]
     );
 
     newOpMachine.addOperationToOpMachine(newOperation);
@@ -109,18 +122,19 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
 
   const onChangeMode = (mode: Mode360) => {
     let newOpMachine = new OperationMachine(opMachine.getOperations());
-    newOpMachine.getOperationById(data.id as string)?.setOpMode(mode);
+    newOpMachine
+      .getOperationById((operation as Operation360).getId() as string)
+      ?.setOpMode(mode);
     setOpMachine(newOpMachine);
   };
 
   useEffect(() => {
-    setDataLabel((data.operation as Operation360).getOpName());
-    console.log(data);
-  }, [data]);
+    setDataLabel((operation as Operation360).getOpName());
+  }, [operation]);
   return (
     <>
-      {(data.operation as Operation360).getId() === "" &&
-      (data.operation as Operation360).getOpName() === "End Simulation" ? (
+      {(operation as Operation360).getId() === "" &&
+      (operation as Operation360).getOpName() === "End Simulation" ? (
         <OperationEndSimulationNode />
       ) : editMode.active ? (
         <Box
@@ -140,24 +154,18 @@ const OperationNode: React.FC<NodeProps> = ({ data }) => {
             defaultName={defaultName()}
             operationName={dataLabel}
             setOperationName={setDataLabel}
-            selectedMode={
-              (data.operation as Operation360).getOpMode() as Mode360
-            }
+            selectedMode={(operation as Operation360).getOpMode() as Mode360}
           />
         </Box>
-      ) : dataLabel?.length > 0 ? (
-        <OperationNodeAdded
-          selectOnChange={onChangeMode}
-          data={data}
-          options={operationOptions}
-        />
       ) : (
-        <Box
-          onClick={() => setEditMode({ active: true })}
-          sx={{ cursor: "pointer" }}
-        >
-          <OperationNodeEmpty />
-        </Box>
+        dataLabel?.length > 0 && (
+          <OperationNodeAdded
+            selectOnChange={onChangeMode}
+            operation={operation}
+            options={operationOptions}
+            aditionalData={aditionalData}
+          />
+        )
       )}
       <BasicDialog
         open={deleteModal}

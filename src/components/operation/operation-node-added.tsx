@@ -1,4 +1,10 @@
-import { Box, SelectChangeEvent, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  SelectChangeEvent,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Handle, Position } from "@xyflow/react";
 import React, { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -11,15 +17,14 @@ import ModeSelector from "../modes/modeSelector.tsx";
 import ModeModal from "../modals/mode-modal.tsx";
 
 const OperationNodeAdded: React.FC<{
-  data;
+  operation: Operation360;
   options: PopupMenuProp[];
   selectOnChange: (mode: Mode360) => void;
-}> = ({ data, options, selectOnChange }) => {
+  aditionalData?: any;
+}> = ({ operation, options, selectOnChange, aditionalData }) => {
   const modes = useModesStore((state) => state.modes);
-
-  const { operation, isBiDirectional, dataFlow, isEndNode } = data;
   const [selected, setSelected] = useState<Mode360>(
-    (data.operation as Operation360).getOpMode()
+    (operation as Operation360).getOpMode()
   );
   //TO DO: Filter modes by system_mode of the current spacecraft selected
   const [modesList, setModeList] = useState<string[]>([]);
@@ -30,15 +35,15 @@ const OperationNodeAdded: React.FC<{
 
   const selectMode = (e: SelectChangeEvent<string>) => {
     const mode = modes.find((mode) => mode.getModeName() === e.target.value);
-    setSelected(mode || (data.operation as Operation360).getOpMode());
-    selectOnChange(mode || (data.operation as Operation360).getOpMode());
+    setSelected(mode || (operation as Operation360).getOpMode());
+    selectOnChange(mode || (operation as Operation360).getOpMode());
   };
 
   return (
     <Box sx={nodeContainerStyle}>
       <Box sx={titleContainterStyle}>
         <Typography sx={titleStyle} variant="h6">
-          {operation.op_name as string}{" "}
+          {operation.getOpName() as string}{" "}
         </Typography>
         <PopupMenu items={menuOptions} />
       </Box>
@@ -62,9 +67,9 @@ const OperationNodeAdded: React.FC<{
       <Handle
         type="source"
         position={
-          isBiDirectional && dataFlow === "LL"
+          aditionalData?.isBiDirectional && aditionalData?.dataFlow === "LL"
             ? Position.Left
-            : dataFlow === "RR"
+            : aditionalData?.dataFlow === "RR"
             ? Position.Right
             : Position.Right
         }
@@ -79,18 +84,46 @@ const OperationNodeAdded: React.FC<{
       <Handle
         type="target"
         position={
-          isEndNode
+          aditionalData?.isEndNode
             ? Position.Left
-            : isBiDirectional && dataFlow === "LL"
+            : aditionalData?.isBiDirectional && aditionalData?.dataFlow === "LL"
             ? Position.Right
-            : dataFlow === "RR"
+            : aditionalData?.dataFlow === "RR"
             ? Position.Left
             : Position.Left
         }
       />
-      <Box sx={addTriggerContainerStyle}>
-        <AddCircleOutlineIcon sx={addTriggerButtonStyle} />
-      </Box>
+
+      <Tooltip
+        title={
+          operation.getOpMode() && operation.getOpMode().getModeId() !== ""
+            ? "Add event"
+            : "Add a mode to enable events"
+        }
+        slotProps={{
+          popper: {
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -20],
+                },
+              },
+            ],
+          },
+        }}
+      >
+        <Button
+          sx={
+            operation.getOpMode() && operation.getOpMode().getModeId() !== ""
+              ? addTriggerContainerStyle
+              : addTriggerContainerStyleDisabled
+          }
+        >
+          <AddCircleOutlineIcon />
+        </Button>
+      </Tooltip>
+
       <ModeModal onClose={() => setModeModal(false)} open={modeModal} />
     </Box>
   );
@@ -100,11 +133,11 @@ export default OperationNodeAdded;
 
 const nodeContainerStyle = {
   padding: 2,
-  border: "1px solid #1D1B20",
-  borderRadius: "12px",
+  border: "1px solid #ADAAAA",
+  borderRadius: "8px",
   background: "#FEF7FF",
   position: "relative",
-  minWidth: "280px",
+  minWidth: "180px",
   textAlign: "center",
   cursor: "drag",
   overflow: "visible",
@@ -126,14 +159,24 @@ const addButtonContainerStyle = {
 
 const addTriggerContainerStyle = {
   position: "absolute",
-  right: "-13px",
+  minWidth: "15px",
+  padding: "2px",
+  right: "-15px",
   top: "50%",
   transform: "translateY(-50%)",
   cursor: "pointer",
+  color: "#1D1B20",
+  zIndex: 1000,
 };
 
-const addTriggerButtonStyle = {
-  color: "#1D1B20",
-  cursor: "pointer",
+const addTriggerContainerStyleDisabled = {
+  position: "absolute",
+  minWidth: "15px",
+  padding: "2px",
+  right: "-15px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  cursor: "default",
+  color: "#ADAAAA",
   zIndex: 1000,
 };
