@@ -93,7 +93,7 @@ const OperationNode: React.FC<{
     let newOpMachine = new OperationMachine(opMachine.getOperations());
     opMachine
       .getOperationById((operation as Operation360).getId() as string)
-      ?.setOpName(dataLabel || defaultName());
+      ?.setOpName(dataLabel.toUpperCase() || defaultName());
 
     setOpMachine(newOpMachine);
   };
