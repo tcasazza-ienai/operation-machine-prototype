@@ -11,7 +11,6 @@ import React, { useEffect } from "react";
 import CustomNode from "../operation/custom-node.tsx";
 import "@xyflow/react/dist/style.css";
 import { Operation360, OperationMachine } from "../../entities/OpMachine.ts";
-import CustomEdgeOther from "../edges/CustomEdgeOther.tsx";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";
 
@@ -44,9 +43,6 @@ const OperationMachineBoard: React.FC = () => {
   const nodeTypes = {
     custom: CustomNode,
   };
-  const edgeTypes = {
-    "start-end": CustomEdgeOther,
-  };
   return (
     <Box
       sx={{
@@ -61,7 +57,6 @@ const OperationMachineBoard: React.FC = () => {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         zoomOnScroll={true}

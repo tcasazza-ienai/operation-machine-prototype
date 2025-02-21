@@ -39,23 +39,3 @@
 .react-flow__attribution {
   display: none;
 }
-
-.edge-label-renderer__custom-edge {
-  position: absolute;
-  background-color: #5641e2;
-  color: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.react-flow__edge-textbg {
-  fill: #a53a36 !important;
-}
-
-.react-flow__edge-text {
-  fill: #fff !important;
-  font-size: 15px !important;
-  font-weight: 700 !important;
-}

@@ -126,8 +126,17 @@ const processOperation = (
         source: operation.getId(),
         target: targetOp.getId(),
         label: event.getTrigger().getTriggerName(),
-        type: "start-end",
-        markerEnd: { type: MarkerType.ArrowClosed },
+        labelBgStyle: { fill: "#5641E2" },
+        labelStyle: { fill: "#fff", fontSize: "15px ", fontWeight: "700" },
+        type: "step",
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 15,
+          height: 15,
+        },
+        style: {
+          strokeWidth: 3,
+        },
         className: "text-sm",
         animated: true,
       };
@@ -177,8 +186,17 @@ const processOperation = (
         target: "terminate",
         sourceHandle: "terminate-sim-source",
         label: event.getTrigger().getTriggerName(),
+        labelBgStyle: { fill: "#a53a36" },
+        labelStyle: { fill: "#fff", fontSize: "15px ", fontWeight: "700" },
+        style: {
+          strokeWidth: 3,
+        },
         type: "smoothstep",
-        markerEnd: { type: MarkerType.ArrowClosed },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 15,
+          height: 15,
+        },
         className: "text-sm",
         animated: true,
       });

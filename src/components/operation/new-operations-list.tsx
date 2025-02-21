@@ -25,7 +25,7 @@ const NewOperationsList: React.FC = () => {
   return (
     <Box
       sx={{
-        width: { xs: "100%", md: "20%" },
+        width: { xs: "100%", md: "25%" },
         marginTop: "20px",
         height: { md: "70vh" },
         marginRight: "20px",

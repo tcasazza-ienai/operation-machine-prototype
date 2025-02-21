@@ -23,7 +23,7 @@ function App() {
             sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}
           >
             <NewOperationsList />
-            <Box sx={{ width: { xs: "100%", md: "80%" }, marginTop: "20px" }}>
+            <Box sx={{ width: { xs: "100%", md: "75%" }, marginTop: "20px" }}>
               <OperationMachineBoard />
             </Box>
           </Box>
