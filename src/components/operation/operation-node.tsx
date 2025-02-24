@@ -39,25 +39,11 @@ const OperationNode: React.FC<{
 
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [duplicateModal, setDuplicateModal] = useState<boolean>(false);
-  const [dataLabel, setDataLabel] = useState<string>(
-    (operation as Operation360).getOpName()
-  );
+  const [dataLabel, setDataLabel] = useState<string>("");
 
   const [operationOptions, setOperationOptions] = useState<
     { label: string; action: () => void }[]
-  >([
-    {
-      label: "Rename operation",
-      action: () => {
-        setEditMode({
-          active: true,
-          operationId: (operation as Operation360).getId() as string,
-        });
-      },
-    },
-    { label: "Duplicate", action: () => setDuplicateModal(true) },
-    { label: "Delete", action: () => setDeleteModal(true) },
-  ]);
+  >([]);
 
   const defaultName = () =>
     "OPERATION " +
@@ -129,11 +115,27 @@ const OperationNode: React.FC<{
   };
 
   useEffect(() => {
-    setDataLabel((operation as Operation360).getOpName());
+    console.log("operation", operation);
+    if (operation instanceof Operation360)
+      setDataLabel((operation as Operation360).getOpName());
+    setOperationOptions([
+      {
+        label: "Rename operation",
+        action: () => {
+          setEditMode({
+            active: true,
+            operationId: (operation as Operation360).getId() as string,
+          });
+        },
+      },
+      { label: "Duplicate", action: () => setDuplicateModal(true) },
+      { label: "Delete", action: () => setDeleteModal(true) },
+    ]);
   }, [operation]);
   return (
     <>
-      {(operation as Operation360).getId() === "" &&
+      {operation instanceof Operation360 &&
+      (operation as Operation360).getId() === "" &&
       (operation as Operation360).getOpName() === "End Simulation" ? (
         <OperationEndSimulationNode />
       ) : editMode.active ? (

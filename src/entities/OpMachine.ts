@@ -352,8 +352,8 @@ export class SphereGeometry360 extends OverrideGeometry {
 }
 
 export class Event360 {
-  private readonly trigger: Trigger360;
-  private readonly effect: Effect360;
+  private trigger: Trigger360;
+  private effect: Effect360;
 
   constructor(trigger: Trigger360, effect: Effect360) {
     this.trigger = trigger;
@@ -367,10 +367,18 @@ export class Event360 {
   public getTrigger(): Trigger360 {
     return this.trigger;
   }
+
+  public setTrigger(trigger: Trigger360): void {
+    this.trigger = trigger;
+  }
+
+  public setEffect(effect: Effect360): void {
+    this.effect = effect;
+  }
 }
 
 ///////// TRIGGERS ///////////////
-interface Trigger360 {}
+export interface Trigger360 {}
 
 enum BooleanTriggerType {
   AND = "AND",
@@ -406,7 +414,7 @@ export class OnAnyCondition_T extends BooleanTrigger implements Trigger360 {
   }
 }
 
-function createCustomTrigger<T = void>(className: string) {
+export function createCustomTrigger<T = void>(className: string) {
   const CustomTriggerClass = class implements Trigger360 {
     private className = `${className}_T`;
     private attrs?: T;

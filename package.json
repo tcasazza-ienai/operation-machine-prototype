@@ -1,4 +1,5 @@
 {
+  "homepage": "https://tcasazza-ienai.github.io/operation-machine-prototype",
   "name": "operation-machine-prototype",
   "version": "0.1.0",
   "private": true,
@@ -12,6 +13,7 @@
     "@types/react-dom": "^18.0.0",
     "@xyflow/react": "^12.4.2",
     "cra-template-typescript": "1.2.0",
+    "gh-pages": "^6.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.1",
@@ -19,6 +21,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": " npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -6,21 +6,32 @@ import {
   DialogActions,
   Button,
   Box,
-  TextField,
   Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import IenaiButton from "../common/ienai-button.tsx";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { useModesStore } from "../../store/modesStore.ts";
-import PointingMode from "./mode-modal-components/pointing-mode.tsx";
-import GeometryMode from "./mode-modal-components/geometry-mode.tsx";
+import AddIcon from "@mui/icons-material/Add";
+import IenaiButtonText from "../common/ienai-button-text.tsx";
+
 import {
+  createCustomTrigger,
   Event360,
   Mode360,
   Operation360,
-  SphereGeometry360,
+  OperationMachine,
+  TerminateSimulation_E,
+  ToOp_E,
+  Trigger360,
 } from "../../entities/OpMachine.ts";
-import SystemMode from "./mode-modal-components/system-mode.tsx";
+import { useOpMachineStore } from "../../store/opMachineStore.ts";
+import {
+  getAllTrigger360,
+  getTriggerClassByName,
+} from "../../utils/mappingTriggerList.ts";
 
 const emptyEvent: Event360 = new Event360("", "");
 
@@ -29,27 +40,88 @@ const EventModal: React.FC<{
   onClose: () => void;
   operation: Operation360;
 }> = ({ open, onClose, operation }) => {
-  const modes = useModesStore((state) => state.modes);
-  const setModes = useModesStore((state) => state.updateModes);
+  const opMachine = useOpMachineStore((state) => state.opMachine);
+  const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
+  const [toOpSelected, setToOpSelected] = useState<Operation360>();
+  const [triggerList, setTriggerList] = useState<Trigger360[]>(
+    getAllTrigger360()
+  );
 
   const [formEvent, setFormEvent] = useState<Event360>(emptyEvent);
-  const [sphericalGeometryStatus, setSphericalGeometryStatus] =
-    useState<boolean>(false);
+
+  const changeTriggerHandler = (e: SelectChangeEvent<string>) => {
+    const newEvent = new Event360(
+      formEvent.getTrigger(),
+      formEvent.getEffect()
+    );
+    const NewTriggerClass = getTriggerClassByName(e.target.value);
+    if (NewTriggerClass) {
+      newEvent.setTrigger(new (NewTriggerClass.constructor as any)());
+    }
+
+    setFormEvent(newEvent);
+  };
+
+  const effectOnChangeHandler = (e: SelectChangeEvent<string>) => {
+    const newEvent = new Event360(
+      formEvent.getTrigger(),
+      formEvent.getEffect()
+    );
+    if (e.target.value === "ToOp_E") {
+      newEvent.setEffect(
+        new ToOp_E(new Operation360("", "", new Mode360("", "")))
+      );
+    } else {
+      newEvent.setEffect(new TerminateSimulation_E());
+    }
+    setFormEvent(newEvent);
+  };
+
+  const toOpOnChangeHandler = (e: SelectChangeEvent<string>) => {
+    const newEvent = new Event360(
+      formEvent.getTrigger(),
+      formEvent.getEffect()
+    );
+    console.log(e.target.value);
+    if (newEvent.getEffect() instanceof ToOp_E) {
+      newEvent.setEffect(
+        new ToOp_E(
+          opMachine.getOperationById(e.target.value) ??
+            new Operation360("", "", new Mode360("", ""))
+        )
+      );
+    }
+    setToOpSelected(opMachine.getOperationById(e.target.value));
+    setFormEvent(newEvent);
+  };
 
   const confirmValidation = () => {
     if (!formEvent.getTrigger()) return false;
     if (!formEvent.getEffect()) {
       return false;
     }
+    if (formEvent.getEffect().constructor.name === "ToOp_E") {
+      if (!toOpSelected?.getId()) return false;
+    }
     return true;
   };
 
   const confirmForm = () => {
+    const newOpMachine = new OperationMachine(opMachine.getOperations());
+    console.log("newOpMachine", newOpMachine);
+    const operationNewEvent = newOpMachine.getOperationById(operation.getId());
+
+    newOpMachine.deleteOperationById(operation.getId());
+
     const newEvent = new Event360(
       formEvent.getTrigger(),
       formEvent.getEffect()
     );
-    operation.addEventToOperation(newEvent);
+    if (operationNewEvent) {
+      operationNewEvent.addEventToOperation(newEvent);
+      newOpMachine.addOperationToOpMachine(operationNewEvent);
+    }
+    setOpMachine(newOpMachine);
 
     closeForm();
   };
@@ -59,6 +131,9 @@ const EventModal: React.FC<{
     onClose();
   };
 
+  useEffect(() => {
+    console.log(operation);
+  }, [operation]);
   return (
     <>
       <Dialog
@@ -99,13 +174,75 @@ const EventModal: React.FC<{
           If
         </DialogContentText>
 
-        <Select></Select>
+        <FormControl fullWidth>
+          <InputLabel>Trigger*</InputLabel>
+          <Select
+            label="Trigger"
+            value={(formEvent.getTrigger() as { className: string }).className}
+            defaultValue=""
+            onChange={(e) => {
+              changeTriggerHandler(e);
+            }}
+          >
+            {triggerList.map((trigger, index) => (
+              <MenuItem
+                key={index}
+                value={(trigger as { className: string }).className}
+              >
+                {(trigger as { className: string }).className
+                  .toString()
+                  .replace(/_T$/, "")
+                  .replace(/([A-Z])/g, " $1")}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Box sx={{ width: "40%" }}>
+          <IenaiButtonText
+            onClick={() => console.log("Add Trigger")}
+            label={"Add Trigger"}
+            icon={<AddIcon fontSize="medium" />}
+          />
+        </Box>
 
         <DialogContentText sx={{ color: "var(--On-Surface, #1D1B20)" }}>
           Then
         </DialogContentText>
-        <Select></Select>
-        <Select></Select>
+        <FormControl fullWidth>
+          <InputLabel>Effect*</InputLabel>
+          <Select
+            label="Effect"
+            value={formEvent.getEffect().constructor.name}
+            defaultValue=""
+            onChange={(e) => {
+              effectOnChangeHandler(e);
+            }}
+          >
+            <MenuItem value={"ToOp_E"}>To Operation</MenuItem>
+            <MenuItem value={"TerminateSimulation_E"}>End Simulation</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel>Operation</InputLabel>
+          <Select
+            disabled={formEvent.getEffect().constructor.name !== "ToOp_E"}
+            label="Operation"
+            value={toOpSelected?.getId() ? toOpSelected.getId() : ""}
+            defaultValue=""
+            onChange={(e) => {
+              toOpOnChangeHandler(e);
+            }}
+          >
+            {opMachine
+              .getOperations()
+              .filter((op) => op.getId() !== operation.getId())
+              .map((op, index) => (
+                <MenuItem key={index} value={op.getId()}>
+                  {op.getOpName()}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
 
         <DialogActions sx={{ alignSelf: "flex-start" }}>
           <IenaiButton
