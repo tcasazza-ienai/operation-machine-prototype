@@ -15,6 +15,7 @@ import IenaiButton from "../common/ienai-button.tsx";
 import AddIcon from "@mui/icons-material/Add";
 import ModeSelector from "../modes/modeSelector.tsx";
 import ModeModal from "../modals/mode-modal.tsx";
+import EventModal from "../modals/event-modal.tsx";
 
 const OperationNodeAdded: React.FC<{
   operation: Operation360;
@@ -32,6 +33,7 @@ const OperationNodeAdded: React.FC<{
     options ? options : []
   );
   const [modeModal, setModeModal] = useState<boolean>(false);
+  const [eventModal, setEventModal] = useState<boolean>(false);
 
   const selectMode = (e: SelectChangeEvent<string>) => {
     const mode = modes.find((mode) => mode.getModeName() === e.target.value);
@@ -101,12 +103,17 @@ const OperationNodeAdded: React.FC<{
             : "Add a mode to enable events"
         }
         slotProps={{
+          tooltip: {
+            sx: {
+              margin: "0 !important", // Fuerza sin margen
+            },
+          },
           popper: {
             modifiers: [
               {
                 name: "offset",
                 options: {
-                  offset: [0, -20],
+                  marginTop: "0px",
                 },
               },
             ],
@@ -119,12 +126,22 @@ const OperationNodeAdded: React.FC<{
               ? addTriggerContainerStyle
               : addTriggerContainerStyleDisabled
           }
+          onClick={() =>
+            operation.getOpMode() &&
+            operation.getOpMode().getModeId() !== "" &&
+            setEventModal(true)
+          }
         >
-          <AddCircleOutlineIcon />
+          <AddCircleOutlineIcon sx={{ cursor: "pointer" }} />
         </Button>
       </Tooltip>
 
       <ModeModal onClose={() => setModeModal(false)} open={modeModal} />
+      <EventModal
+        onClose={() => setEventModal(false)}
+        open={eventModal}
+        operation={operation}
+      />
     </Box>
   );
 };
