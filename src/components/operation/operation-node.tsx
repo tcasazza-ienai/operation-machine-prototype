@@ -115,7 +115,6 @@ const OperationNode: React.FC<{
   };
 
   useEffect(() => {
-    console.log("operation", operation);
     if (operation instanceof Operation360)
       setDataLabel((operation as Operation360).getOpName());
     setOperationOptions([

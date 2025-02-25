@@ -82,7 +82,6 @@ const EventModal: React.FC<{
       formEvent.getTrigger(),
       formEvent.getEffect()
     );
-    console.log(e.target.value);
     if (newEvent.getEffect() instanceof ToOp_E) {
       newEvent.setEffect(
         new ToOp_E(
@@ -108,7 +107,6 @@ const EventModal: React.FC<{
 
   const confirmForm = () => {
     const newOpMachine = new OperationMachine(opMachine.getOperations());
-    console.log("newOpMachine", newOpMachine);
     const operationNewEvent = newOpMachine.getOperationById(operation.getId());
 
     newOpMachine.deleteOperationById(operation.getId());
@@ -128,12 +126,10 @@ const EventModal: React.FC<{
 
   const closeForm = () => {
     setFormEvent(emptyEvent);
+    setToOpSelected(undefined);
     onClose();
   };
 
-  useEffect(() => {
-    console.log(operation);
-  }, [operation]);
   return (
     <>
       <Dialog

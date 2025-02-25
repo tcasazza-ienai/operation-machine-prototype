@@ -15,7 +15,6 @@ const NewOperationsList: React.FC = () => {
     const newNode = new Operation360("", "", new Mode360("", ""));
     const newOperations = [...operations, newNode];
     setOperations(newOperations);
-    console.log(operations);
   };
 
   useEffect(() => {

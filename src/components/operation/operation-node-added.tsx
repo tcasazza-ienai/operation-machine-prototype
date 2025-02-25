@@ -68,13 +68,7 @@ const OperationNodeAdded: React.FC<{
       </Box>
       <Handle
         type="source"
-        position={
-          aditionalData?.isBiDirectional && aditionalData?.dataFlow === "LL"
-            ? Position.Left
-            : aditionalData?.dataFlow === "RR"
-            ? Position.Right
-            : Position.Right
-        }
+        position={Position.Right}
         style={{ visibility: "hidden" }}
       />
       <Handle
@@ -83,18 +77,7 @@ const OperationNodeAdded: React.FC<{
         position={Position.Right}
         style={{ visibility: "hidden" }}
       />
-      <Handle
-        type="target"
-        position={
-          aditionalData?.isEndNode
-            ? Position.Left
-            : aditionalData?.isBiDirectional && aditionalData?.dataFlow === "LL"
-            ? Position.Right
-            : aditionalData?.dataFlow === "RR"
-            ? Position.Left
-            : Position.Left
-        }
-      />
+      <Handle type="target" position={Position.Left} />
 
       <Tooltip
         title={

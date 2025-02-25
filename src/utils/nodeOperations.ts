@@ -121,13 +121,33 @@ const processOperation = (
       ) {
         isBidirectional = true;
       }
+      const operationEdges = newEdges.filter(
+        (edge) =>
+          edge.source === operation.getId() && edge.target === targetOp.getId()
+      );
+
+      const randomId = Math.floor(10000 + Math.random() * 90000).toString();
       const newEdge: Edge = {
-        id: `${operation.getId()}-${targetOp.getId()}`,
+        id: `${operation.getId()}-${targetOp.getId()}-${randomId}`,
         source: operation.getId(),
         target: targetOp.getId(),
         label: event.getTrigger().getTriggerName(),
-        labelBgStyle: { fill: "#5641E2" },
-        labelStyle: { fill: "#fff", fontSize: "15px ", fontWeight: "700" },
+        labelBgStyle: {
+          fill: "#5641E2",
+          transform: `translate(0%, ${
+            20 * operationEdges.length - operationEdges.length
+          }%)`,
+          zIndex: 100,
+        },
+        labelStyle: {
+          fill: "#fff",
+          fontSize: "15px ",
+          fontWeight: "700",
+          transform: `translate(0%, ${
+            20 * operationEdges.length - operationEdges.length
+          }%)`,
+          zIndex: 101,
+        },
         type: "step",
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -180,18 +200,33 @@ const processOperation = (
           className: "px-4 py-2 rounded border border-red-500",
         });
       }
-      newEdges.push({
-        id: `${operation.getId()}-terminate-${index}`,
+
+      const edgesWithTerminate = newEdges.filter(
+        (edge) =>
+          edge.id.includes("terminate") && edge.source === operation.getId()
+      );
+      const randomId = Math.floor(10000 + Math.random() * 90000).toString();
+
+      const newEdge: Edge = {
+        id: `${operation.getId()}-terminate-${randomId}`,
         source: operation.getId(),
         target: "terminate",
         sourceHandle: "terminate-sim-source",
         label: event.getTrigger().getTriggerName(),
-        labelBgStyle: { fill: "#a53a36" },
-        labelStyle: { fill: "#fff", fontSize: "15px ", fontWeight: "700" },
+        labelBgStyle: {
+          fill: "#a53a36",
+          transform: `translate(0%, ${20 * edgesWithTerminate.length}%)`,
+        },
+        labelStyle: {
+          fill: "#fff",
+          fontSize: "15px ",
+          fontWeight: "700",
+          transform: `translate(0%, ${20 * edgesWithTerminate.length}%)`,
+        },
         style: {
           strokeWidth: 3,
         },
-        type: "smoothstep",
+        type: "step",
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 15,
@@ -199,7 +234,8 @@ const processOperation = (
         },
         className: "text-sm",
         animated: true,
-      });
+      };
+      newEdges.push(newEdge);
     }
   });
 };
