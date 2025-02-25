@@ -35,6 +35,12 @@ import {
 
 const emptyEvent: Event360 = new Event360("", "");
 
+const effectEnum = {
+  ToOp_E: new ToOp_E(new Operation360("", "", new Mode360("", ""))).constructor
+    .name,
+  TerminateSimulation_E: new TerminateSimulation_E().constructor.name,
+};
+
 const EventModal: React.FC<{
   open: boolean;
   onClose: () => void;
@@ -67,14 +73,19 @@ const EventModal: React.FC<{
       formEvent.getTrigger(),
       formEvent.getEffect()
     );
-    if (e.target.value === "ToOp_E") {
+    console.log(formEvent);
+    console.log(effectEnum.ToOp_E);
+    console.log(e.target.value);
+    if (e.target.value === effectEnum.ToOp_E) {
       newEvent.setEffect(
         new ToOp_E(new Operation360("", "", new Mode360("", "")))
       );
-    } else {
+      setFormEvent(newEvent);
+    } else if (e.target.value === effectEnum.TerminateSimulation_E) {
       newEvent.setEffect(new TerminateSimulation_E());
+      setFormEvent(newEvent);
     }
-    setFormEvent(newEvent);
+    console.log(formEvent);
   };
 
   const toOpOnChangeHandler = (e: SelectChangeEvent<string>) => {
@@ -99,7 +110,7 @@ const EventModal: React.FC<{
     if (!formEvent.getEffect()) {
       return false;
     }
-    if (formEvent.getEffect().constructor.name === "ToOp_E") {
+    if (formEvent.getEffect().constructor.name === effectEnum.ToOp_E) {
       if (!toOpSelected?.getId()) return false;
     }
     return true;
@@ -213,8 +224,9 @@ const EventModal: React.FC<{
           <Select
             label="Effect"
             value={
-              formEvent.getEffect().constructor.name === "ToOp_E" ||
-              formEvent.getEffect().constructor.name === "TerminateSimulation_E"
+              formEvent.getEffect().constructor.name === effectEnum.ToOp_E ||
+              formEvent.getEffect().constructor.name ===
+                effectEnum.TerminateSimulation_E
                 ? formEvent.getEffect().constructor.name
                 : ""
             }
@@ -223,14 +235,18 @@ const EventModal: React.FC<{
               effectOnChangeHandler(e);
             }}
           >
-            <MenuItem value={"ToOp_E"}>To Operation</MenuItem>
-            <MenuItem value={"TerminateSimulation_E"}>End Simulation</MenuItem>
+            <MenuItem value={effectEnum.ToOp_E}>To Operation</MenuItem>
+            <MenuItem value={effectEnum.TerminateSimulation_E}>
+              End Simulation
+            </MenuItem>
           </Select>
         </FormControl>
         <FormControl fullWidth>
           <InputLabel>Operation</InputLabel>
           <Select
-            disabled={formEvent.getEffect().constructor.name !== "ToOp_E"}
+            disabled={
+              formEvent.getEffect().constructor.name !== effectEnum.ToOp_E
+            }
             label="Operation"
             value={toOpSelected?.getId() ? toOpSelected.getId() : ""}
             defaultValue=""
