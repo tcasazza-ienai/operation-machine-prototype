@@ -130,6 +130,10 @@ const EventModal: React.FC<{
     onClose();
   };
 
+  useEffect(() => {
+    console.log(formEvent.getEffect().constructor.name);
+  }, [formEvent]);
+
   return (
     <>
       <Dialog
@@ -208,7 +212,12 @@ const EventModal: React.FC<{
           <InputLabel>Effect*</InputLabel>
           <Select
             label="Effect"
-            value={formEvent.getEffect().constructor.name}
+            value={
+              formEvent.getEffect().constructor.name === "ToOp_E" ||
+              formEvent.getEffect().constructor.name === "TerminateSimulation_E"
+                ? formEvent.getEffect().constructor.name
+                : ""
+            }
             defaultValue=""
             onChange={(e) => {
               effectOnChangeHandler(e);
