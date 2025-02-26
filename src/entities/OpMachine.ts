@@ -63,6 +63,13 @@ export class Operation360 {
     return this.events;
   }
 
+  public deleteEventToOperation(event: Event360): void {
+    const index = this.events.findIndex((e) => e === event);
+    if (index !== -1) {
+      this.events.splice(index, 1);
+    }
+  }
+
   public getEvents(): Event360[] {
     return this.events;
   }

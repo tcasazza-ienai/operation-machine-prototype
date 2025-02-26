@@ -13,6 +13,7 @@ import "@xyflow/react/dist/style.css";
 import { Operation360, OperationMachine } from "../../entities/OpMachine.ts";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";
+import CustomStepEdge from "../edges/CustomStepEdge.tsx";
 
 const OperationMachineBoard: React.FC = () => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
@@ -43,6 +44,10 @@ const OperationMachineBoard: React.FC = () => {
   const nodeTypes = {
     custom: CustomNode,
   };
+
+  const edgeTypes = {
+    "start-end": CustomStepEdge,
+  };
   return (
     <Box
       sx={{
@@ -57,6 +62,7 @@ const OperationMachineBoard: React.FC = () => {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         zoomOnScroll={true}
@@ -64,7 +70,7 @@ const OperationMachineBoard: React.FC = () => {
         style={{ width: "100%" }}
         nodesDraggable
       >
-        <Controls showInteractive={false} />
+        <Controls showInteractive={false} position="bottom-right" />
         <Background gap={1} color="transparent" />
       </ReactFlow>
     </Box>

@@ -121,7 +121,7 @@ const processOperation = (
       ) {
         isBidirectional = true;
       }
-      const operationEdges = newEdges.filter(
+      const operationEdges: Array<any> = newEdges.filter(
         (edge) =>
           edge.source === operation.getId() && edge.target === targetOp.getId()
       );
@@ -129,6 +129,7 @@ const processOperation = (
       const randomId = Math.floor(10000 + Math.random() * 90000).toString();
       const newEdge: Edge = {
         id: `${operation.getId()}-${targetOp.getId()}-${randomId}`,
+        data: { operationEdges, event, operation },
         source: operation.getId(),
         target: targetOp.getId(),
         label: event.getTrigger().getTriggerName(),
@@ -148,7 +149,7 @@ const processOperation = (
           }%)`,
           zIndex: 101,
         },
-        type: "step",
+        type: "start-end",
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 15,
@@ -172,6 +173,7 @@ const processOperation = (
             flow === "LL" ? event.getTrigger().getTriggerName() : undefined,
           endLabel:
             flow === "RR" ? event.getTrigger().getTriggerName() : undefined,
+          ...newEdge.data,
         };
       }
       newEdges.push(newEdge);
@@ -201,32 +203,33 @@ const processOperation = (
         });
       }
 
-      const edgesWithTerminate = newEdges.filter(
+      const operationEdges = newEdges.filter(
         (edge) =>
           edge.id.includes("terminate") && edge.source === operation.getId()
       );
       const randomId = Math.floor(10000 + Math.random() * 90000).toString();
+      console.log("antes: ", operationEdges);
 
       const newEdge: Edge = {
         id: `${operation.getId()}-terminate-${randomId}`,
+        data: { operationEdges, event, operation },
         source: operation.getId(),
         target: "terminate",
         sourceHandle: "terminate-sim-source",
         label: event.getTrigger().getTriggerName(),
         labelBgStyle: {
           fill: "#a53a36",
-          transform: `translate(0%, ${20 * edgesWithTerminate.length}%)`,
         },
         labelStyle: {
           fill: "#fff",
           fontSize: "15px ",
           fontWeight: "700",
-          transform: `translate(0%, ${20 * edgesWithTerminate.length}%)`,
+          transform: `translate(0%, ${20 * operationEdges.length}%)`,
         },
         style: {
           strokeWidth: 3,
         },
-        type: "step",
+        type: "start-end",
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 15,

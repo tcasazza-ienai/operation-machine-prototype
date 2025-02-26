@@ -45,7 +45,8 @@ const EventModal: React.FC<{
   open: boolean;
   onClose: () => void;
   operation: Operation360;
-}> = ({ open, onClose, operation }) => {
+  event?: Event360;
+}> = ({ open, onClose, operation, event }) => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
   const [toOpSelected, setToOpSelected] = useState<Operation360>();
@@ -120,6 +121,10 @@ const EventModal: React.FC<{
     const newOpMachine = new OperationMachine(opMachine.getOperations());
     const operationNewEvent = newOpMachine.getOperationById(operation.getId());
 
+    if (event) {
+      operationNewEvent?.deleteEventToOperation(event);
+    }
+
     newOpMachine.deleteOperationById(operation.getId());
 
     const newEvent = new Event360(
@@ -142,8 +147,13 @@ const EventModal: React.FC<{
   };
 
   useEffect(() => {
-    console.log(formEvent.getEffect().constructor.name);
-  }, [formEvent]);
+    if (event) {
+      setFormEvent(event);
+      if (event.getEffect().constructor.name === effectEnum.ToOp_E) {
+        setToOpSelected((event.getEffect() as ToOp_E).getTargetOperation());
+      }
+    }
+  }, [event]);
 
   return (
     <>
@@ -268,7 +278,7 @@ const EventModal: React.FC<{
         <DialogActions sx={{ alignSelf: "flex-start" }}>
           <IenaiButton
             onClick={confirmForm}
-            label={"Create event"}
+            label={event ? "Edit event" : "Create event"}
             props={{ disabled: !confirmValidation() }}
           />
         </DialogActions>

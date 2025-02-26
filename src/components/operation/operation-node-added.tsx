@@ -23,6 +23,7 @@ const OperationNodeAdded: React.FC<{
   selectOnChange: (mode: Mode360) => void;
   aditionalData?: any;
 }> = ({ operation, options, selectOnChange, aditionalData }) => {
+  const { isBiDirectional, dataFlow, hasEndNode, isEndNode } = aditionalData;
   const modes = useModesStore((state) => state.modes);
   const [selected, setSelected] = useState<Mode360>(
     (operation as Operation360).getOpMode()
@@ -75,9 +76,20 @@ const OperationNodeAdded: React.FC<{
         type="source"
         id="terminate-sim-source"
         position={Position.Right}
+      />
+      <Handle
+        type="target"
+        position={
+          isEndNode
+            ? Position.Left
+            : isBiDirectional && dataFlow === "LL"
+            ? Position.Bottom
+            : dataFlow === "RR"
+            ? Position.Left
+            : Position.Left
+        }
         style={{ visibility: "hidden" }}
       />
-      <Handle type="target" position={Position.Left} />
 
       <Tooltip
         title={
@@ -88,18 +100,8 @@ const OperationNodeAdded: React.FC<{
         slotProps={{
           tooltip: {
             sx: {
-              margin: "0 !important", // Fuerza sin margen
+              margin: "0 !important",
             },
-          },
-          popper: {
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  marginTop: "0px",
-                },
-              },
-            ],
           },
         }}
       >
