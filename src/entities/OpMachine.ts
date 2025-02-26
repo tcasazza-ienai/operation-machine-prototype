@@ -403,6 +403,10 @@ export abstract class BooleanTrigger {
     }
   }
 
+  public getConditions(): Trigger360[] {
+    return this.conditions;
+  }
+
   public addCondition(condition: Trigger360): Trigger360[] {
     this.conditions.push(condition);
     return this.conditions;

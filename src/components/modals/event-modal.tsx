@@ -11,17 +11,21 @@ import {
   InputLabel,
   MenuItem,
   SelectChangeEvent,
+  Tooltip,
 } from "@mui/material";
 import IenaiButton from "../common/ienai-button.tsx";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddIcon from "@mui/icons-material/Add";
 import IenaiButtonText from "../common/ienai-button-text.tsx";
+import TrashOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 import {
   createCustomTrigger,
   effectEnum,
   Event360,
   Mode360,
+  OnAllConditions_T,
+  OnAnyCondition_T,
   Operation360,
   OperationMachine,
   TerminateSimulation_E,
@@ -43,11 +47,25 @@ const EventModal: React.FC<{
   event?: Event360;
 }> = ({ open, onClose, operation, event }) => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
+  const [andOrTriggerList, setAndOrTriggerList] = useState<
+    { type: "OR" | "AND"; trigger?: Trigger360 }[]
+  >([]);
   const setOpMachine = useOpMachineStore((state) => state.updateOpMachine);
   const [toOpSelected, setToOpSelected] = useState<Operation360>();
   const [triggerList, setTriggerList] = useState<Trigger360[]>(
     getAllTrigger360()
   );
+  const [tooltipOpen, setTooltipOpen] = React.useState(false);
+
+  const handleTooltipClose = () => {
+    setTooltipOpen(false);
+    console.log("CLOSE");
+  };
+
+  const handleTooltipOpen = () => {
+    setTooltipOpen(true);
+    console.log("OPEN");
+  };
 
   const [formEvent, setFormEvent] = useState<Event360>(emptyEvent);
 
@@ -69,9 +87,6 @@ const EventModal: React.FC<{
       formEvent.getTrigger(),
       formEvent.getEffect()
     );
-    console.log(formEvent);
-    console.log(effectEnum.ToOp_E);
-    console.log(e.target.value);
     if (e.target.value === effectEnum.ToOp_E) {
       newEvent.setEffect(
         new ToOp_E(new Operation360("", "", new Mode360("", "")))
@@ -81,7 +96,6 @@ const EventModal: React.FC<{
       newEvent.setEffect(new TerminateSimulation_E());
       setFormEvent(newEvent);
     }
-    console.log(formEvent);
   };
 
   const toOpOnChangeHandler = (e: SelectChangeEvent<string>) => {
@@ -109,6 +123,10 @@ const EventModal: React.FC<{
     if (formEvent.getEffect().constructor.name === effectEnum.ToOp_E) {
       if (!toOpSelected?.getId()) return false;
     }
+    if (andOrTriggerList.some((andOrTrigger) => !andOrTrigger.trigger)) {
+      return false;
+    }
+
     return true;
   };
 
@@ -122,10 +140,19 @@ const EventModal: React.FC<{
 
     newOpMachine.deleteOperationById(operation.getId());
 
-    const newEvent = new Event360(
-      formEvent.getTrigger(),
-      formEvent.getEffect()
-    );
+    // Combina el trigger principal con los triggers adicionales del estado
+    let finalTrigger = formEvent.getTrigger();
+    andOrTriggerList.forEach((item) => {
+      if (item.trigger) {
+        if (item.type === "AND") {
+          finalTrigger = new OnAllConditions_T([finalTrigger, item.trigger]);
+        } else if (item.type === "OR") {
+          finalTrigger = new OnAnyCondition_T([finalTrigger, item.trigger]);
+        }
+      }
+    });
+
+    const newEvent = new Event360(finalTrigger, formEvent.getEffect());
     if (operationNewEvent) {
       operationNewEvent.addEventToOperation(newEvent);
       newOpMachine.addOperationToOpMachine(operationNewEvent);
@@ -149,6 +176,10 @@ const EventModal: React.FC<{
       }
     }
   }, [event]);
+
+  useEffect(() => {
+    console.log(andOrTriggerList);
+  }, [andOrTriggerList]);
 
   return (
     <>
@@ -181,7 +212,9 @@ const EventModal: React.FC<{
             marginTop: "16px",
           }}
         >
-          <DialogTitle sx={{ padding: "0px" }}>Events</DialogTitle>
+          <Tooltip title="hola">
+            <DialogTitle sx={{ padding: "0px" }}>Events</DialogTitle>
+          </Tooltip>
           <Button sx={{ color: "rgba(29, 27, 32, 1)" }} onClick={closeForm}>
             <CloseRoundedIcon />
           </Button>
@@ -213,12 +246,147 @@ const EventModal: React.FC<{
             ))}
           </Select>
         </FormControl>
+        {andOrTriggerList.map((andOrTrigger, index) => (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Box sx={{ display: "flex", width: "50px", justifyContent: "end" }}>
+              {andOrTrigger.type.charAt(0).toUpperCase() +
+                andOrTrigger.type.slice(1).toLowerCase()}
+            </Box>
+            <FormControl fullWidth>
+              <InputLabel>Trigger*</InputLabel>
+              <Select
+                label="Trigger"
+                value={
+                  (andOrTrigger.trigger as { className: string })?.className ||
+                  ""
+                }
+                defaultValue=""
+                onChange={(e) => {
+                  const newTriggerList = [...andOrTriggerList];
+                  newTriggerList[index].trigger = getTriggerClassByName(
+                    e.target.value
+                  );
+                  setAndOrTriggerList(newTriggerList);
+                }}
+              >
+                {triggerList
+                  .filter(
+                    (trigger) =>
+                      !andOrTriggerList.some(
+                        (andOrTrigger, i) =>
+                          i !== index &&
+                          (andOrTrigger.trigger as { className: string })
+                            ?.className ===
+                            (trigger as { className: string }).className
+                      ) &&
+                      (formEvent.getTrigger() as { className: string })
+                        .className !==
+                        (trigger as { className: string }).className
+                  )
+                  .map((trigger, index) => (
+                    <MenuItem
+                      key={index}
+                      value={(trigger as { className: string }).className}
+                    >
+                      {(trigger as { className: string }).className
+                        .toString()
+                        .replace(/_T$/, "")
+                        .replace(/([A-Z])/g, " $1")}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <Button
+              onClick={() => {
+                setAndOrTriggerList((prevList) =>
+                  prevList.filter((_, i) => i !== index)
+                );
+              }}
+              sx={{
+                minWidth: "15px",
+                padding: "8px",
+                cursor: "pointer",
+                color: "#1D1B20",
+                zIndex: 1000,
+              }}
+            >
+              <TrashOutlinedIcon />
+            </Button>
+          </Box>
+        ))}
         <Box sx={{ width: "40%" }}>
-          <IenaiButtonText
-            onClick={() => console.log("Add Trigger")}
-            label={"Add Trigger"}
-            icon={<AddIcon fontSize="medium" />}
-          />
+          <Tooltip
+            onClose={handleTooltipClose}
+            open={tooltipOpen}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+            title={
+              <>
+                <Box
+                  onClick={() => {
+                    console.log(andOrTriggerList);
+                    setAndOrTriggerList((prevList) => [
+                      ...prevList,
+                      { type: "AND" },
+                    ]);
+                    handleTooltipClose();
+                  }}
+                  sx={{
+                    display: "flex",
+                    padding: "8px 12px",
+                    alignItems: "start",
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "#3b383e",
+                    },
+                  }}
+                >
+                  And
+                </Box>
+                <Box
+                  onClick={() => {
+                    setAndOrTriggerList((prevList) => [
+                      ...prevList,
+                      { type: "OR" },
+                    ]);
+                    handleTooltipClose();
+                  }}
+                  sx={{
+                    display: "flex",
+                    padding: "8px 12px",
+                    alignItems: "start",
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "#3b383e",
+                    },
+                  }}
+                >
+                  Or
+                </Box>
+              </>
+            }
+            slotProps={{
+              tooltip: {
+                sx: {
+                  margin: "0 !important",
+                  width: "88px",
+                  backgroundColor: "#322F35",
+                },
+              },
+              popper: {
+                disablePortal: true,
+              },
+            }}
+          >
+            <div>
+              <IenaiButtonText
+                onClick={() => handleTooltipOpen()}
+                label={"Add Trigger"}
+                icon={<AddIcon fontSize="medium" />}
+              />
+            </div>
+          </Tooltip>
         </Box>
 
         <DialogContentText sx={{ color: "var(--On-Surface, #1D1B20)" }}>

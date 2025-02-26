@@ -76,6 +76,7 @@ const OperationNodeAdded: React.FC<{
         type="source"
         id="terminate-sim-source"
         position={Position.Right}
+        style={{ visibility: "hidden" }}
       />
       <Handle
         type="target"

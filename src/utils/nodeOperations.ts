@@ -1,6 +1,7 @@
 import { Edge, MarkerType } from "@xyflow/react";
 import {
   Mode360,
+  OnAllConditions_T,
   Operation360,
   OperationMachine,
   TerminateSimulation_E,
@@ -125,14 +126,14 @@ const processOperation = (
         (edge) =>
           edge.source === operation.getId() && edge.target === targetOp.getId()
       );
-
+      console.log("antes: ", event);
       const randomId = Math.floor(10000 + Math.random() * 90000).toString();
       const newEdge: Edge = {
         id: `${operation.getId()}-${targetOp.getId()}-${randomId}`,
         data: { operationEdges, event, operation },
         source: operation.getId(),
         target: targetOp.getId(),
-        label: event.getTrigger().getTriggerName(),
+        label: getEventTriggerName(event),
         labelBgStyle: {
           fill: "#5641E2",
           transform: `translate(0%, ${
@@ -169,10 +170,8 @@ const processOperation = (
           ...currentNode.data,
         };
         newEdge.data = {
-          startLabel:
-            flow === "LL" ? event.getTrigger().getTriggerName() : undefined,
-          endLabel:
-            flow === "RR" ? event.getTrigger().getTriggerName() : undefined,
+          startLabel: flow === "LL" ? getEventTriggerName(event) : undefined,
+          endLabel: flow === "RR" ? getEventTriggerName(event) : undefined,
           ...newEdge.data,
         };
       }
@@ -208,7 +207,6 @@ const processOperation = (
           edge.id.includes("terminate") && edge.source === operation.getId()
       );
       const randomId = Math.floor(10000 + Math.random() * 90000).toString();
-      console.log("antes: ", operationEdges);
 
       const newEdge: Edge = {
         id: `${operation.getId()}-terminate-${randomId}`,
@@ -216,7 +214,8 @@ const processOperation = (
         source: operation.getId(),
         target: "terminate",
         sourceHandle: "terminate-sim-source",
-        label: event.getTrigger().getTriggerName(),
+        label: getEventTriggerName(event),
+
         labelBgStyle: {
           fill: "#a53a36",
         },
@@ -241,4 +240,34 @@ const processOperation = (
       newEdges.push(newEdge);
     }
   });
+};
+
+const getEventTriggerName = (event) => {
+  const getTriggerNameFromConditions = (conditions) => {
+    for (const condition of conditions) {
+      if (
+        condition instanceof OnAllConditions_T ||
+        condition instanceof OnAllConditions_T
+      ) {
+        return getTriggerNameFromConditions(condition.getConditions());
+      } else {
+        return condition.getTriggerName();
+      }
+    }
+    return null;
+  };
+
+  const trigger = event.getTrigger();
+  if (
+    trigger instanceof OnAllConditions_T ||
+    trigger instanceof OnAllConditions_T
+  ) {
+    const conditions = trigger.getConditions();
+    if (conditions.length > 0) {
+      return getTriggerNameFromConditions(conditions);
+    }
+  } else {
+    return trigger.getTriggerName();
+  }
+  return null;
 };
