@@ -582,3 +582,9 @@ function createImpulseToElementEffect(numberOfElements: number) {
 export const ImpulseToElement_E = createImpulseToElementEffect(1);
 export const ImpulseToTwoElements_E = createImpulseToElementEffect(2);
 export const ImpulseToThreeElements_E = createImpulseToElementEffect(3);
+
+export const effectEnum = {
+  ToOp_E: new ToOp_E(new Operation360("", "", new Mode360("", ""))).constructor
+    .name,
+  TerminateSimulation_E: new TerminateSimulation_E().constructor.name,
+};

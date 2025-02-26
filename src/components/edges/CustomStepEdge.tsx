@@ -42,18 +42,8 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
     targetY,
     sourcePosition,
     targetPosition,
+    borderRadius: 40,
   });
-  const [bidirectionalEdgePath, bidirectionalLabelX, bidirectionalLabelY] =
-    getSmoothStepPath({
-      sourceX,
-      sourceY,
-      targetX,
-      targetY,
-      sourcePosition: sourcePosition,
-      targetPosition,
-    });
-
-  console.log(sourcePosition);
 
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [eventModal, setEventModal] = useState<boolean>(false);
@@ -125,9 +115,7 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
         </defs>
         <BaseEdge
           id={id}
-          path={
-            data.startLabel || data.endLabel ? bidirectionalEdgePath : edgePath
-          }
+          path={edgePath}
           style={{ strokeWidth: 3, ...style }}
           className={`react-flow__edge-path ${animated ? "animated" : ""}`}
           markerEnd={`url(#arrowclosed-${id})`}

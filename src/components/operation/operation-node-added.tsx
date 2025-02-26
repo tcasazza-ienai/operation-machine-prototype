@@ -79,15 +79,7 @@ const OperationNodeAdded: React.FC<{
       />
       <Handle
         type="target"
-        position={
-          isEndNode
-            ? Position.Left
-            : isBiDirectional && dataFlow === "LL"
-            ? Position.Bottom
-            : dataFlow === "RR"
-            ? Position.Left
-            : Position.Left
-        }
+        position={Position.Bottom}
         style={{ visibility: "hidden" }}
       />
 

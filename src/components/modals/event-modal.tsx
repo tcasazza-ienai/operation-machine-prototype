@@ -19,6 +19,7 @@ import IenaiButtonText from "../common/ienai-button-text.tsx";
 
 import {
   createCustomTrigger,
+  effectEnum,
   Event360,
   Mode360,
   Operation360,
@@ -34,12 +35,6 @@ import {
 } from "../../utils/mappingTriggerList.ts";
 
 const emptyEvent: Event360 = new Event360("", "");
-
-const effectEnum = {
-  ToOp_E: new ToOp_E(new Operation360("", "", new Mode360("", ""))).constructor
-    .name,
-  TerminateSimulation_E: new TerminateSimulation_E().constructor.name,
-};
 
 const EventModal: React.FC<{
   open: boolean;

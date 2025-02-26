@@ -21,7 +21,7 @@ const OperationEndSimulationNode: React.FC = () => {
         position={Position.Right}
         style={{ visibility: "hidden" }}
       />
-      <Handle type="target" position={Position.Left} />
+      <Handle type="target" position={Position.Top} />
     </Box>
   );
 };
