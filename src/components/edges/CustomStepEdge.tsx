@@ -171,7 +171,7 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
               transform: `translate(0%, ${
                 105 * (data?.operationEdges as Array<any>).length -
                 (data?.operationEdges as Array<any>).length
-              }%) translate(${labelX}px, ${labelY}px)`,
+              }%) translate(${labelX}px, ${labelY}px) translate(-50%, -50%)`,
               background: labelBgStyle?.fill,
               color: labelStyle?.fill,
               fontSize: labelStyle?.fontSize,
