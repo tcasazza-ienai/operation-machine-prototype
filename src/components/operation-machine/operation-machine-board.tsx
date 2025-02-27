@@ -10,7 +10,11 @@ import {
 import React, { useEffect } from "react";
 import CustomNode from "../operation/custom-node.tsx";
 import "@xyflow/react/dist/style.css";
-import { Operation360, OperationMachine } from "../../entities/OpMachine.ts";
+import {
+  Operation360,
+  OperationMachine,
+  ToOp_E,
+} from "../../entities/OpMachine.ts";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";
 import CustomStepEdge from "../edges/CustomStepEdge.tsx";
@@ -23,12 +27,21 @@ const OperationMachineBoard: React.FC = () => {
   const { fitView } = useReactFlow();
 
   const refreshNodes = () => {
+    const filteredOperations = opMachine.getOperations().filter(
+      (operation) =>
+        operation.getEvents().length > 0 ||
+        opMachine.getOperations().some((op) =>
+          op.getEvents().some((event) => {
+            const effect = event.getEffect();
+            if (effect instanceof ToOp_E)
+              return effect.getTargetOperation() === operation;
+            else return false;
+          })
+        )
+    );
+
     const { nodes: newNodes, edges: newEdges } = buildGraphElements(
-      new OperationMachine(
-        opMachine
-          .getOperations()
-          .filter((operation) => operation.getEvents().length > 0)
-      )
+      new OperationMachine(filteredOperations)
     );
 
     setNodes(newNodes);

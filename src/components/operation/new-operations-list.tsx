@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
-import { Mode360, Operation360 } from "../../entities/OpMachine.ts";
+import { Mode360, Operation360, ToOp_E } from "../../entities/OpMachine.ts";
 import { Box, Tooltip, Typography } from "@mui/material";
 import IenaiButton from "../common/ienai-button.tsx";
 import OperationNode from "./operation-node.tsx";
@@ -39,7 +39,16 @@ const NewOperationsList: React.FC = () => {
         Unallocated operations (
         {
           operations.filter(
-            (op) => op.getEvents().length === 0 || !op.getEvents()
+            (operation) =>
+              operation.getEvents().length < 1 &&
+              !opMachine.getOperations().some((op) =>
+                op.getEvents().some((event) => {
+                  const effect = event.getEffect();
+                  if (effect instanceof ToOp_E)
+                    return effect.getTargetOperation() === operation;
+                  else return false;
+                })
+              )
           ).length
         }
         )
@@ -103,7 +112,18 @@ const NewOperationsList: React.FC = () => {
           (op) => op.getEvents().length === 0 || !op.getEvents()
         ).length > 0 &&
           operations
-            .filter((op) => op.getEvents().length === 0 || !op.getEvents())
+            .filter(
+              (operation) =>
+                operation.getEvents().length < 1 &&
+                !opMachine.getOperations().some((op) =>
+                  op.getEvents().some((event) => {
+                    const effect = event.getEffect();
+                    if (effect instanceof ToOp_E)
+                      return effect.getTargetOperation() === operation;
+                    else return false;
+                  })
+                )
+            )
             .map((operation, index) => (
               <Box key={operation.getId() + index}>
                 <OperationNode
