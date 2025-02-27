@@ -1,14 +1,15 @@
+html body {
+  background-color: #f7f2fa;
+}
+
 .App {
   text-align: center;
   padding: 8px;
-
-  margin: 1%;
 }
 
 .App-header {
   display: flex;
   align-items: center;
-  background-color: #fff;
   margin: 12px;
   gap: 15px;
   display: flex;

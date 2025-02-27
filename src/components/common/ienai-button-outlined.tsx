@@ -1,14 +1,14 @@
 import React from "react";
 import Button, { ButtonProps } from "@mui/material/Button";
 
-interface IenaiButtonTextProps {
+interface IenaiButtonOutlinedProps {
   onClick: () => void;
   label: string;
   icon?: React.ReactNode;
   props?: ButtonProps;
 }
 
-const IenaiButtonText: React.FC<IenaiButtonTextProps> = ({
+const IenaiButtonOutlined: React.FC<IenaiButtonOutlinedProps> = ({
   onClick,
   label,
   icon,
@@ -18,7 +18,7 @@ const IenaiButtonText: React.FC<IenaiButtonTextProps> = ({
     <Button
       onClick={onClick}
       color={"primary"}
-      variant={"text"}
+      variant={"outlined"}
       sx={buttonStyle}
       startIcon={icon ? icon : null}
       {...props}
@@ -28,7 +28,7 @@ const IenaiButtonText: React.FC<IenaiButtonTextProps> = ({
   );
 };
 
-export default IenaiButtonText;
+export default IenaiButtonOutlined;
 
 const buttonStyle = {
   borderRadius: "100px",

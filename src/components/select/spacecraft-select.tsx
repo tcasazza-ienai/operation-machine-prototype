@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { Spacecraft360 } from "../../entities/Spacecraft.ts";
 import {
   createNewSimpleSpaceCraft,
@@ -35,29 +41,32 @@ const SpacecraftSelect: React.FC = () => {
   };
   return (
     <>
-      <Select
-        labelId="Spacecraft-label"
-        id="Spacecraft-select"
-        value={spacecraftSelected.getName()}
-        onChange={(e) => onChangeSelect(e)}
-        sx={{
-          width: "30%",
-          minWidth: "200px",
-          "& .MuiOutlinedInput-input": {
-            display: "flex",
-          },
-        }}
-      >
-        {spacecraftList.map((spacecraft, index) => (
-          <MenuItem
-            key={spacecraft.getName() + index}
-            value={spacecraft.getName()}
-            style={{ display: "flex", justifyContent: "start" }}
-          >
-            {spacecraft.getName()}
-          </MenuItem>
-        ))}
-      </Select>
+      <FormControl fullWidth>
+        <InputLabel>Spacecraft associated</InputLabel>
+        <Select
+          labelId="Spacecraft-label"
+          id="Spacecraft-select"
+          label="Spacecraft associated"
+          value={spacecraftSelected.getName()}
+          onChange={(e) => onChangeSelect(e)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-input": {
+              display: "flex",
+            },
+          }}
+        >
+          {spacecraftList.map((spacecraft, index) => (
+            <MenuItem
+              key={spacecraft.getName() + index}
+              value={spacecraft.getName()}
+              style={{ display: "flex", justifyContent: "start" }}
+            >
+              {spacecraft.getName()}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <BasicDialog
         onClose={() => setChangeSelectDialog(false)}
         onConfirm={() => confirmChangeSelect()}

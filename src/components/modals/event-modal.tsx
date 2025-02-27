@@ -230,9 +230,7 @@ const EventModal: React.FC<{
             marginTop: "16px",
           }}
         >
-          <Tooltip title="hola">
-            <DialogTitle sx={{ padding: "0px" }}>Events</DialogTitle>
-          </Tooltip>
+          <DialogTitle sx={{ padding: "0px" }}>Events</DialogTitle>
           <Button sx={{ color: "rgba(29, 27, 32, 1)" }} onClick={closeForm}>
             <CloseRoundedIcon />
           </Button>

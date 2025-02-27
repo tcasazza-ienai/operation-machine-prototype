@@ -14,6 +14,7 @@ import { Operation360, OperationMachine } from "../../entities/OpMachine.ts";
 import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";
 import CustomStepEdge from "../edges/CustomStepEdge.tsx";
+import EmptyOpMachineImage from "../../assets/images/emptyOpMachine.png";
 
 const OperationMachineBoard: React.FC = () => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
@@ -51,28 +52,36 @@ const OperationMachineBoard: React.FC = () => {
   return (
     <Box
       sx={{
-        border: "2px solid #ddd",
+        border: edges.length > 0 ? "2px solid #ddd" : "",
         borderRadius: "8px",
         height: "70vh",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        zoomOnScroll={true}
-        zoomOnPinch={false}
-        style={{ width: "100%" }}
-        nodesDraggable
-      >
-        <Controls showInteractive={false} position="bottom-right" />
-        <Background gap={1} color="transparent" />
-      </ReactFlow>
+      {edges.length > 0 ? (
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          zoomOnScroll={true}
+          zoomOnPinch={false}
+          style={{ width: "100%" }}
+          nodesDraggable
+        >
+          <Controls showInteractive={false} position="bottom-right" />
+          <Background gap={1} color="transparent" />
+        </ReactFlow>
+      ) : (
+        <img
+          src={EmptyOpMachineImage}
+          alt="emptyOp-MachineImage"
+          style={{ height: "70vh" }}
+        />
+      )}
     </Box>
   );
 };
