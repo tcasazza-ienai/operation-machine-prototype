@@ -72,8 +72,8 @@ const NewOperationsList: React.FC = () => {
         ).length > 0 &&
           operations
             .filter((op) => op.getEvents().length === 0 || !op.getEvents())
-            .map((operation) => (
-              <Box>
+            .map((operation, index) => (
+              <Box key={operation.getId() + index}>
                 <OperationNode
                   operation={operation}
                   initialEditState={{ active: operation.getId() === "" }}

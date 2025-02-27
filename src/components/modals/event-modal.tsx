@@ -59,12 +59,10 @@ const EventModal: React.FC<{
 
   const handleTooltipClose = () => {
     setTooltipOpen(false);
-    console.log("CLOSE");
   };
 
   const handleTooltipOpen = () => {
     setTooltipOpen(true);
-    console.log("OPEN");
   };
 
   const [formEvent, setFormEvent] = useState<Event360>(emptyEvent);
@@ -140,7 +138,6 @@ const EventModal: React.FC<{
 
     newOpMachine.deleteOperationById(operation.getId());
 
-    // Combina el trigger principal con los triggers adicionales del estado
     let finalTrigger = formEvent.getTrigger();
     andOrTriggerList.forEach((item) => {
       if (item.trigger) {
@@ -170,16 +167,37 @@ const EventModal: React.FC<{
 
   useEffect(() => {
     if (event) {
-      setFormEvent(event);
-      if (event.getEffect().constructor.name === effectEnum.ToOp_E) {
-        setToOpSelected((event.getEffect() as ToOp_E).getTargetOperation());
+      let baseTrigger = event.getTrigger();
+      const chain: { type: "AND" | "OR"; trigger?: Trigger360 }[] = [];
+
+      while (
+        (baseTrigger instanceof OnAllConditions_T ||
+          baseTrigger instanceof OnAnyCondition_T) &&
+        baseTrigger.getConditions().length > 0
+      ) {
+        const conditions = baseTrigger.getConditions();
+        const compositeType =
+          baseTrigger instanceof OnAllConditions_T ? "AND" : "OR";
+
+        if (conditions.length > 1) {
+          for (let i = 1; i < conditions.length; i++) {
+            chain.push({ type: compositeType, trigger: conditions[i] });
+          }
+        }
+
+        baseTrigger = conditions[0];
+      }
+
+      const newEvent = new Event360(baseTrigger, event.getEffect());
+      setFormEvent(newEvent);
+      chain.reverse();
+      setAndOrTriggerList(chain);
+
+      if (newEvent.getEffect().constructor.name === effectEnum.ToOp_E) {
+        setToOpSelected((newEvent.getEffect() as ToOp_E).getTargetOperation());
       }
     }
   }, [event]);
-
-  useEffect(() => {
-    console.log(andOrTriggerList);
-  }, [andOrTriggerList]);
 
   return (
     <>
@@ -247,7 +265,10 @@ const EventModal: React.FC<{
           </Select>
         </FormControl>
         {andOrTriggerList.map((andOrTrigger, index) => (
-          <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Box
+            key={andOrTrigger.type + index}
+            sx={{ display: "flex", alignItems: "center", gap: "8px" }}
+          >
             <Box sx={{ display: "flex", width: "50px", justifyContent: "end" }}>
               {andOrTrigger.type.charAt(0).toUpperCase() +
                 andOrTrigger.type.slice(1).toLowerCase()}
@@ -325,7 +346,6 @@ const EventModal: React.FC<{
               <>
                 <Box
                   onClick={() => {
-                    console.log(andOrTriggerList);
                     setAndOrTriggerList((prevList) => [
                       ...prevList,
                       { type: "AND" },

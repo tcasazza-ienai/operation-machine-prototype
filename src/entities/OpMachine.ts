@@ -493,7 +493,7 @@ export const OnLatitude_T = createCustomTrigger<{
   latitude: number;
 }>("OnLatitude");
 export const AtAscendingNode_T = createCustomTrigger("AtAscendingNode");
-export const AtDescendingNode_T = createCustomTrigger("AtDescendingNod");
+export const AtDescendingNode_T = createCustomTrigger("AtDescendingNode");
 export const AtNorthernAntinode_T = createCustomTrigger("AtNorthernAntinode");
 export const AtSouthernAntinode_T = createCustomTrigger("AtSouthernAntinode");
 export const AtReservoirLevel_T = createCustomTrigger<{ level: number }>(

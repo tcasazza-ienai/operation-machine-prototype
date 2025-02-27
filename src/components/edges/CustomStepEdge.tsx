@@ -57,7 +57,7 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
         .map((cond: any) => buildTriggerText(cond))
         .join(operator);
       return `(${conditionsText})`;
-    } else if (typeof trigger.getTriggerName === "function") {
+    } else {
       let text = trigger.getTriggerName();
 
       return text;
@@ -70,7 +70,7 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
       if (effect.constructor.name === "ToOp_E") {
         return `To Op: ${effect.getTargetOperation().getOpName()}`;
       } else if (effect.constructor.name === "TerminateSimulation_E") {
-        return "Terminate simulation";
+        return "End simulation";
       } else if (effect.constructor.name === "Impulse_E") {
         return "Impulse effect";
       }
@@ -79,7 +79,6 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
   }
 
   function eventToConditionalText(event: Event360): string {
-    console.log("EVENT:", data);
     const triggerText = buildTriggerText(event.getTrigger());
     const effectText = buildEffectText(event.getEffect());
     return `IF ${triggerText} THEN ${effectText}`;
@@ -126,11 +125,9 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
           title={
             <div style={{ maxWidth: "150px" }}>
               <div style={{ margin: "8px", fontSize: "14px" }}>
-                {data?.event &&
-                (data?.event as Event360).getEffect().constructor.name ===
-                  "TerminateSimulation_E"
-                  ? "Terminate simulation"
-                  : eventToConditionalText(data?.event as Event360)}
+                {data?.event
+                  ? eventToConditionalText(data?.event as Event360)
+                  : ""}
               </div>
               <div style={{ margin: "0px 8px 0px 8px" }}>
                 <Tooltip title="Edit">

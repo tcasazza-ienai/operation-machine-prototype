@@ -2,6 +2,7 @@ import { Edge, MarkerType } from "@xyflow/react";
 import {
   Mode360,
   OnAllConditions_T,
+  OnAnyCondition_T,
   Operation360,
   OperationMachine,
   TerminateSimulation_E,
@@ -126,7 +127,6 @@ const processOperation = (
         (edge) =>
           edge.source === operation.getId() && edge.target === targetOp.getId()
       );
-      console.log("antes: ", event);
       const randomId = Math.floor(10000 + Math.random() * 90000).toString();
       const newEdge: Edge = {
         id: `${operation.getId()}-${targetOp.getId()}-${randomId}`,
@@ -244,10 +244,11 @@ const processOperation = (
 
 const getEventTriggerName = (event) => {
   const getTriggerNameFromConditions = (conditions) => {
+    console.log();
     for (const condition of conditions) {
       if (
         condition instanceof OnAllConditions_T ||
-        condition instanceof OnAllConditions_T
+        condition instanceof OnAnyCondition_T
       ) {
         return getTriggerNameFromConditions(condition.getConditions());
       } else {
@@ -260,7 +261,7 @@ const getEventTriggerName = (event) => {
   const trigger = event.getTrigger();
   if (
     trigger instanceof OnAllConditions_T ||
-    trigger instanceof OnAllConditions_T
+    trigger instanceof OnAnyCondition_T
   ) {
     const conditions = trigger.getConditions();
     if (conditions.length > 0) {
