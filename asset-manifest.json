@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/operation-machine-prototype/static/css/main.a91cdde7.css",
-    "main.js": "/operation-machine-prototype/static/js/main.e3d4e34c.js",
+    "main.js": "/operation-machine-prototype/static/js/main.d79770c3.js",
     "index.html": "/operation-machine-prototype/index.html",
     "main.a91cdde7.css.map": "/operation-machine-prototype/static/css/main.a91cdde7.css.map",
-    "main.e3d4e34c.js.map": "/operation-machine-prototype/static/js/main.e3d4e34c.js.map"
+    "main.d79770c3.js.map": "/operation-machine-prototype/static/js/main.d79770c3.js.map"
   },
   "entrypoints": [
     "static/css/main.a91cdde7.css",
-    "static/js/main.e3d4e34c.js"
+    "static/js/main.d79770c3.js"
   ]
 }
