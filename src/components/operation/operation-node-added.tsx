@@ -23,7 +23,6 @@ const OperationNodeAdded: React.FC<{
   selectOnChange: (mode: Mode360) => void;
   aditionalData?: any;
 }> = ({ operation, options, selectOnChange, aditionalData }) => {
-  const { isBiDirectional, dataFlow, hasEndNode, isEndNode } = aditionalData;
   const modes = useModesStore((state) => state.modes);
   const [selected, setSelected] = useState<Mode360>(
     (operation as Operation360).getOpMode()

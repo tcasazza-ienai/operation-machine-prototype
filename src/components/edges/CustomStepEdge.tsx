@@ -10,6 +10,7 @@ import EditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import TrashOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { Tooltip } from "@mui/material";
 import {
+  effectEnum,
   Event360,
   Operation360,
   OperationMachine,
@@ -67,12 +68,10 @@ const CustomStepEdge: React.FC<EdgeProps> = ({
 
   function buildEffectText(effect: any): string {
     if (effect && typeof effect === "object") {
-      if (effect.constructor.name === "ToOp_E") {
+      if (effect.constructor.name === effectEnum.ToOp_E) {
         return `To Op: ${effect.getTargetOperation().getOpName()}`;
-      } else if (effect.constructor.name === "TerminateSimulation_E") {
+      } else if (effect.constructor.name === effectEnum.TerminateSimulation_E) {
         return "End simulation";
-      } else if (effect.constructor.name === "Impulse_E") {
-        return "Impulse effect";
       }
     }
     return "Unknown effect";
