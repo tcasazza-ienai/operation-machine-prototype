@@ -244,7 +244,6 @@ const processOperation = (
 
 const getEventTriggerName = (event) => {
   const getTriggerNameFromConditions = (conditions) => {
-    console.log();
     for (const condition of conditions) {
       if (
         condition instanceof OnAllConditions_T ||
