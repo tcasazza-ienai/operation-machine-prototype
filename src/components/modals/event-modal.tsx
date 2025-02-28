@@ -18,7 +18,6 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddIcon from "@mui/icons-material/Add";
 import IenaiButtonText from "../common/ienai-button-text.tsx";
 import TrashOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-
 import {
   createCustomTrigger,
   effectEnum,
@@ -55,18 +54,14 @@ const EventModal: React.FC<{
   const [triggerList, setTriggerList] = useState<Trigger360[]>(
     getAllTrigger360()
   );
-  const [tooltipOpen, setTooltipOpen] = React.useState(false);
-
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   const handleTooltipClose = () => {
     setTooltipOpen(false);
   };
-
   const handleTooltipOpen = () => {
     setTooltipOpen(true);
   };
-
   const [formEvent, setFormEvent] = useState<Event360>(emptyEvent);
-
   const changeTriggerHandler = (e: SelectChangeEvent<string>) => {
     const newEvent = new Event360(
       formEvent.getTrigger(),
@@ -76,10 +71,8 @@ const EventModal: React.FC<{
     if (NewTriggerClass) {
       newEvent.setTrigger(new (NewTriggerClass.constructor as any)());
     }
-
     setFormEvent(newEvent);
   };
-
   const effectOnChangeHandler = (e: SelectChangeEvent<string>) => {
     const newEvent = new Event360(
       formEvent.getTrigger(),
@@ -95,7 +88,6 @@ const EventModal: React.FC<{
       setFormEvent(newEvent);
     }
   };
-
   const toOpOnChangeHandler = (e: SelectChangeEvent<string>) => {
     const newEvent = new Event360(
       formEvent.getTrigger(),
@@ -112,7 +104,6 @@ const EventModal: React.FC<{
     setToOpSelected(opMachine.getOperationById(e.target.value));
     setFormEvent(newEvent);
   };
-
   const confirmValidation = () => {
     if (!formEvent.getTrigger()) return false;
     if (!formEvent.getEffect()) {
@@ -124,20 +115,15 @@ const EventModal: React.FC<{
     if (andOrTriggerList.some((andOrTrigger) => !andOrTrigger.trigger)) {
       return false;
     }
-
     return true;
   };
-
   const confirmForm = () => {
     const newOpMachine = new OperationMachine(opMachine.getOperations());
     const operationNewEvent = newOpMachine.getOperationById(operation.getId());
-
     if (event) {
       operationNewEvent?.deleteEventToOperation(event);
     }
-
     newOpMachine.deleteOperationById(operation.getId());
-
     let finalTrigger = formEvent.getTrigger();
     andOrTriggerList.forEach((item) => {
       if (item.trigger) {
@@ -148,28 +134,23 @@ const EventModal: React.FC<{
         }
       }
     });
-
     const newEvent = new Event360(finalTrigger, formEvent.getEffect());
     if (operationNewEvent) {
       operationNewEvent.addEventToOperation(newEvent);
       newOpMachine.addOperationToOpMachine(operationNewEvent);
     }
     setOpMachine(newOpMachine);
-
     closeForm();
   };
-
   const closeForm = () => {
     setFormEvent(emptyEvent);
     setToOpSelected(undefined);
     onClose();
   };
-
   useEffect(() => {
     if (event) {
       let baseTrigger = event.getTrigger();
       const chain: { type: "AND" | "OR"; trigger?: Trigger360 }[] = [];
-
       while (
         (baseTrigger instanceof OnAllConditions_T ||
           baseTrigger instanceof OnAnyCondition_T) &&
@@ -178,67 +159,32 @@ const EventModal: React.FC<{
         const conditions = baseTrigger.getConditions();
         const compositeType =
           baseTrigger instanceof OnAllConditions_T ? "AND" : "OR";
-
         if (conditions.length > 1) {
           for (let i = 1; i < conditions.length; i++) {
             chain.push({ type: compositeType, trigger: conditions[i] });
           }
         }
-
         baseTrigger = conditions[0];
       }
-
       const newEvent = new Event360(baseTrigger, event.getEffect());
       setFormEvent(newEvent);
       chain.reverse();
       setAndOrTriggerList(chain);
-
       if (newEvent.getEffect().constructor.name === effectEnum.ToOp_E) {
         setToOpSelected((newEvent.getEffect() as ToOp_E).getTargetOperation());
       }
     }
   }, [event]);
-
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={closeForm}
-        fullScreen
-        sx={{
-          "& .MuiDialog-container": {
-            justifyContent: "right",
-            padding: "0px",
-            margin: "0px",
-          },
-          "& .MuiDialog-paper": {
-            backgroundColor: "#FFF",
-            width: "30%",
-            minWidth: "400px",
-            padding: "16px",
-            gap: "16px",
-            height: "100%",
-            margin: "0px",
-            borderRadius: "0px",
-          },
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "16px",
-          }}
-        >
-          <DialogTitle sx={{ padding: "0px" }}>Events</DialogTitle>
-          <Button sx={{ color: "rgba(29, 27, 32, 1)" }} onClick={closeForm}>
+      <Dialog open={open} onClose={closeForm} fullScreen sx={dialogSx}>
+        <Box sx={dialogHeaderBoxSx}>
+          <DialogTitle sx={dialogTitleSx}>Events</DialogTitle>
+          <Button sx={closeButtonSx} onClick={closeForm}>
             <CloseRoundedIcon />
           </Button>
         </Box>
-        <DialogContentText sx={{ color: "var(--On-Surface, #1D1B20)" }}>
-          If
-        </DialogContentText>
-
+        <DialogContentText sx={dialogContentTextSx}>If</DialogContentText>
         <FormControl fullWidth>
           <InputLabel>Trigger*</InputLabel>
           <Select
@@ -263,11 +209,8 @@ const EventModal: React.FC<{
           </Select>
         </FormControl>
         {andOrTriggerList.map((andOrTrigger, index) => (
-          <Box
-            key={andOrTrigger.type + index}
-            sx={{ display: "flex", alignItems: "center", gap: "8px" }}
-          >
-            <Box sx={{ display: "flex", width: "50px", justifyContent: "end" }}>
+          <Box key={andOrTrigger.type + index} sx={andOrTriggerBoxSx}>
+            <Box sx={andOrTriggerLabelBoxSx}>
               {andOrTrigger.type.charAt(0).toUpperCase() +
                 andOrTrigger.type.slice(1).toLowerCase()}
             </Box>
@@ -321,19 +264,13 @@ const EventModal: React.FC<{
                   prevList.filter((_, i) => i !== index)
                 );
               }}
-              sx={{
-                minWidth: "15px",
-                padding: "8px",
-                cursor: "pointer",
-                color: "#1D1B20",
-                zIndex: 1000,
-              }}
+              sx={trashButtonSx}
             >
               <TrashOutlinedIcon />
             </Button>
           </Box>
         ))}
-        <Box sx={{ width: "40%" }}>
+        <Box sx={tooltipContainerSx}>
           <Tooltip
             onClose={handleTooltipClose}
             open={tooltipOpen}
@@ -350,15 +287,7 @@ const EventModal: React.FC<{
                     ]);
                     handleTooltipClose();
                   }}
-                  sx={{
-                    display: "flex",
-                    padding: "8px 12px",
-                    alignItems: "start",
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: "#3b383e",
-                    },
-                  }}
+                  sx={tooltipOptionSx}
                 >
                   And
                 </Box>
@@ -370,15 +299,7 @@ const EventModal: React.FC<{
                     ]);
                     handleTooltipClose();
                   }}
-                  sx={{
-                    display: "flex",
-                    padding: "8px 12px",
-                    alignItems: "start",
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: "#3b383e",
-                    },
-                  }}
+                  sx={tooltipOptionSx}
                 >
                   Or
                 </Box>
@@ -386,11 +307,7 @@ const EventModal: React.FC<{
             }
             slotProps={{
               tooltip: {
-                sx: {
-                  margin: "0 !important",
-                  width: "88px",
-                  backgroundColor: "#322F35",
-                },
+                sx: tooltipSlotSx,
               },
               popper: {
                 disablePortal: true,
@@ -406,10 +323,7 @@ const EventModal: React.FC<{
             </div>
           </Tooltip>
         </Box>
-
-        <DialogContentText sx={{ color: "var(--On-Surface, #1D1B20)" }}>
-          Then
-        </DialogContentText>
+        <DialogContentText sx={dialogContentTextSx}>Then</DialogContentText>
         <FormControl fullWidth>
           <InputLabel>Effect*</InputLabel>
           <Select
@@ -455,8 +369,7 @@ const EventModal: React.FC<{
               ))}
           </Select>
         </FormControl>
-
-        <DialogActions sx={{ alignSelf: "flex-start" }}>
+        <DialogActions sx={dialogActionsSx}>
           <IenaiButton
             onClick={confirmForm}
             label={event ? "Edit event" : "Create event"}
@@ -469,3 +382,83 @@ const EventModal: React.FC<{
 };
 
 export default EventModal;
+
+const dialogSx = {
+  "& .MuiDialog-container": {
+    justifyContent: "right",
+    padding: "0px",
+    margin: "0px",
+  },
+  "& .MuiDialog-paper": {
+    backgroundColor: "#FFF",
+    width: "30%",
+    minWidth: "400px",
+    padding: "16px",
+    gap: "16px",
+    height: "100%",
+    margin: "0px",
+    borderRadius: "0px",
+  },
+};
+
+const dialogHeaderBoxSx = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginTop: "16px",
+};
+
+const dialogTitleSx = {
+  padding: "0px",
+};
+
+const closeButtonSx = {
+  color: "rgba(29, 27, 32, 1)",
+};
+
+const dialogContentTextSx = {
+  color: "var(--On-Surface, #1D1B20)",
+};
+
+const andOrTriggerBoxSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+};
+
+const andOrTriggerLabelBoxSx = {
+  display: "flex",
+  width: "50px",
+  justifyContent: "end",
+};
+
+const trashButtonSx = {
+  minWidth: "15px",
+  padding: "8px",
+  cursor: "pointer",
+  color: "#1D1B20",
+  zIndex: 1000,
+};
+
+const tooltipContainerSx = {
+  width: "40%",
+};
+
+const tooltipOptionSx = {
+  display: "flex",
+  padding: "8px 12px",
+  alignItems: "start",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: "#3b383e",
+  },
+};
+
+const tooltipSlotSx = {
+  margin: "0 !important",
+  width: "88px",
+  backgroundColor: "#322F35",
+};
+
+const dialogActionsSx = {
+  alignSelf: "flex-start",
+};

@@ -14,6 +14,7 @@ import QLawInputs from "./qlaw-inputs.tsx";
 import { NormalTargets, QLaw } from "../../../types/operation-machine.types.ts";
 import { useSpacecraftStore } from "../../../store/spacecraftStore.ts";
 import { Mode360, Pointing360 } from "../../../entities/OpMachine.ts";
+import { copyMode } from "../../../utils/modesFunctions.ts";
 
 const emptyQLaw: QLaw = {
   orbitTargeted: "",
@@ -46,13 +47,7 @@ const PointingMode: React.FC<PointingModeProps> = ({
   const [initialUpdateState, setInitialUpdateState] = useState<boolean>(false);
 
   const changePointer = (newPointer: string) => {
-    const updatedFormMode = new Mode360(
-      formMode.getModeId(),
-      formMode.getModeName(),
-      formMode.getPointing(),
-      formMode.getSystemsModes(),
-      formMode.getOverrideGeometry()
-    );
+    const updatedFormMode = copyMode(formMode);
     updatedFormMode.setPointing(
       new Pointing360(newPointer, formMode.getPointing().getTarget())
     );
@@ -101,13 +96,7 @@ const PointingMode: React.FC<PointingModeProps> = ({
         "."
       )}, w_e=${w_e.replace(",", ".")}, w_i=${w_i.replace(",", ".")})`;
 
-      const updatedFormMode = new Mode360(
-        formMode.getModeId(),
-        formMode.getModeName(),
-        formMode.getPointing(),
-        formMode.getSystemsModes(),
-        formMode.getOverrideGeometry()
-      );
+      const updatedFormMode = copyMode(formMode);
       updatedFormMode.setPointing(
         new Pointing360(formMode.getPointing().getPointer(), qLawString)
       );
@@ -137,57 +126,22 @@ const PointingMode: React.FC<PointingModeProps> = ({
   }, [formMode]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "16px",
-        gap: "16px",
-      }}
-    >
-      <Typography sx={{ fontWeight: "bold" }}>Pointing Mode</Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          width: "100%",
-        }}
-      >
+    <Box sx={containerSx}>
+      <Typography sx={titleTypographySx}>Pointing Mode</Typography>
+      <Box sx={toggleContainerSx}>
         <ToggleButtonGroup
           value={pointingType}
           exclusive
           onChange={handleAlignment}
           aria-label="Pointing Mode"
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "100%",
-            height: "40px",
-            borderRadius: "25px",
-            border: "1px solid #79747E",
-          }}
+          sx={toggleButtonGroupSx}
         >
           <ToggleButton
             value="body_axis"
             disabled={pointingType === "body_axis"}
-            sx={{
-              flex: 1,
-              borderRadius: "25px",
-              fontSize: "14px",
-              fontWeight: "bold",
-              textTransform: "none",
-              gap: "8px",
-              color: "#191A2C",
-            }}
+            sx={toggleButtonBodySx}
           >
-            <Box
-              sx={{
-                width: "24px",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+            <Box sx={iconBoxSx}>
               {pointingType === "body_axis" && <CheckRoundedIcon />}
             </Box>
             Body axis
@@ -195,35 +149,16 @@ const PointingMode: React.FC<PointingModeProps> = ({
           <ToggleButton
             value="spacecraft_system"
             disabled={pointingType === "spacecraft_system"}
-            sx={{
-              flex: 1,
-              borderRadius: "25px",
-              fontWeight: "bold",
-              textTransform: "none",
-              gap: "8px",
-            }}
+            sx={toggleButtonSystemSx}
           >
-            <Box
-              sx={{
-                width: "24px",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+            <Box sx={iconBoxSx}>
               {pointingType === "spacecraft_system" && <CheckRoundedIcon />}
             </Box>
             Spacecraft system
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          marginTop: "16px",
-        }}
-      >
+      <Box sx={formContainerSx}>
         {pointingType === "body_axis" ? (
           <FormControl fullWidth>
             <InputLabel>Pointer (coordinate)*</InputLabel>
@@ -277,13 +212,7 @@ const PointingMode: React.FC<PointingModeProps> = ({
             }
             defaultValue=""
             onChange={(e) => {
-              const updatedFormMode = new Mode360(
-                formMode.getModeId(),
-                formMode.getModeName(),
-                formMode.getPointing(),
-                formMode.getSystemsModes(),
-                formMode.getOverrideGeometry()
-              );
+              const updatedFormMode = copyMode(formMode);
               updatedFormMode.setPointing(
                 new Pointing360(
                   formMode.getPointing().getPointer(),
@@ -310,3 +239,61 @@ const PointingMode: React.FC<PointingModeProps> = ({
 };
 
 export default PointingMode;
+
+const containerSx = {
+  display: "flex",
+  flexDirection: "column",
+  marginTop: "16px",
+  gap: "16px",
+};
+
+const titleTypographySx = {
+  fontWeight: "bold",
+};
+
+const toggleContainerSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  width: "100%",
+};
+
+const toggleButtonGroupSx = {
+  display: "flex",
+  justifyContent: "space-between",
+  width: "100%",
+  height: "40px",
+  borderRadius: "25px",
+  border: "1px solid #79747E",
+};
+
+const toggleButtonBodySx = {
+  flex: 1,
+  borderRadius: "25px",
+  fontSize: "14px",
+  fontWeight: "bold",
+  textTransform: "none",
+  gap: "8px",
+  color: "#191A2C",
+};
+
+const toggleButtonSystemSx = {
+  flex: 1,
+  borderRadius: "25px",
+  fontWeight: "bold",
+  textTransform: "none",
+  gap: "8px",
+};
+
+const iconBoxSx = {
+  width: "24px",
+  display: "flex",
+  justifyContent: "center",
+};
+
+const formContainerSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+  marginTop: "16px",
+};

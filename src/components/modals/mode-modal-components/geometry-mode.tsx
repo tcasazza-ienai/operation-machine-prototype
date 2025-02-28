@@ -10,6 +10,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { Mode360, SphereGeometry360 } from "../../../entities/OpMachine.ts";
+import { copyMode } from "../../../utils/modesFunctions.ts";
 
 interface GeometryModeProps {
   formMode: Mode360;
@@ -41,13 +42,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
       setSphericalGeometryStatus(true);
     } else {
       setSphericalGeometryStatus(false);
-      const updatedFormMode = new Mode360(
-        formMode.getModeId(),
-        formMode.getModeName(),
-        formMode.getPointing(),
-        formMode.getSystemsModes(),
-        formMode.getOverrideGeometry()
-      );
+      const updatedFormMode = copyMode(formMode);
       updatedFormMode.setOverrideGeometryEmpty();
       setFormMode(updatedFormMode);
 
@@ -57,13 +52,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
 
   useEffect(() => {
     if (sphericalGeometryStatus) {
-      const updatedFormMode = new Mode360(
-        formMode.getModeId(),
-        formMode.getModeName(),
-        formMode.getPointing(),
-        formMode.getSystemsModes(),
-        formMode.getOverrideGeometry()
-      );
+      const updatedFormMode = copyMode(formMode);
       updatedFormMode.setOverrideGeometry(
         new SphereGeometry360(
           Number.parseFloat(sphericalGeometryForm.area),
@@ -94,14 +83,7 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
   }, []);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "16px",
-        gap: "16px",
-      }}
-    >
+    <Box sx={geometryModeContainer}>
       <Typography sx={{ fontWeight: "bold" }}>Geometry Mode</Typography>
       <FormControl fullWidth>
         <InputLabel>Geometry</InputLabel>
@@ -172,3 +154,10 @@ const GeometryMode: React.FC<GeometryModeProps> = ({
 };
 
 export default GeometryMode;
+
+const geometryModeContainer = {
+  display: "flex",
+  flexDirection: "column",
+  marginTop: "16px",
+  gap: "16px",
+};

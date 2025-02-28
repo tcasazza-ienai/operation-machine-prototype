@@ -24,7 +24,7 @@ export const createSpacecraft_tutorial5 = () => {
 
   const scSystem = new SpaceCraftSystem360("PROP", ps, "+x");
 
-  const sc = new Spacecraft360("MySpaceCraft", 3.6, 1.0, undefined, [scSystem]);
+  const sc = new Spacecraft360("Spacecraft1", 3.6, 1.0, undefined, [scSystem]);
 
   return sc;
 };

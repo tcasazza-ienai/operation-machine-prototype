@@ -58,8 +58,8 @@ const sc = new Spacecraft360(
 );
 
 export const useSpacecraftStore = create(
-  combine({ spacecraft: sc as Spacecraft360 }, (set) => ({
-    updateSpacecraft: (newSpacecraft: Spacecraft360) =>
+  combine({ spacecraft: undefined as Spacecraft360 | undefined }, (set) => ({
+    updateSpacecraft: (newSpacecraft: Spacecraft360 | undefined) =>
       set({ spacecraft: newSpacecraft }),
   }))
 );

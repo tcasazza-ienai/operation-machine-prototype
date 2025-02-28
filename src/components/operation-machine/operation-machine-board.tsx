@@ -19,6 +19,7 @@ import { useOpMachineStore } from "../../store/opMachineStore.ts";
 import { buildGraphElements } from "../../utils/nodeOperations.ts";
 import CustomStepEdge from "../edges/CustomStepEdge.tsx";
 import EmptyOpMachineImage from "../../assets/images/emptyOpMachine.png";
+import { filterOperationsByEventsToOpOrEnter } from "../../utils/eventsFunctions.ts";
 
 const OperationMachineBoard: React.FC = () => {
   const opMachine = useOpMachineStore((state) => state.opMachine);
@@ -27,17 +28,8 @@ const OperationMachineBoard: React.FC = () => {
   const { fitView } = useReactFlow();
 
   const refreshNodes = () => {
-    const filteredOperations = opMachine.getOperations().filter(
-      (operation) =>
-        operation.getEvents().length > 0 ||
-        opMachine.getOperations().some((op) =>
-          op.getEvents().some((event) => {
-            const effect = event.getEffect();
-            if (effect instanceof ToOp_E)
-              return effect.getTargetOperation() === operation;
-            else return false;
-          })
-        )
+    const filteredOperations = filterOperationsByEventsToOpOrEnter(
+      opMachine.getOperations()
     );
 
     const { nodes: newNodes, edges: newEdges } = buildGraphElements(
@@ -63,15 +55,7 @@ const OperationMachineBoard: React.FC = () => {
     "start-end": CustomStepEdge,
   };
   return (
-    <Box
-      sx={{
-        border: edges.length > 0 ? "2px solid #ddd" : "",
-        borderRadius: "8px",
-        height: "70vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <Box sx={getBoxSx(edges.length > 0)}>
       {edges.length > 0 ? (
         <ReactFlow
           nodes={nodes}
@@ -82,7 +66,7 @@ const OperationMachineBoard: React.FC = () => {
           onEdgesChange={onEdgesChange}
           zoomOnScroll={true}
           zoomOnPinch={false}
-          style={{ width: "100%" }}
+          style={reactFlowStyle}
           nodesDraggable
         >
           <Controls showInteractive={false} position="bottom-right" />
@@ -92,7 +76,7 @@ const OperationMachineBoard: React.FC = () => {
         <img
           src={EmptyOpMachineImage}
           alt="emptyOp-MachineImage"
-          style={{ height: "70vh" }}
+          style={imgStyle}
         />
       )}
     </Box>
@@ -100,3 +84,15 @@ const OperationMachineBoard: React.FC = () => {
 };
 
 export default OperationMachineBoard;
+
+const getBoxSx = (hasEdges: boolean) => ({
+  border: hasEdges ? "2px solid #ddd" : "",
+  borderRadius: "8px",
+  height: "70vh",
+  display: "flex",
+  flexDirection: "column",
+});
+
+const reactFlowStyle = { width: "100%" };
+
+const imgStyle = { height: "70vh" };

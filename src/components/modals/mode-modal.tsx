@@ -15,6 +15,7 @@ import PointingMode from "./mode-modal-components/pointing-mode.tsx";
 import GeometryMode from "./mode-modal-components/geometry-mode.tsx";
 import { Mode360, SphereGeometry360 } from "../../entities/OpMachine.ts";
 import SystemMode from "./mode-modal-components/system-mode.tsx";
+import { copyMode } from "../../utils/modesFunctions.ts";
 
 const emptyMode: Mode360 = new Mode360("0", "");
 
@@ -90,67 +91,25 @@ const ModeModal: React.FC<{
   }, []);
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={closeForm}
-        fullScreen
-        sx={{
-          "& .MuiDialog-container": {
-            justifyContent: "right",
-            padding: "0px",
-            margin: "0px",
-          },
-          "& .MuiDialog-paper": {
-            backgroundColor: "#FFF",
-            width: "30%",
-            minWidth: "400px",
-            padding: "16px",
-            gap: "16px",
-            height: "100%",
-            margin: "0px",
-            borderRadius: "0px",
-          },
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "16px",
-          }}
-        >
-          <DialogTitle sx={{ padding: "0px" }}>Mode</DialogTitle>
-          <Button sx={{ color: "rgba(29, 27, 32, 1)" }} onClick={closeForm}>
+      <Dialog open={open} onClose={closeForm} fullScreen sx={dialogSx}>
+        <Box sx={dialogHeaderBoxSx}>
+          <DialogTitle sx={dialogTitleSx}>Mode</DialogTitle>
+          <Button sx={closeButtonSx} onClick={closeForm}>
             <CloseRoundedIcon />
           </Button>
         </Box>
-        <DialogContentText sx={{ color: "var(--On-Surface, #1D1B20)" }}>
+        <DialogContentText sx={dialogContentTextSx}>
           Create different modes for your spacecraft during mission
         </DialogContentText>
 
         <TextField
           value={formMode.getModeName()}
           onChange={(e) => {
-            const updatedMode: Mode360 = new Mode360(
-              formMode.getModeId(),
-              formMode.getModeName(),
-              formMode.getPointing(),
-              formMode.getSystemsModes(),
-              formMode.getOverrideGeometry()
-            );
-
+            const updatedMode: Mode360 = copyMode(formMode);
             updatedMode.setModeName(e.target.value);
             setFormMode(updatedMode);
           }}
-          sx={{
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#79747E",
-            },
-            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "#79747E",
-              },
-          }}
+          sx={textFieldSx}
           label="Mode name*"
           fullWidth
         />
@@ -164,7 +123,7 @@ const ModeModal: React.FC<{
         />
         <SystemMode formMode={formMode} setFormMode={setFormMode} />
 
-        <DialogActions sx={{ alignSelf: "flex-start" }}>
+        <DialogActions sx={dialogActionsSx}>
           <IenaiButton
             onClick={confirmForm}
             label={mode ? "Edit mode" : "Create mode"}
@@ -177,3 +136,44 @@ const ModeModal: React.FC<{
 };
 
 export default ModeModal;
+
+const dialogSx = {
+  "& .MuiDialog-container": {
+    justifyContent: "right",
+    padding: "0px",
+    margin: "0px",
+  },
+  "& .MuiDialog-paper": {
+    backgroundColor: "#FFF",
+    width: "30%",
+    minWidth: "400px",
+    padding: "16px",
+    gap: "16px",
+    height: "100%",
+    margin: "0px",
+    borderRadius: "0px",
+  },
+};
+
+const dialogHeaderBoxSx = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginTop: "16px",
+};
+
+const dialogTitleSx = { padding: "0px" };
+
+const closeButtonSx = { color: "rgba(29, 27, 32, 1)" };
+
+const dialogContentTextSx = { color: "var(--On-Surface, #1D1B20)" };
+
+const textFieldSx = {
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: "#79747E",
+  },
+  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#79747E",
+  },
+};
+
+const dialogActionsSx = { alignSelf: "flex-start" };

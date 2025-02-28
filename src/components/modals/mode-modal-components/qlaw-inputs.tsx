@@ -18,25 +18,16 @@ interface QLawInputsProps {
 const QLawInputs: React.FC<QLawInputsProps> = ({ QLaw, setQLaw }) => {
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+      <Box sx={qLawInputsContainer}>
         <Link
           href="https://py-docs-360.ienai.space/1.9.0/userguide/objects/behaviors/modes/#i360.objects.maneuvers.QLaw"
           target="_blank"
-          sx={{
-            color: "var(--Primary, #5641E2)",
-            paddingX: "16px",
-            width: "auto",
-            fontSize: "12px",
-            fontWeight: 700,
-            lineHeight: "16px",
-            textDecoration: "none",
-            cursor: "pointer",
-          }}
+          sx={linkStyle}
         >
           Learn more about QLaw
         </Link>
       </Box>
-      <Box sx={{ display: "flex", gap: "16px" }}>
+      <Box sx={textFieldContainer}>
         <TextField
           label="a Weight"
           value={QLaw.w_a || ""}
@@ -102,3 +93,18 @@ const QLawInputs: React.FC<QLawInputsProps> = ({ QLaw, setQLaw }) => {
 };
 
 export default QLawInputs;
+
+const qLawInputsContainer = { display: "flex", justifyContent: "flex-start" };
+
+const linkStyle = {
+  color: "var(--Primary, #5641E2)",
+  paddingX: "16px",
+  width: "auto",
+  fontSize: "12px",
+  fontWeight: 700,
+  lineHeight: "16px",
+  textDecoration: "none",
+  cursor: "pointer",
+};
+
+const textFieldContainer = { display: "flex", gap: "16px" };

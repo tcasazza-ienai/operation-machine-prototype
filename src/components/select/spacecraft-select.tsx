@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   MenuItem,
@@ -7,22 +7,20 @@ import {
   InputLabel,
 } from "@mui/material";
 import { Spacecraft360 } from "../../entities/Spacecraft.ts";
-import {
-  createNewSimpleSpaceCraft,
-  createSpacecraft_tutorial5,
-} from "../../data/spacecraft/createSpacecraft.ts";
+import { createSpacecraft_tutorial5 } from "../../data/spacecraft/createSpacecraft.ts";
 import BasicDialog from "../modals/basic-dialog.tsx";
+import { useSpacecraftStore } from "../../store/spacecraftStore.ts";
 
 const SpacecraftSelect: React.FC = () => {
-  const emptySpacecraft: Spacecraft360 = new Spacecraft360("");
+  const currentSpacecraft = useSpacecraftStore((state) => state.spacecraft);
+  const setSpacecraft = useSpacecraftStore((state) => state.updateSpacecraft);
 
   const [spacecraftList, setSpacecraftList] = useState<Spacecraft360[]>([
-    createNewSimpleSpaceCraft(),
     createSpacecraft_tutorial5(),
   ]);
-  const [spacecraftSelected, setSpacecraftSelected] = useState<Spacecraft360>(
-    createNewSimpleSpaceCraft()
-  );
+  const [spacecraftSelected, setSpacecraftSelected] = useState<
+    Spacecraft360 | undefined
+  >(currentSpacecraft);
   const [selected, setSelected] = useState<string>("");
   const [changeSelectDialog, setChangeSelectDialog] = useState<boolean>(false);
 
@@ -32,13 +30,18 @@ const SpacecraftSelect: React.FC = () => {
   };
 
   const confirmChangeSelect = () => {
-    setSpacecraftSelected(
+    setSpacecraft(
       spacecraftList.find((spacecraft) => spacecraft.getName() === selected) ||
-        emptySpacecraft
+        undefined
     );
     setSelected("");
     setChangeSelectDialog(false);
   };
+
+  useEffect(() => {
+    setSpacecraftSelected(currentSpacecraft);
+  }, [currentSpacecraft]);
+
   return (
     <>
       <FormControl fullWidth>
@@ -47,20 +50,19 @@ const SpacecraftSelect: React.FC = () => {
           labelId="Spacecraft-label"
           id="Spacecraft-select"
           label="Spacecraft associated"
-          value={spacecraftSelected.getName()}
+          value={
+            spacecraftSelected instanceof Spacecraft360
+              ? spacecraftSelected.getName()
+              : ""
+          }
           onChange={(e) => onChangeSelect(e)}
-          sx={{
-            width: "100%",
-            "& .MuiOutlinedInput-input": {
-              display: "flex",
-            },
-          }}
+          sx={selectStyle}
         >
           {spacecraftList.map((spacecraft, index) => (
             <MenuItem
               key={spacecraft.getName() + index}
               value={spacecraft.getName()}
-              style={{ display: "flex", justifyContent: "start" }}
+              style={menuItemStyle}
             >
               {spacecraft.getName()}
             </MenuItem>
@@ -80,3 +82,12 @@ const SpacecraftSelect: React.FC = () => {
 };
 
 export default SpacecraftSelect;
+
+const selectStyle = {
+  width: "100%",
+  "& .MuiOutlinedInput-input": {
+    display: "flex",
+  },
+};
+
+const menuItemStyle = { display: "flex", justifyContent: "start" };

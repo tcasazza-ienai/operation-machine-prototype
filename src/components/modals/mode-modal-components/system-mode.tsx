@@ -21,12 +21,13 @@ import {
 } from "../../../utils/mappingSystemsMode.ts";
 import { useSpacecraftStore } from "../../../store/spacecraftStore.ts";
 import { Spacecraft360 } from "../../../entities/Spacecraft.ts";
+import { copyMode } from "../../../utils/modesFunctions.ts";
 
 const SystemMode: React.FC<{
   formMode: Mode360;
   setFormMode: React.Dispatch<React.SetStateAction<Mode360>>;
 }> = ({ formMode, setFormMode }) => {
-  const spacecraftSelected: Spacecraft360 = useSpacecraftStore(
+  const spacecraftSelected: Spacecraft360 | undefined = useSpacecraftStore(
     (state) => state.spacecraft
   );
   const propultionModeTypes: PropultionModeType[] = [
@@ -55,9 +56,11 @@ const SystemMode: React.FC<{
     }
 
     const [functionalId, modeType] = e.target.value.split("-");
-    const selectedSystem = spacecraftSelected
-      .getScSystems()
-      .find((system) => system.getFunctionalId() === functionalId);
+    const selectedSystem =
+      spacecraftSelected instanceof Spacecraft360 &&
+      spacecraftSelected
+        .getScSystems()
+        .find((system) => system.getFunctionalId() === functionalId);
 
     const newSystemMode: SystemsMode[] = [];
 
@@ -84,13 +87,7 @@ const SystemMode: React.FC<{
       }
     }
 
-    const updatedFormMode = new Mode360(
-      formMode.getModeId(),
-      formMode.getModeName(),
-      formMode.getPointing(),
-      formMode.getSystemsModes(),
-      formMode.getOverrideGeometry()
-    );
+    const updatedFormMode = copyMode(formMode);
     updatedFormMode.setSystemsModes(newSystemMode);
     setFormMode(updatedFormMode);
   };
@@ -101,50 +98,44 @@ const SystemMode: React.FC<{
       systemBaseClass: string;
       mode: PropultionModeType | PowerDeviceModeType;
     }[] = [];
-    spacecraftSelected
-      .getScSystems()
-      .filter(
-        (system) =>
-          system.getSystem().constructor.name ===
-            "SimpleElectricPropulsion360" ||
-          system.getSystem().constructor.name === "PowerDevice360"
-      )
-      .forEach((system, index) => {
-        if (
-          system.getSystem().constructor.name === "SimpleElectricPropulsion360"
-        ) {
-          propultionModeTypes.forEach((type) => {
-            items.push({
-              functional_id: system.getFunctionalId(),
-              systemBaseClass: system.getSystem().constructor.name,
-              mode: type,
+    spacecraftSelected instanceof Spacecraft360 &&
+      spacecraftSelected
+        .getScSystems()
+        .filter(
+          (system) =>
+            system.getSystem().constructor.name ===
+              "SimpleElectricPropulsion360" ||
+            system.getSystem().constructor.name === "PowerDevice360"
+        )
+        .forEach((system) => {
+          if (
+            system.getSystem().constructor.name ===
+            "SimpleElectricPropulsion360"
+          ) {
+            propultionModeTypes.forEach((type) => {
+              items.push({
+                functional_id: system.getFunctionalId(),
+                systemBaseClass: system.getSystem().constructor.name,
+                mode: type,
+              });
             });
-          });
-        } else {
-          powerDeviceModeTypes.forEach((type) => {
-            items.push({
-              functional_id: system.getFunctionalId(),
-              systemBaseClass: system.getSystem().constructor.name,
-              mode: type,
+          } else {
+            powerDeviceModeTypes.forEach((type) => {
+              items.push({
+                functional_id: system.getFunctionalId(),
+                systemBaseClass: system.getSystem().constructor.name,
+                mode: type,
+              });
             });
-          });
-        }
-      });
-
+          }
+        });
     return items;
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "16px",
-        gap: "16px",
-      }}
-    >
-      <Typography sx={{ fontWeight: "bold" }}>System Mode</Typography>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <Box sx={containerSx}>
+      <Typography sx={titleSx}>System Mode</Typography>
+      <Box sx={innerBoxSx}>
         <FormControl fullWidth>
           <InputLabel>Object Name (Functional ID)</InputLabel>
           <Select
@@ -176,7 +167,7 @@ const SystemMode: React.FC<{
             defaultValue=""
           >
             <MenuItem value="">_</MenuItem>
-            {getSystemModesItmes().map((item, index) => (
+            {getSystemModesItmes().map((item) => (
               <MenuItem
                 key={item.functional_id + item.mode}
                 value={`${item.functional_id}-${item.mode}`}
@@ -219,7 +210,7 @@ const SystemMode: React.FC<{
             defaultValue=""
           >
             <MenuItem value="">_</MenuItem>
-            {getSystemModesItmes().map((item, index) => (
+            {getSystemModesItmes().map((item) => (
               <MenuItem
                 key={item.functional_id + item.mode}
                 value={`${item.functional_id}-${item.mode}`}
@@ -236,3 +227,20 @@ const SystemMode: React.FC<{
 };
 
 export default SystemMode;
+
+const containerSx = {
+  display: "flex",
+  flexDirection: "column",
+  marginTop: "16px",
+  gap: "16px",
+};
+
+const titleSx = {
+  fontWeight: "bold",
+};
+
+const innerBoxSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
+};

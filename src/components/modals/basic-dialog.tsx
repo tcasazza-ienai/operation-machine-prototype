@@ -47,7 +47,7 @@ const BasicDialog: React.FC<DeleteModalProps> = ({
           {description}
         </DialogContentText>
       </DialogContent>
-      <DialogActions sx={{ padding: "24px 8px 24px 8px" }}>
+      <DialogActions sx={dialogActions}>
         <Button onClick={onClose} sx={buttonStyle}>
           Cancel
         </Button>
@@ -88,6 +88,8 @@ const dialogDescriptionStyle = {
   lineHeight: "var(--Body-Medium-Line-Height, 20px)" /* 142.857% */,
   letterSpacing: "var(--Body-Medium-Tracking, 0.25px)",
 };
+
+const dialogActions = { padding: "24px 8px 24px 8px" };
 
 const buttonStyle = {
   color: "var(--Primary, #5641E2)",
