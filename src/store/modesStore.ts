@@ -11,7 +11,7 @@ const initialModesStore: Mode360[] = [
 ];
 
 export const useModesStore = create(
-  combine({ modes: initialModesStore }, (set) => ({
+  combine({ modes: [] as Mode360[] }, (set) => ({
     updateModes: (newModes: Mode360[]) => set({ modes: newModes }),
   }))
 );

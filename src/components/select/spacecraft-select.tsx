@@ -7,7 +7,10 @@ import {
   InputLabel,
 } from "@mui/material";
 import { Spacecraft360 } from "../../entities/Spacecraft.ts";
-import { createSpacecraft_tutorial5 } from "../../data/spacecraft/createSpacecraft.ts";
+import {
+  createNewSimpleSpaceCraft,
+  createSpacecraft_tutorial5,
+} from "../../data/spacecraft/createSpacecraft.ts";
 import BasicDialog from "../modals/basic-dialog.tsx";
 import { useSpacecraftStore } from "../../store/spacecraftStore.ts";
 
@@ -17,6 +20,7 @@ const SpacecraftSelect: React.FC = () => {
 
   const [spacecraftList, setSpacecraftList] = useState<Spacecraft360[]>([
     createSpacecraft_tutorial5(),
+    createNewSimpleSpaceCraft(),
   ]);
   const [spacecraftSelected, setSpacecraftSelected] = useState<
     Spacecraft360 | undefined
@@ -26,7 +30,16 @@ const SpacecraftSelect: React.FC = () => {
 
   const onChangeSelect = (e: SelectChangeEvent<string>) => {
     setSelected(e.target.value as string);
-    setChangeSelectDialog(true);
+    console.log(!spacecraftSelected);
+    if (!spacecraftSelected) {
+      setSpacecraft(
+        spacecraftList.find(
+          (spacecraft) => spacecraft.getName() === e.target.value
+        ) || undefined
+      );
+    } else {
+      setChangeSelectDialog(true);
+    }
   };
 
   const confirmChangeSelect = () => {
